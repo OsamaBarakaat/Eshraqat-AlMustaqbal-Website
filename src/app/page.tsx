@@ -23,8 +23,8 @@ export default async function HomePage() {
       {/* 2. Interactive Search Engine & Live Properties Showcase (Unified with bottom pills removed) */}
       <HomePropertiesSection initialProperties={properties} />
 
-      {/* 3. Strategic Riyadh Neighborhoods Explorer */}
-      <NeighborhoodsSection />
+      {/* 3. Strategic Riyadh Neighborhoods Explorer (Commented out temporarily) */}
+      {/* <NeighborhoodsSection /> */}
 
       {/* 4. Four Pillars of Excellence */}
       <VisionPillars />
