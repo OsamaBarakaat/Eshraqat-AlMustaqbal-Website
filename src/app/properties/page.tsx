@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Search,
   Filter,
@@ -28,8 +29,9 @@ import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbl
 
 const PAGE_SIZE = 12;
 
-export default function PropertiesCatalogPage() {
+function PropertiesCatalogContent() {
   const { t, lang, dir } = useLanguage();
+  const searchParams = useSearchParams();
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [locations, setLocations] = useState<ProvinceItem[]>(FALLBACK_LOCATIONS);
@@ -45,6 +47,22 @@ export default function PropertiesCatalogPage() {
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // Sync URL search params if present
+  useEffect(() => {
+    if (!searchParams) return;
+    const purpose = searchParams.get("purpose");
+    if (purpose) setSelectedPurpose(purpose.toUpperCase());
+
+    const type = searchParams.get("type");
+    if (type) setSelectedType(type.toUpperCase());
+
+    const loc = searchParams.get("location") || searchParams.get("city");
+    if (loc && loc !== "ALL") setSearchTerm(loc);
+
+    const q = searchParams.get("search") || searchParams.get("q");
+    if (q) setSearchTerm(q);
+  }, [searchParams]);
 
   // 1. Fetch Dynamic Location Hierarchy from Backend API
   useEffect(() => {
@@ -393,5 +411,19 @@ export default function PropertiesCatalogPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PropertiesCatalogPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen pt-32 pb-24 bg-[#09090B] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-[#C5A059] animate-spin" />
+        </div>
+      }
+    >
+      <PropertiesCatalogContent />
+    </Suspense>
   );
 }

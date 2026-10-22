@@ -1,7 +1,6 @@
 import React from "react";
 import { HeroSection } from "@/components/home/hero-section";
-import { SearchEngine } from "@/components/home/search-engine";
-import { FeaturedProperties } from "@/components/home/featured-properties";
+import { HomePropertiesSection } from "@/components/home/home-properties-section";
 import { NeighborhoodsSection } from "@/components/home/neighborhoods-section";
 import { VisionPillars } from "@/components/home/vision-pillars";
 import { TestimonialsSection } from "@/components/home/testimonials-section";
@@ -21,19 +20,16 @@ export default async function HomePage() {
       {/* 1. The Grand Luxury Hero Section */}
       <HeroSection />
 
-      {/* 2. Interactive Search Engine Dock */}
-      <SearchEngine />
+      {/* 2. Interactive Search Engine & Live Properties Showcase (Unified with bottom pills removed) */}
+      <HomePropertiesSection initialProperties={properties} />
 
-      {/* 3. Featured Properties Showcase */}
-      <FeaturedProperties initialProperties={properties} />
-
-      {/* 4. Strategic Riyadh Neighborhoods Explorer */}
+      {/* 3. Strategic Riyadh Neighborhoods Explorer */}
       <NeighborhoodsSection />
 
-      {/* 5. Four Pillars of Excellence */}
+      {/* 4. Four Pillars of Excellence */}
       <VisionPillars />
 
-      {/* 6. Testimonials & Client Trust */}
+      {/* 5. Testimonials & Client Trust */}
       <TestimonialsSection />
     </main>
   );
