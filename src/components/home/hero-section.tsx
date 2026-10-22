@@ -18,7 +18,18 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
-export function HeroSection() {
+interface HeroSectionProps {
+  homepageContent?: {
+    heroTitle?: string;
+    heroSubtitle?: string;
+    ctaLabel?: string;
+    ctaLink?: string;
+    heroBannerImage?: string;
+    badgeText?: string;
+  };
+}
+
+export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
   const { t, dir, lang } = useLanguage();
   const [videoModalOpen, setVideoModalOpen] = useState(false);
 
@@ -56,7 +67,10 @@ export function HeroSection() {
         {/* Background Image with Brighter Luxurious Visibility */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=95"
+            src={
+              homepageContent?.heroBannerImage ||
+              "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=95"
+            }
             alt="Eshraqat Al-Mustaqbal Luxury Architecture"
             className="w-full h-full object-cover object-center scale-105 brightness-115 contrast-105 animate-in fade-in zoom-in-105 duration-1000"
           />
@@ -79,6 +93,14 @@ export function HeroSection() {
               }`}
             >
               <div className="p-6 sm:p-10 rounded-3xl bg-black/40 lg:bg-black/30 backdrop-blur-md border border-white/10 shadow-2xl space-y-6 max-w-3xl">
+                {/* Badge Tag from Dashboard if present */}
+                {homepageContent?.badgeText && (
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/15 text-[#C5A059] border border-[#C5A059]/30 text-xs font-semibold">
+                    <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span>{homepageContent.badgeText}</span>
+                  </div>
+                )}
+
                 {/* Huge Luxury Title with Masked Background Animation */}
                 <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold leading-[1.15] tracking-tight">
                   <span className="block masked-text font-black">
@@ -91,16 +113,22 @@ export function HeroSection() {
 
                 {/* Subtitle */}
                 <p className="text-sm sm:text-base lg:text-lg text-zinc-200 max-w-2xl leading-relaxed font-light drop-shadow-sm">
-                  {t("hero.subtitle")}
+                  {lang === "ar" && homepageContent?.heroSubtitle
+                    ? homepageContent.heroSubtitle
+                    : t("hero.subtitle")}
                 </p>
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap items-center gap-4 pt-2">
                   <Link
-                    href="/properties"
+                    href={homepageContent?.ctaLink || "/properties"}
                     className="px-7 py-4 rounded-full font-bold text-sm sm:text-base bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 text-black shadow-xl shadow-[#C5A059]/25 transition-all flex items-center gap-2.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
                   >
-                    <span>{t("hero.cta_explore")}</span>
+                    <span>
+                      {lang === "ar" && homepageContent?.ctaLabel
+                        ? homepageContent.ctaLabel
+                        : t("hero.cta_explore")}
+                    </span>
                     {dir === "rtl" ? (
                       <ArrowLeft className="w-4 h-4" />
                     ) : (

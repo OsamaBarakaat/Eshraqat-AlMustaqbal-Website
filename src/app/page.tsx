@@ -13,12 +13,15 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const properties = await ApiService.getProperties();
+  const [properties, cmsConfig] = await Promise.all([
+    ApiService.getProperties(),
+    ApiService.getWebsiteConfig(),
+  ]);
 
   return (
     <main className="min-h-screen bg-[#09090B] text-foreground">
       {/* 1. The Grand Luxury Hero Section */}
-      <HeroSection />
+      <HeroSection homepageContent={cmsConfig?.homepage} />
 
       {/* 2. Interactive Search Engine & Live Properties Showcase (Unified with bottom pills removed) */}
       <HomePropertiesSection initialProperties={properties} />
@@ -26,8 +29,8 @@ export default async function HomePage() {
       {/* 3. Strategic Riyadh Neighborhoods Explorer (Commented out temporarily) */}
       {/* <NeighborhoodsSection /> */}
 
-      {/* 4. Four Pillars of Excellence */}
-      <VisionPillars />
+      {/* 4. Four Pillars of Excellence (لماذا يختار النخبة "إشراقة المستقبل"؟) */}
+      <VisionPillars homepageContent={cmsConfig?.homepage} />
 
       {/* 5. Testimonials & Client Trust */}
       <TestimonialsSection />

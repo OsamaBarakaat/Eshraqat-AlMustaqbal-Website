@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   MapPin,
@@ -12,9 +12,20 @@ import {
   ArrowUp,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import { ApiService } from "@/lib/api-service";
 
 export function Footer() {
   const { t, lang } = useLanguage();
+  const [cmsConfig, setCmsConfig] = useState<any>(null);
+
+  useEffect(() => {
+    ApiService.getWebsiteConfig().then((data) => {
+      if (data) setCmsConfig(data);
+    });
+  }, []);
+
+  const contact = cmsConfig?.contact;
+  const socialLinks = Array.isArray(cmsConfig?.socialLinks) ? cmsConfig.socialLinks : [];
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -132,7 +143,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Col 5: Contact & Location */}
+          {/* Col 5: Contact & Location (Live from Dashboard CMS) */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">
               المقر الرئيسي والتواصل
@@ -140,55 +151,72 @@ export function Footer() {
             <div className="space-y-2.5 text-xs">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-[#C5A059] shrink-0 mt-0.5" />
-                <span>الرياض، طريق الملك فهد، برج المستقبل</span>
+                <span>{contact?.address || "الرياض، طريق الملك فهد، برج المستقبل"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#C5A059] shrink-0" />
-                <span className="font-mono dir-ltr">+966 11 000 0000</span>
+                <span className="font-mono dir-ltr">{contact?.contactPhone || "+966 11 000 0000"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#C5A059] shrink-0" />
-                <span className="font-mono dir-ltr">info@eshraqat-almustaqbal.sa</span>
+                <span className="font-mono dir-ltr">{contact?.email || "info@eshraqat-almustaqbal.sa"}</span>
               </div>
             </div>
 
             {/* Social Icons */}
             <div className="pt-2 flex items-center gap-2">
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-[#C5A059] hover:text-black text-white flex items-center justify-center transition-colors"
-                title="X"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-[#C5A059] hover:text-black text-white flex items-center justify-center transition-colors"
-                title="Instagram"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
-                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                </svg>
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-[#C5A059] hover:text-black text-white flex items-center justify-center transition-colors"
-                title="LinkedIn"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
-                  <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-                </svg>
-              </a>
+              {socialLinks.length > 0 ? (
+                socialLinks.map((s: any) => (
+                  <a
+                    key={s.id}
+                    href={s.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-[#C5A059] hover:text-black text-white text-[11px] font-bold transition-colors flex items-center gap-1.5"
+                    title={s.title}
+                  >
+                    <span>{s.platform}</span>
+                  </a>
+                ))
+              ) : (
+                <>
+                  <a
+                    href="https://twitter.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-[#C5A059] hover:text-black text-white flex items-center justify-center transition-colors"
+                    title="X"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  </a>
+                  <a
+                    href="https://instagram.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-[#C5A059] hover:text-black text-white flex items-center justify-center transition-colors"
+                    title="Instagram"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                    </svg>
+                  </a>
+                  <a
+                    href="https://linkedin.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-[#C5A059] hover:text-black text-white flex items-center justify-center transition-colors"
+                    title="LinkedIn"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+                    </svg>
+                  </a>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -342,4 +342,22 @@ export const ApiService = {
       return false;
     }
   },
+
+  /**
+   * Fetch live website configuration from backend CMS (Hero, Pillars, Contact, Social, SEO)
+   */
+  async getWebsiteConfig() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/cms/public/bootstrap`, {
+        next: { revalidate: 30 },
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json?.data || json;
+      }
+    } catch (err) {
+      console.warn("Failed to fetch website config from CMS API:", err);
+    }
+    return null;
+  },
 };

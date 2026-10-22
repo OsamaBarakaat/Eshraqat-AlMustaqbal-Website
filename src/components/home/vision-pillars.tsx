@@ -3,29 +3,64 @@
 import React from "react";
 import { ShieldCheck, Cpu, Banknote, Building2, Award, Sparkles, CheckCircle } from "lucide-react";
 
-export function VisionPillars() {
-  const pillars = [
-    {
-      title: "معايير معمارية استثنائية",
-      description: "تصاميم عصرية مستوحاة من العمارة السلمانية الحديثة بأعلى معايير الإضاءة الطبيعية والواجهات الزجاجية العازلة للصوت والحرارة.",
-      icon: Building2,
-    },
-    {
-      title: "صكوك إلكترونية وضمانات شاملة",
-      description: "صكوك ملكية إلكترونية فورية مرخصة، مع ضمانات تصل إلى 10 سنوات على الهيكل الإنشائي والعوازل وتركيبات السباكة والكهرباء.",
-      icon: ShieldCheck,
-    },
-    {
-      title: "تقنيات Smart Home ذكية",
-      description: "تكامل ذكي كامل للتحكم بالتكييف والإضاءة والمداخل والمسابح عبر تطبيقات الهواتف الذكية مع نظام توفير الطاقة الصديق للبيئة.",
-      icon: Cpu,
-    },
-    {
-      title: "عوائد استثمارية متنامية",
-      description: "دراسات جدوى متخصصة للمواقع الواعدة تضمن للمستثمر عوائد إيجارية مجزية وارتفاعاً مستمراً في القيمة الرأسمالية للعقار.",
-      icon: Banknote,
-    },
-  ];
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Building2,
+  ShieldCheck,
+  Cpu,
+  Banknote,
+  Award,
+  Sparkles,
+};
+
+interface VisionPillarsProps {
+  homepageContent?: {
+    pillarsBadge?: string;
+    pillarsTitle?: string;
+    pillarsSubtitle?: string;
+    pillars?: Array<{
+      icon: string;
+      title: string;
+      description: string;
+    }>;
+  };
+}
+
+export function VisionPillars({ homepageContent }: VisionPillarsProps) {
+  const badge = homepageContent?.pillarsBadge || "ركائز التميز المؤسسي";
+  const title = homepageContent?.pillarsTitle || 'لماذا يختار النخبة "إشراقة المستقبل"؟';
+  const subtitle =
+    homepageContent?.pillarsSubtitle ||
+    "نضع الشفافية والجودة الهندسية وراحة العميل في صدارة أولوياتنا منذ مرحلة المخططات الأولى وحتى تسليم المفتاح.";
+
+  const rawPillars =
+    homepageContent?.pillars && homepageContent.pillars.length > 0
+      ? homepageContent.pillars
+      : [
+          {
+            title: "معايير معمارية استثنائية",
+            description:
+              "تصاميم عصرية مستوحاة من العمارة السلمانية الحديثة بأعلى معايير الإضاءة الطبيعية والواجهات الزجاجية العازلة للصوت والحرارة.",
+            icon: "Building2",
+          },
+          {
+            title: "صكوك إلكترونية وضمانات شاملة",
+            description:
+              "صكوك ملكية إلكترونية فورية مرخصة، مع ضمانات تصل إلى 10 سنوات على الهيكل الإنشائي والعوازل وتركيبات السباكة والكهرباء.",
+            icon: "ShieldCheck",
+          },
+          {
+            title: "تقنيات Smart Home ذكية",
+            description:
+              "تكامل ذكي كامل للتحكم بالتكييف والإضاءة والمداخل والمسابح عبر تطبيقات الهواتف الذكية مع نظام توفير الطاقة الصديق للبيئة.",
+            icon: "Cpu",
+          },
+          {
+            title: "عوائد استثمارية متنامية",
+            description:
+              "دراسات جدوى متخصصة للمواقع الواعدة تضمن للمستثمر عوائد إيجارية مجزية وارتفاعاً مستمراً في القيمة الرأسمالية للعقار.",
+            icon: "Banknote",
+          },
+        ];
 
   return (
     <section id="services" className="py-24 bg-[#09090B] relative text-right border-t border-white/5">
@@ -33,19 +68,19 @@ export function VisionPillars() {
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 text-xs font-semibold">
             <Award className="w-3.5 h-3.5" />
-            <span>ركائز التميز المؤسسي</span>
+            <span>{badge}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            لماذا يختار النخبة &quot;إشراقة المستقبل&quot;؟
+            {title}
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">
-            نضع الشفافية والجودة الهندسية وراحة العميل في صدارة أولوياتنا منذ مرحلة المخططات الأولى وحتى تسليم المفتاح.
+            {subtitle}
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pillars.map((item, idx) => {
-            const Icon = item.icon;
+          {rawPillars.map((item, idx) => {
+            const Icon = ICON_MAP[item.icon] || Building2;
             return (
               <div
                 key={idx}
