@@ -384,6 +384,31 @@ export const ApiService = {
     }
     return null;
   },
+  /**
+   * Sync or register a client in backend CRM
+   */
+  async syncClientProfile(data: {
+    email: string;
+    name?: string;
+    phone?: string;
+    interestedPropertyId?: string;
+    notes?: string;
+  }) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/clients/public/sync`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json?.data || json;
+      }
+    } catch (err) {
+      console.warn("Failed to sync client profile to CRM API:", err);
+    }
+    return null;
+  },
 };
 
 export const apiService = ApiService;

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { ApiService } from "./api-service";
 
 export interface ClientUser {
   email: string;
@@ -81,6 +82,12 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
         } else {
           sessionStorage.setItem(STORAGE_KEY, JSON.stringify(clientUser));
         }
+
+        // Direct client sync backup
+        ApiService.syncClientProfile({
+          email: clientUser.email,
+          notes: "تسجيل دخول وتوثيق البريد الإلكتروني عبر OTP في الموقع الرسمي",
+        }).catch(() => {});
       }
       return data;
     } catch {
@@ -98,6 +105,12 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
       } else {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
       }
+
+      ApiService.syncClientProfile({
+        email: updated.email,
+        name: updated.name,
+        phone: updated.phone,
+      }).catch(() => {});
     } catch {
       // ignore
     }

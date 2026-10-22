@@ -22,13 +22,33 @@ export async function POST(req: Request) {
     }
 
     // Generate client auth token
-    const clientToken = `client_${Buffer.from(email + ":" + Date.now()).toString("base64")}`;
+    const normalizedEmail = email.trim().toLowerCase();
+    const clientToken = `client_${Buffer.from(normalizedEmail + ":" + Date.now()).toString("base64")}`;
+
+    // Sync client to backend PostgreSQL CRM Database immediately
+    const API_BASE_URL =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://eshraqat-almustaqbal-backend.vercel.app/api/v1";
+
+    try {
+      await fetch(`${API_BASE_URL}/clients/public/sync`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: normalizedEmail,
+          source: "WEBSITE_INQUIRY",
+          notes: "تسجيل دخول وتوثيق البريد الإلكتروني عبر OTP في الموقع الرسمي",
+        }),
+      });
+    } catch (syncErr) {
+      console.warn("Failed to sync client to backend CRM:", syncErr);
+    }
 
     const response = NextResponse.json({
       success: true,
       message: "تم تسجيل الدخول بنجاح.",
       user: {
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         token: clientToken,
       },
     });
