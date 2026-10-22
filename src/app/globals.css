@@ -82,17 +82,26 @@ body {
 /* ================= Golden Shooting Stars & Meteor Shower Animation ================= */
 @keyframes golden-meteor-fly {
   0% {
-    transform: rotate(42deg) translateX(-120px);
+    transform: rotate(42deg) translateX(-100px);
     opacity: 0;
   }
-  10% {
-    opacity: 1;
-  }
-  75% {
+  12% {
     opacity: 0.95;
   }
+  35% {
+    opacity: 0.85;
+  }
+  55% {
+    opacity: 0.6;
+  }
+  75% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.1;
+  }
   100% {
-    transform: rotate(42deg) translateX(1400px);
+    transform: rotate(42deg) translateX(1450px);
     opacity: 0;
   }
 }
@@ -103,8 +112,8 @@ body {
     opacity: 0.2;
   }
   50% {
-    transform: scale(1.4);
-    opacity: 0.9;
+    transform: scale(1.3);
+    opacity: 0.85;
   }
 }
 
@@ -117,46 +126,46 @@ body {
   will-change: transform, opacity;
 }
 
-/* Glowing golden head of the meteor */
+/* Glowing golden head of the meteor - refined & delicate */
 .meteor-head {
   position: absolute;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   border-radius: 9999px;
-  background: radial-gradient(circle, #ffffff 20%, #ffe082 60%, #C5A059 100%);
+  background: radial-gradient(circle, #ffffff 25%, #ffe082 60%, #C5A059 100%);
   box-shadow: 
-    0 0 10px 2px #ffffff,
-    0 0 20px 6px #C5A059,
-    0 0 35px 12px rgba(197, 160, 89, 0.7);
+    0 0 6px 1px #ffffff,
+    0 0 14px 4px #C5A059,
+    0 0 24px 7px rgba(197, 160, 89, 0.55);
 }
 
-/* Long glowing tapered golden tail */
+/* Long glowing tapered golden tail - refined thickness */
 .meteor-tail {
   position: absolute;
   right: 2px;
   top: 50%;
   transform: translateY(-50%);
-  height: 3px;
+  height: 2px;
   border-radius: 9999px;
   background: linear-gradient(
     to left,
     #ffffff 0%,
     #ffe082 15%,
     #C5A059 45%,
-    rgba(197, 160, 89, 0.4) 75%,
+    rgba(197, 160, 89, 0.35) 75%,
     transparent 100%
   );
-  box-shadow: 0 0 12px 1px rgba(197, 160, 89, 0.6);
+  box-shadow: 0 0 9px 1px rgba(197, 160, 89, 0.55);
 }
 
 .golden-sparkle {
   position: absolute;
   border-radius: 9999px;
   background: radial-gradient(circle, #ffffff 10%, #ffe082 50%, #C5A059 100%);
-  box-shadow: 0 0 8px 2px rgba(197, 160, 89, 0.8);
+  box-shadow: 0 0 6px 1.5px rgba(197, 160, 89, 0.7);
   animation: gold-sparkle-pulse infinite ease-in-out;
   pointer-events: none;
 }
