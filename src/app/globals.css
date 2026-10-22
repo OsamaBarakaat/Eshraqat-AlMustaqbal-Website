@@ -78,3 +78,33 @@ body {
   -webkit-text-fill-color: transparent;
   animation: animate-background 5s infinite alternate linear;
 }
+
+/* ================= Golden Shooting Stars Animation ================= */
+@keyframes shooting-star {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(-35deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(-1000px, 700px, 0) rotate(-35deg);
+    opacity: 0;
+  }
+}
+
+.meteor {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(to left, rgba(197, 160, 89, 0), #C5A059 50%, #ffffff 100%);
+  border-radius: 9999px;
+  filter: drop-shadow(0 0 6px rgba(197, 160, 89, 0.8));
+  animation-name: shooting-star;
+  animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  animation-iteration-count: infinite;
+  pointer-events: none;
+}

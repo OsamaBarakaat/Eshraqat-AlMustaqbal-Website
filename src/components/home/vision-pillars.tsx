@@ -63,8 +63,38 @@ export function VisionPillars({ homepageContent }: VisionPillarsProps) {
         ];
 
   return (
-    <section id="services" className="py-24 bg-[#09090B] relative text-right border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+    <section id="services" className="py-28 bg-[#09090B] relative text-right border-t border-white/5 overflow-hidden">
+      {/* ================= Luxurious Golden Meteors Background Animation ================= */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Ambient Warm Golden Glows */}
+        <div className="absolute top-10 right-10 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[140px]" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-[#C5A059]/5 rounded-full blur-[160px]" />
+
+        {/* Shooting Stars (شهب ذهبية بميل انسيابي من الأعلى للأسفل) */}
+        {[
+          { top: "-5%", right: "15%", width: "160px", duration: "7s", delay: "0s" },
+          { top: "5%", right: "35%", width: "130px", duration: "8.5s", delay: "2.5s" },
+          { top: "15%", right: "60%", width: "180px", duration: "9s", delay: "1.2s" },
+          { top: "-10%", right: "75%", width: "140px", duration: "7.8s", delay: "4s" },
+          { top: "25%", right: "20%", width: "170px", duration: "8.2s", delay: "5.5s" },
+          { top: "10%", right: "90%", width: "150px", duration: "9.5s", delay: "3.2s" },
+          { top: "35%", right: "45%", width: "120px", duration: "8s", delay: "6.8s" },
+        ].map((star, idx) => (
+          <span
+            key={idx}
+            className="meteor"
+            style={{
+              top: star.top,
+              right: star.right,
+              width: star.width,
+              animationDuration: star.duration,
+              animationDelay: star.delay,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 text-xs font-semibold">
             <Award className="w-3.5 h-3.5" />
