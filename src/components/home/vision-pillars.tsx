@@ -77,18 +77,18 @@ export function VisionPillars({ homepageContent }: VisionPillarsProps) {
         <div className="absolute -top-10 left-10 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 right-10 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[160px]" />
 
-        {/* Dynamic Golden Shooting Stars / Meteors (حركة هادئة وبطيئة وتتلاشى بسلاسة في نهاية السيكشن) */}
+        {/* Dynamic Golden Shooting Stars / Meteors (حركة هادئة وبطيئة ومستمرة فوراً بدون ثبات أولي) */}
         {[
-          { top: "-10%", left: "5%", tailLength: "160px", duration: "11s", delay: "0s" },
-          { top: "-5%", left: "22%", tailLength: "190px", duration: "12.5s", delay: "3.2s" },
-          { top: "8%", left: "-6%", tailLength: "140px", duration: "11.8s", delay: "6.5s" },
-          { top: "-15%", left: "42%", tailLength: "210px", duration: "14s", delay: "1.8s" },
-          { top: "5%", left: "60%", tailLength: "175px", duration: "12s", delay: "5.4s" },
-          { top: "-10%", left: "75%", tailLength: "160px", duration: "10.8s", delay: "8.1s" },
-          { top: "12%", left: "30%", tailLength: "135px", duration: "13s", delay: "2.5s" },
-          { top: "-18%", left: "88%", tailLength: "200px", duration: "14.5s", delay: "4.7s" },
-          { top: "20%", left: "10%", tailLength: "150px", duration: "11.5s", delay: "7.6s" },
-          { top: "25%", left: "50%", tailLength: "170px", duration: "13.2s", delay: "9.5s" },
+          { top: "-10%", left: "5%", tailLength: "160px", duration: "11s", delay: "-1.5s" },
+          { top: "-5%", left: "22%", tailLength: "190px", duration: "12.5s", delay: "-5.2s" },
+          { top: "8%", left: "-6%", tailLength: "140px", duration: "11.8s", delay: "-9.1s" },
+          { top: "-15%", left: "42%", tailLength: "210px", duration: "14s", delay: "-3.8s" },
+          { top: "5%", left: "60%", tailLength: "175px", duration: "12s", delay: "-7.4s" },
+          { top: "-10%", left: "75%", tailLength: "160px", duration: "10.8s", delay: "-10.5s" },
+          { top: "12%", left: "30%", tailLength: "135px", duration: "13s", delay: "-4.2s" },
+          { top: "-18%", left: "88%", tailLength: "200px", duration: "14.5s", delay: "-8.7s" },
+          { top: "20%", left: "10%", tailLength: "150px", duration: "11.5s", delay: "-2.6s" },
+          { top: "25%", left: "50%", tailLength: "170px", duration: "13.2s", delay: "-6.9s" },
         ].map((meteor, idx) => (
           <div
             key={idx}
@@ -112,14 +112,14 @@ export function VisionPillars({ homepageContent }: VisionPillarsProps) {
 
         {/* Ambient Starlight / Golden Dust Particles */}
         {[
-          { top: "15%", left: "18%", size: "3px", duration: "3.5s", delay: "0.2s" },
-          { top: "35%", left: "28%", size: "2.5px", duration: "4.2s", delay: "1.5s" },
-          { top: "20%", left: "72%", size: "3.5px", duration: "3.8s", delay: "0.8s" },
-          { top: "60%", left: "85%", size: "2px", duration: "4.6s", delay: "2.1s" },
-          { top: "75%", left: "15%", size: "3px", duration: "3.9s", delay: "1.2s" },
-          { top: "80%", left: "45%", size: "2.5px", duration: "4.1s", delay: "2.7s" },
-          { top: "25%", left: "92%", size: "3px", duration: "3.4s", delay: "0.5s" },
-          { top: "70%", left: "68%", size: "2px", duration: "4.8s", delay: "1.9s" },
+          { top: "15%", left: "18%", size: "3px", duration: "3.5s", delay: "-0.5s" },
+          { top: "35%", left: "28%", size: "2.5px", duration: "4.2s", delay: "-1.8s" },
+          { top: "20%", left: "72%", size: "3.5px", duration: "3.8s", delay: "-2.5s" },
+          { top: "60%", left: "85%", size: "2px", duration: "4.6s", delay: "-3.1s" },
+          { top: "75%", left: "15%", size: "3px", duration: "3.9s", delay: "-1.2s" },
+          { top: "80%", left: "45%", size: "2.5px", duration: "4.1s", delay: "-2.7s" },
+          { top: "25%", left: "92%", size: "3px", duration: "3.4s", delay: "-0.9s" },
+          { top: "70%", left: "68%", size: "2px", duration: "4.8s", delay: "-3.6s" },
         ].map((star, idx) => (
           <span
             key={idx}
