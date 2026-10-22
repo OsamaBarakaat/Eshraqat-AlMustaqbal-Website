@@ -29,7 +29,7 @@ export interface ProvinceItem {
   enabled?: boolean;
 }
 
-// Fallback Location Hierarchy matching Saudi Cities & Districts
+// Fallback Location Hierarchy matching Saudi Cities & Districts if offline
 export const FALLBACK_LOCATIONS: ProvinceItem[] = [
   {
     id: "prov-riyadh",
@@ -91,191 +91,6 @@ export const FALLBACK_LOCATIONS: ProvinceItem[] = [
         ],
       },
     ],
-  },
-  {
-    id: "prov-eastern",
-    nameArabic: "المنطقة الشرقية",
-    nameEnglish: "Eastern Province",
-    cities: [
-      {
-        id: "city-khobar",
-        provinceId: "prov-eastern",
-        nameArabic: "الخبر",
-        nameEnglish: "Al Khobar",
-        districts: [
-          { id: "dist-hizam-thahabi", cityId: "city-khobar", nameArabic: "الحزام الذهبي", nameEnglish: "Golden Belt" },
-          { id: "dist-corniche", cityId: "city-khobar", nameArabic: "الكورنيش", nameEnglish: "Corniche" },
-        ],
-      },
-      {
-        id: "city-dammam",
-        provinceId: "prov-eastern",
-        nameArabic: "الدمام",
-        nameEnglish: "Dammam",
-        districts: [
-          { id: "dist-shatee-dammam", cityId: "city-dammam", nameArabic: "حي الشاطئ الشرقي", nameEnglish: "East Shati" },
-          { id: "dist-faisaliyah", cityId: "city-dammam", nameArabic: "حي الفيصلية", nameEnglish: "Al Faisaliyah" },
-        ],
-      },
-    ],
-  },
-];
-
-// Curated high-end Saudi luxury properties matching the brand aesthetic
-export const FALLBACK_PROPERTIES: Property[] = [
-  {
-    id: "prop-luxury-1",
-    code: "ESH-801",
-    title: "فيلا مودرن ملكية مع شلال ومسبح خاص | حي النرجس",
-    titleEn: "Modern Royal Villa with Waterfall & Private Pool | Al-Narjis",
-    description:
-      "تحفة معمارية استثنائية في أرقى مربعات حي النرجس بالرياض. تتميز بواجهات زجاجية مزدوجة بارتفاع 6 أمتار، مصعد بانورامي راكب، مسبح خارجي بشلال متدفق، وتدفئة أرضية ذكية متصلة بنظام Smart Home متكامل.",
-    descriptionEn:
-      "An exceptional architectural masterpiece in the prime quarter of Al-Narjis, Riyadh. Features double-height glass facades, panoramic elevator, private overflow pool, and fully integrated Smart Home automation.",
-    price: 4850000,
-    type: "VILLA",
-    purpose: "SALE",
-    city: "مدينة الرياض",
-    district: "حي النرجس",
-    area: 520,
-    bedrooms: 5,
-    bathrooms: 7,
-    livingRooms: 3,
-    yearBuilt: 2025,
-    featured: true,
-    status: "PUBLISHED",
-    images: [
-      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=85",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80",
-    ],
-    amenities: [
-      "مسبح خاص مع نظام تدفئة",
-      "مصعد بانورامي راكب",
-      "غرفة سينما خاصة",
-      "جناح كامل للخادمة والغسيل",
-      "غرفة سائق بحمام خاص",
-      "نظام سمارت هوم ذكي KNX",
-      "حديقة شتوية وجلسة شواء",
-    ],
-    mortgageEligible: true,
-    hasElectronicDeed: true,
-    finishingType: "ألترا سوبر ديلوكس",
-    parkingSpaces: 3,
-    virtualTourUrl: "https://my.matterport.com/show/?m=sample",
-  },
-  {
-    id: "prop-luxury-2",
-    code: "ESH-802",
-    title: "قصر مودرن فاخر بإطلالة بانورامية | حي حطين النموذجي",
-    titleEn: "Ultra-Luxury Modern Palace with Panoramic Views | Hittin",
-    description:
-      "قصر استثنائي على شارعين متقاطعين بالقرب من بوليفارد رياض سيتي ومجمع مركز الملك عبد الله المالي KAFD. تصميم أوروبي متفرد وتشطيبات من أجود أنواع الرخام الإيطالي (كلكتا ومارينارا).",
-    descriptionEn:
-      "Spectacular corner palace minutes away from Boulevard Riyadh City and KAFD. Italian marble flooring, lush landscape, and bespoke interior architecture.",
-    price: 9200000,
-    type: "PALACE",
-    purpose: "SALE",
-    city: "مدينة الرياض",
-    district: "حي حطين",
-    area: 840,
-    bedrooms: 6,
-    bathrooms: 9,
-    livingRooms: 4,
-    yearBuilt: 2026,
-    featured: true,
-    status: "PUBLISHED",
-    images: [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85",
-      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80",
-    ],
-    amenities: [
-      "مسبح داخلي وخارجي",
-      "مصعد إيطالي ميتسوبيشي",
-      "نادي رياضي خاص Gym",
-      "مجلس ضيافة ملكي مستقل",
-      "مواقف تتسع لـ 5 سيارات",
-      "نظام كاميرات ومراقبة ذكية",
-    ],
-    mortgageEligible: true,
-    hasElectronicDeed: true,
-    finishingType: "رخام ملكي وتشطيب ألماني",
-    parkingSpaces: 5,
-  },
-  {
-    id: "prop-luxury-3",
-    code: "ESH-803",
-    title: "بنتهاوس فاخر بتراس خاص وإطلالة أبراج كافد | حي العقيق",
-    titleEn: "Luxury Sky Penthouse with KAFD Skyline View | Al-Aqeeq",
-    description:
-      "شقة بنتهاوس علوية تغطي الطابق بالكامل، مع روف خاص وتراس بمسطحات خضراء وجلسة نار خارجية مطابقة لإطلالة كافد الساحرة. تشطيب فندقي 5 نجوم مع دخول خاص عبر المصعد.",
-    descriptionEn:
-      "Whole-floor luxury penthouse with expansive private sky terrace overlooking the KAFD skyline. Private keycard elevator access and 5-star hotel finishing.",
-    price: 2150000,
-    type: "PENTHOUSE",
-    purpose: "SALE",
-    city: "مدينة الرياض",
-    district: "حي العقيق",
-    area: 280,
-    bedrooms: 3,
-    bathrooms: 4,
-    livingRooms: 2,
-    yearBuilt: 2025,
-    featured: true,
-    status: "PUBLISHED",
-    images: [
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85",
-      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80",
-    ],
-    amenities: [
-      "تراس وسيع مع جلسة شواء",
-      "دخول خاص برمز مشفر للمصعد",
-      "مطبخ ألماني مجهز بالكامل",
-      "موقفين قبو مظللة",
-      "مستودع خاص بالقبو",
-    ],
-    mortgageEligible: true,
-    hasElectronicDeed: true,
-    finishingType: "فندقي مودرن فاخر",
-    parkingSpaces: 2,
-  },
-  {
-    id: "prop-luxury-4",
-    code: "ESH-804",
-    title: "فيلا تاون هاوس ذكية بتصميم سداسي مع حديقة | حي الملقا",
-    titleEn: "Smart Architectural Townhouse with Garden | Al-Malqa",
-    description:
-      "فيلا تاون هاوس بتصميم معماري انسيابي مستوحى من كود وادي حنيفة، مساحات مفتوحة وتوزيع ذكي للضوء الطبيعي. تقع بجوار أفضل المدارس الدولية والمراكز الصحية.",
-    descriptionEn:
-      "Contemporary townhouse with fluid architectural contours, natural skylights, and manicured private garden located in the vibrant hub of Al-Malqa.",
-    price: 3600000,
-    type: "VILLA",
-    purpose: "SALE",
-    city: "مدينة الرياض",
-    district: "حي الملقا",
-    area: 380,
-    bedrooms: 4,
-    bathrooms: 5,
-    livingRooms: 2,
-    yearBuilt: 2025,
-    featured: false,
-    status: "PUBLISHED",
-    images: [
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1600&q=85",
-      "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=1200&q=80",
-    ],
-    amenities: [
-      "حديقة خاصة مع ري ذكي",
-      "مطبخ أمريكي مفتوح",
-      "تكييف مركزي دايكن إنفرتر",
-      "عوازل حرارية ومائية معتمدة",
-    ],
-    mortgageEligible: true,
-    hasElectronicDeed: true,
-    finishingType: "ديلوكس فاخر",
-    parkingSpaces: 2,
   },
 ];
 
@@ -356,7 +171,7 @@ export const ApiService = {
   },
 
   /**
-   * Fetch live properties with full query parameters
+   * Fetch strictly live properties from the backend database (no static fallback)
    */
   async getProperties(query?: {
     search?: string;
@@ -386,26 +201,19 @@ export const ApiService = {
       if (res.ok) {
         const json = await res.json();
         const rawItems = json?.data?.items || json?.items || (Array.isArray(json) ? json : null);
-        if (rawItems && Array.isArray(rawItems) && rawItems.length > 0) {
-          const mappedApiProps = rawItems.map(mapBackendProperty);
-          // If no specific backend search filters, include fallback properties too so the catalog is rich
-          if (!query?.cityId && !query?.districtId && !query?.search) {
-            const existingIds = new Set(mappedApiProps.map((p) => p.id));
-            const uniqueFallbacks = FALLBACK_PROPERTIES.filter((p) => !existingIds.has(p.id));
-            return [...mappedApiProps, ...uniqueFallbacks];
-          }
-          return mappedApiProps;
+        if (rawItems && Array.isArray(rawItems)) {
+          return rawItems.map(mapBackendProperty);
         }
       }
     } catch (err) {
-      console.warn("Failed to fetch from backend properties API, using fallback:", err);
+      console.warn("Failed to fetch from backend properties API:", err);
     }
 
-    return FALLBACK_PROPERTIES;
+    return [];
   },
 
   /**
-   * Get single property by ID or Slug from public endpoint
+   * Get single property strictly from backend database by ID or Slug
    */
   async getPropertyById(idOrSlug: string): Promise<Property | null> {
     try {
@@ -420,15 +228,11 @@ export const ApiService = {
           return mapBackendProperty(item);
         }
       }
-    } catch {
-      // fallback
+    } catch (err) {
+      console.warn("Failed to fetch property by id from backend API:", err);
     }
 
-    // Check fallback
-    return (
-      FALLBACK_PROPERTIES.find((p) => p.id === idOrSlug || p.code.toLowerCase() === idOrSlug.toLowerCase()) ||
-      null
-    );
+    return null;
   },
 
   /**

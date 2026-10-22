@@ -67,11 +67,23 @@ export function FeaturedProperties({ initialProperties }: FeaturedPropertiesProp
         </div>
 
         {/* Properties Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filtered.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
-        </div>
+        {filtered.length === 0 ? (
+          <div className="py-12 text-center rounded-2xl bg-[#141418] border border-white/5 space-y-2">
+            <p className="text-sm text-zinc-400 font-medium">لا توجد عقارات في هذا التصنيف حالياً</p>
+            <button
+              onClick={() => setActiveFilter("ALL")}
+              className="text-xs text-[#C5A059] underline hover:brightness-110 font-bold cursor-pointer"
+            >
+              عرض كافة العقارات المتاحة
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {filtered.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        )}
 
         {/* Bottom CTA to view all properties */}
         <div className="text-center pt-6">

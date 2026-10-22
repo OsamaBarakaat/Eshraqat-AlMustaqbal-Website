@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import {
   ApiService,
-  FALLBACK_PROPERTIES,
   FALLBACK_LOCATIONS,
   ProvinceItem,
   CityItem,
@@ -32,9 +31,9 @@ const PAGE_SIZE = 12;
 export default function PropertiesCatalogPage() {
   const { t, lang, dir } = useLanguage();
 
-  const [properties, setProperties] = useState<Property[]>(FALLBACK_PROPERTIES);
+  const [properties, setProperties] = useState<Property[]>([]);
   const [locations, setLocations] = useState<ProvinceItem[]>(FALLBACK_LOCATIONS);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Filter States
   const [searchTerm, setSearchTerm] = useState("");

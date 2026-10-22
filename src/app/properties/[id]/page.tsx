@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ApiService, FALLBACK_PROPERTIES } from "@/lib/api-service";
+import { ApiService } from "@/lib/api-service";
 import { PropertyDetailClient } from "./property-detail-client";
 
 interface PageProps {
@@ -53,7 +53,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  return FALLBACK_PROPERTIES.map((p) => ({
+  const props = await ApiService.getProperties();
+  return props.map((p) => ({
     id: p.id,
   }));
 }
@@ -66,7 +67,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const similarProperties = FALLBACK_PROPERTIES.filter((p) => p.id !== property.id).slice(0, 3);
+  const allProps = await ApiService.getProperties();
+  const similarProperties = allProps.filter((p) => p.id !== property.id).slice(0, 3);
 
   return (
     <PropertyDetailClient property={property} similarProperties={similarProperties} />
