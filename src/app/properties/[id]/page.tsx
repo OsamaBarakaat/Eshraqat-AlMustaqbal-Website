@@ -50,14 +50,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  const props = await ApiService.getProperties();
-  return props.map((p) => ({
-    id: p.id,
-  }));
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function PropertyDetailPage({ params }: PageProps) {
   const { id } = await params;

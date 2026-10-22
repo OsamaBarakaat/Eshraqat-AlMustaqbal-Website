@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   MapPin,
@@ -11,6 +11,7 @@ import {
   Bed,
   Bath,
   Maximize2,
+  X,
   Car,
   Home,
   ShieldCheck,
@@ -41,8 +42,73 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
 
   const [activeImgIdx, setActiveImgIdx] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+
+  const handleNextImg = useCallback(() => {
+    if (property.images.length <= 1) return;
+    setActiveImgIdx((prev) => (prev + 1) % property.images.length);
+  }, [property.images.length]);
+
+  const handlePrevImg = useCallback(() => {
+    if (property.images.length <= 1) return;
+    setActiveImgIdx((prev) => (prev - 1 + property.images.length) % property.images.length);
+  }, [property.images.length]);
+
+  // Lock body scroll on lightbox open
+  useEffect(() => {
+    if (isLightboxOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLightboxOpen]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isLightboxOpen) {
+        setIsLightboxOpen(false);
+      } else if (isLightboxOpen && property.images.length > 1) {
+        if (e.key === "ArrowLeft") {
+          handleNextImg();
+        } else if (e.key === "ArrowRight") {
+          handlePrevImg();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleNextImg, handlePrevImg, isLightboxOpen, property.images.length]);
+
+  // Touch Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+    setTouchEndX(null);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > 50) {
+      handleNextImg();
+    } else if (distance < -50) {
+      handlePrevImg();
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
 
   // Mortgage Calculator State
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
@@ -103,27 +169,52 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
 
         {/* Gallery Section */}
         <div className="space-y-3">
-          <div className="relative h-80 sm:h-[480px] w-full rounded-3xl overflow-hidden bg-black/60 border border-white/10 shadow-2xl">
+          <div className="group relative h-80 sm:h-[480px] w-full rounded-3xl overflow-hidden bg-black/60 border border-white/10 shadow-2xl">
             <img
               src={property.images[activeImgIdx] || property.images[0]}
               alt={property.title}
-              className="w-full h-full object-cover"
+              onClick={() => setIsLightboxOpen(true)}
+              className="w-full h-full object-cover cursor-pointer hover:scale-[1.02] transition-transform duration-500"
             />
+
+            {/* Expand / Lightbox Button */}
+            <button
+              type="button"
+              onClick={() => setIsLightboxOpen(true)}
+              className="absolute top-4 left-4 z-20 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+              title="تكبير الصور وعرض بملء الشاشة"
+            >
+              <Maximize2 className="w-4 h-4 text-[#C5A059]" />
+              <span className="hidden sm:inline">تكبير الصور</span>
+            </button>
+
+            {/* Image Counter Badge */}
+            <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/20 text-white text-xs font-mono font-medium">
+              <span>{activeImgIdx + 1} / {property.images.length || 1}</span>
+            </div>
 
             {/* Arrows */}
             {property.images.length > 1 && (
               <>
                 <button
-                  onClick={() =>
-                    setActiveImgIdx((prev) => (prev - 1 + property.images.length) % property.images.length)
-                  }
-                  className="absolute top-1/2 right-4 -translate-y-1/2 p-2.5 rounded-full bg-black/60 text-white hover:bg-[#C5A059] hover:text-black transition-all cursor-pointer"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrevImg();
+                  }}
+                  className="absolute top-1/2 right-4 -translate-y-1/2 p-2.5 rounded-full bg-black/60 text-white hover:bg-[#C5A059] hover:text-black transition-all cursor-pointer z-20 shadow-md"
+                  aria-label="الصورة السابقة"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
                 <button
-                  onClick={() => setActiveImgIdx((prev) => (prev + 1) % property.images.length)}
-                  className="absolute top-1/2 left-4 -translate-y-1/2 p-2.5 rounded-full bg-black/60 text-white hover:bg-[#C5A059] hover:text-black transition-all cursor-pointer"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNextImg();
+                  }}
+                  className="absolute top-1/2 left-4 -translate-y-1/2 p-2.5 rounded-full bg-black/60 text-white hover:bg-[#C5A059] hover:text-black transition-all cursor-pointer z-20 shadow-md"
+                  aria-label="الصورة التالية"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -131,7 +222,7 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
             )}
 
             {/* Price Floating Pill */}
-            <div className="absolute bottom-4 right-4 p-4 rounded-2xl bg-black/85 backdrop-blur-md border border-[#C5A059]/40 text-white">
+            <div className="absolute bottom-4 right-4 p-4 rounded-2xl bg-black/85 backdrop-blur-md border border-[#C5A059]/40 text-white z-10 pointer-events-none">
               <span className="text-xs text-zinc-400 block font-light">السعر الإجمالي</span>
               <span className="text-xl sm:text-2xl font-bold font-mono text-[#F3E5AB]">
                 {formatPrice(property.price)}
@@ -141,13 +232,14 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
 
           {/* Thumbnails Ribbon */}
           {property.images.length > 1 && (
-            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
               {property.images.map((img, i) => (
                 <button
                   key={i}
+                  type="button"
                   onClick={() => setActiveImgIdx(i)}
                   className={`relative w-24 h-16 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
-                    activeImgIdx === i ? "border-[#C5A059] scale-105" : "border-transparent opacity-60 hover:opacity-100"
+                    activeImgIdx === i ? "border-[#C5A059] scale-105 shadow-md shadow-[#C5A059]/20" : "border-white/10 opacity-60 hover:opacity-100"
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
@@ -156,6 +248,104 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
             </div>
           )}
         </div>
+
+        {/* Fullscreen Lightbox Modal (like Dashboard) */}
+        {isLightboxOpen && (
+          <div
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 animate-in fade-in duration-200"
+            onClick={() => setIsLightboxOpen(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Header */}
+            <div
+              className="flex items-center justify-between z-10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-right text-white">
+                <p className="font-bold text-sm sm:text-base text-zinc-100">{property.title}</p>
+                <p className="text-xs text-[#C5A059] mt-0.5">
+                  صورة {activeImgIdx + 1} من {property.images.length}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsLightboxOpen(false)}
+                className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                aria-label="إغلاق المعاينة"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Center Main Image & Navigation */}
+            <div
+              className="relative flex-1 flex items-center justify-center my-4 overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={property.images[activeImgIdx] || property.images[0]}
+                alt={property.title}
+                className="max-h-[78vh] max-w-[92vw] object-contain rounded-2xl shadow-2xl select-none"
+              />
+
+              {/* Lightbox Nav Buttons */}
+              {property.images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrevImg();
+                    }}
+                    className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all hover:bg-[#C5A059] hover:text-black hover:scale-105 active:scale-95 z-30 cursor-pointer shadow-xl"
+                    title="الصورة السابقة"
+                    aria-label="الصورة السابقة"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNextImg();
+                    }}
+                    className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all hover:bg-[#C5A059] hover:text-black hover:scale-105 active:scale-95 z-30 cursor-pointer shadow-xl"
+                    title="الصورة التالية"
+                    aria-label="الصورة التالية"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Bottom Thumbnails Strip */}
+            {property.images.length > 1 && (
+              <div
+                className="flex items-center justify-center gap-2 overflow-x-auto py-2 z-10 max-w-4xl mx-auto w-full scrollbar-thin"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {property.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImgIdx(idx)}
+                    className={`relative w-16 h-12 sm:w-20 sm:h-14 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                      idx === activeImgIdx
+                        ? "border-[#C5A059] scale-105 ring-2 ring-[#C5A059]/40"
+                        : "border-white/20 opacity-50 hover:opacity-100"
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Content Details Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

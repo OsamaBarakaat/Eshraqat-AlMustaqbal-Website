@@ -233,9 +233,8 @@ export const ApiService = {
    */
   async getPropertyById(idOrSlug: string): Promise<Property | null> {
     try {
-      const isServer = typeof window === "undefined";
       const res = await fetch(`${API_BASE_URL}/properties/public/${idOrSlug}`, {
-        ...(isServer ? { next: { revalidate: 30 } } : { cache: "no-store" }),
+        cache: "no-store",
       });
       if (res.ok) {
         const json = await res.json();

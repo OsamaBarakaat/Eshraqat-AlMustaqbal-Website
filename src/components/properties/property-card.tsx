@@ -64,11 +64,17 @@ export function PropertyCard({ property }: PropertyCardProps) {
       <div className="group relative rounded-3xl bg-[#141418] border border-white/10 hover:border-[#C5A059]/50 transition-all duration-300 shadow-xl overflow-hidden flex flex-col justify-between text-right">
         {/* Top: Image Carousel */}
         <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-black/40">
-          <img
-            src={property.images[activeImageIdx] || property.images[0]}
-            alt={property.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-          />
+          <Link
+            href={`/properties/${property.id}`}
+            className="block w-full h-full cursor-pointer"
+            title={property.title}
+          >
+            <img
+              src={property.images[activeImageIdx] || property.images[0]}
+              alt={property.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+          </Link>
 
           {/* Image Navigation Arrows */}
           {property.images.length > 1 && (
