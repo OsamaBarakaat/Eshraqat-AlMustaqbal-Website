@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search, MapPin, Home, Banknote, Filter, Sparkles } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import { ApiService, FALLBACK_LOCATIONS, ProvinceItem, CityItem } from "@/lib/api-service";
 
 export function SearchEngine() {
   const router = useRouter();
@@ -11,15 +12,27 @@ export function SearchEngine() {
 
   const [activeTab, setActiveTab] = useState<"SALE" | "RENT" | "INVESTMENT">("SALE");
   const [selectedType, setSelectedType] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedPrice, setSelectedPrice] = useState("");
+  const [locations, setLocations] = useState<ProvinceItem[]>(FALLBACK_LOCATIONS);
+
+  useEffect(() => {
+    ApiService.getLocationsHierarchy().then((data) => {
+      if (data && data.length > 0) {
+        setLocations(data);
+      }
+    });
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const query = new URLSearchParams();
     query.set("purpose", activeTab);
     if (selectedType) query.set("type", selectedType);
-    if (selectedDistrict) query.set("district", selectedDistrict);
+    if (selectedLocation) {
+      // Check if location is city or district
+      query.set("location", selectedLocation);
+    }
     if (selectedPrice) query.set("priceRange", selectedPrice);
 
     router.push(`/properties?${query.toString()}`);
@@ -91,23 +104,27 @@ export function SearchEngine() {
             </div>
           </div>
 
-          {/* 2. District / City */}
+          {/* 2. Dynamic Location (Provinces & Cities) */}
           <div>
             <label className="block text-xs font-semibold text-zinc-300 mb-1.5 text-right">
               {t("search.location_label")}
             </label>
             <div className="relative">
               <select
-                value={selectedDistrict}
-                onChange={(e) => setSelectedDistrict(e.target.value)}
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
                 className="w-full appearance-none px-4 py-3 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs sm:text-sm focus:outline-none focus:border-[#C5A059] text-right cursor-pointer"
               >
                 <option value="">{t("search.location_placeholder")}</option>
-                <option value="حي النرجس">الرياض - حي النرجس</option>
-                <option value="حي حطين">الرياض - حي حطين</option>
-                <option value="حي الملقا">الرياض - حي الملقا</option>
-                <option value="حي الياسمين">الرياض - حي الياسمين</option>
-                <option value="حي العقيق">الرياض - حي العقيق</option>
+                {locations.map((prov) => (
+                  <optgroup key={prov.id} label={lang === "ar" ? prov.nameArabic : prov.nameEnglish}>
+                    {prov.cities?.map((city) => (
+                      <option key={city.id} value={city.nameArabic}>
+                        {lang === "ar" ? city.nameArabic : city.nameEnglish}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
               </select>
               <MapPin className="absolute top-3.5 left-3.5 w-4 h-4 text-zinc-500 pointer-events-none" />
             </div>

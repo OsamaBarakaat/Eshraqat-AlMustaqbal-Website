@@ -50,6 +50,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   return FALLBACK_PROPERTIES.map((p) => ({
     id: p.id,

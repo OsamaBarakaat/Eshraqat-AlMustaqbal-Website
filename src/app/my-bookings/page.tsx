@@ -76,7 +76,7 @@ export default function MyBookingsPage() {
       {/* Floating Golden Bubbles in Background */}
       <FloatingGoldenBubbles />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Page Header */}
         <div className="border-b border-white/10 pb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
           <div className="space-y-3">

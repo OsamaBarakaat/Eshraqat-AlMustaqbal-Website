@@ -55,7 +55,7 @@ export function Navbar() {
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? "bg-[#09090B]/90 backdrop-blur-xl border-b border-[#C5A059]/20 shadow-xl shadow-black/60 py-3.5"
+            ? "bg-[#09090B]/95 backdrop-blur-xl shadow-2xl shadow-black/90 py-3.5"
             : "bg-gradient-to-b from-black/80 via-black/40 to-transparent py-5"
         }`}
       >
@@ -87,16 +87,13 @@ export function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  className={`relative px-3.5 py-1.5 rounded-full text-xs transition-all ${
                     isActive
                       ? "text-[#C5A059] font-bold"
-                      : "text-zinc-300 hover:text-white hover:bg-white/5"
+                      : "text-zinc-300 hover:text-white hover:bg-white/5 font-medium"
                   }`}
                 >
                   {item.label}
-                  {isActive && (
-                    <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#C5A059] shadow-sm shadow-[#C5A059]" />
-                  )}
                 </Link>
               );
             })}

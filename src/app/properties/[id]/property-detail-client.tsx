@@ -29,6 +29,7 @@ import { useCompare } from "@/lib/compare-context";
 import { BookingModal } from "@/components/booking/booking-modal";
 import { ShareModal } from "@/components/share/share-modal";
 import { PropertyCard } from "@/components/properties/property-card";
+import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
 
 interface PropertyDetailClientProps {
   property: Property;
@@ -62,8 +63,11 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
       : principal / totalMonths;
 
   return (
-    <div className="min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <div className="relative min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right overflow-hidden">
+      {/* Floating Golden Bubbles */}
+      <FloatingGoldenBubbles />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Breadcrumb & Top Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
           <div className="flex items-center gap-2 text-xs text-zinc-400">

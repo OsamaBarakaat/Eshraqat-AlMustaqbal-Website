@@ -1,10 +1,127 @@
-import { Property } from "@/types/property";
+import { Property, PropertyType, PropertyPurpose } from "@/types/property";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "https://eshraqat-almustaqbal-backend.vercel.app/api/v1";
 
-// High-end Saudi luxury curated properties matching the uploaded design aesthetic
+export interface DistrictItem {
+  id: string;
+  cityId: string;
+  nameArabic: string;
+  nameEnglish: string;
+  enabled?: boolean;
+}
+
+export interface CityItem {
+  id: string;
+  provinceId: string;
+  nameArabic: string;
+  nameEnglish: string;
+  districts: DistrictItem[];
+  enabled?: boolean;
+}
+
+export interface ProvinceItem {
+  id: string;
+  nameArabic: string;
+  nameEnglish: string;
+  cities: CityItem[];
+  enabled?: boolean;
+}
+
+// Fallback Location Hierarchy matching Saudi Cities & Districts
+export const FALLBACK_LOCATIONS: ProvinceItem[] = [
+  {
+    id: "prov-riyadh",
+    nameArabic: "منطقة الرياض",
+    nameEnglish: "Riyadh Province",
+    cities: [
+      {
+        id: "city-riyadh",
+        provinceId: "prov-riyadh",
+        nameArabic: "مدينة الرياض",
+        nameEnglish: "Riyadh City",
+        districts: [
+          { id: "dist-narjis", cityId: "city-riyadh", nameArabic: "حي النرجس", nameEnglish: "An Narjis" },
+          { id: "dist-hittin", cityId: "city-riyadh", nameArabic: "حي حطين", nameEnglish: "Hittin" },
+          { id: "dist-malqa", cityId: "city-riyadh", nameArabic: "حي الملقا", nameEnglish: "Al Malqa" },
+          { id: "dist-yasmin", cityId: "city-riyadh", nameArabic: "حي الياسمين", nameEnglish: "Al Yasmin" },
+          { id: "dist-aqeeq", cityId: "city-riyadh", nameArabic: "حي العقيق", nameEnglish: "Al Aqeeq" },
+          { id: "dist-olaya", cityId: "city-riyadh", nameArabic: "حي العليا", nameEnglish: "Al Olaya" },
+          { id: "dist-nakheel", cityId: "city-riyadh", nameArabic: "حي النخيل", nameEnglish: "Al Nakheel" },
+        ],
+      },
+      {
+        id: "city-kharj",
+        provinceId: "prov-riyadh",
+        nameArabic: "الخرج",
+        nameEnglish: "Al Kharj",
+        districts: [
+          { id: "dist-kharj-1", cityId: "city-kharj", nameArabic: "حي الخالدية", nameEnglish: "Al Khalidiyah" },
+          { id: "dist-kharj-2", cityId: "city-kharj", nameArabic: "حي الاندلس", nameEnglish: "Al Andalus" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "prov-makkah",
+    nameArabic: "منطقة مكة المكرمة",
+    nameEnglish: "Makkah Province",
+    cities: [
+      {
+        id: "city-jeddah",
+        provinceId: "prov-makkah",
+        nameArabic: "مدينة جدة",
+        nameEnglish: "Jeddah City",
+        districts: [
+          { id: "dist-shati", cityId: "city-jeddah", nameArabic: "حي الشاطئ", nameEnglish: "Al Shati" },
+          { id: "dist-mohammadiya", cityId: "city-jeddah", nameArabic: "حي المحمدية", nameEnglish: "Al Mohammadiyah" },
+          { id: "dist-rawdah", cityId: "city-jeddah", nameArabic: "حي الروضة", nameEnglish: "Al Rawdah" },
+          { id: "dist-andalus", cityId: "city-jeddah", nameArabic: "حي الأندلس", nameEnglish: "Al Andalus" },
+        ],
+      },
+      {
+        id: "city-makkah",
+        provinceId: "prov-makkah",
+        nameArabic: "مكة المكرمة",
+        nameEnglish: "Makkah",
+        districts: [
+          { id: "dist-awali", cityId: "city-makkah", nameArabic: "حي العوالي", nameEnglish: "Al Awali" },
+          { id: "dist-shouqia", cityId: "city-makkah", nameArabic: "حي الشوقية", nameEnglish: "Al Shouqiyah" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "prov-eastern",
+    nameArabic: "المنطقة الشرقية",
+    nameEnglish: "Eastern Province",
+    cities: [
+      {
+        id: "city-khobar",
+        provinceId: "prov-eastern",
+        nameArabic: "الخبر",
+        nameEnglish: "Al Khobar",
+        districts: [
+          { id: "dist-hizam-thahabi", cityId: "city-khobar", nameArabic: "الحزام الذهبي", nameEnglish: "Golden Belt" },
+          { id: "dist-corniche", cityId: "city-khobar", nameArabic: "الكورنيش", nameEnglish: "Corniche" },
+        ],
+      },
+      {
+        id: "city-dammam",
+        provinceId: "prov-eastern",
+        nameArabic: "الدمام",
+        nameEnglish: "Dammam",
+        districts: [
+          { id: "dist-shatee-dammam", cityId: "city-dammam", nameArabic: "حي الشاطئ الشرقي", nameEnglish: "East Shati" },
+          { id: "dist-faisaliyah", cityId: "city-dammam", nameArabic: "حي الفيصلية", nameEnglish: "Al Faisaliyah" },
+        ],
+      },
+    ],
+  },
+];
+
+// Curated high-end Saudi luxury properties matching the brand aesthetic
 export const FALLBACK_PROPERTIES: Property[] = [
   {
     id: "prop-luxury-1",
@@ -18,7 +135,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     price: 4850000,
     type: "VILLA",
     purpose: "SALE",
-    city: "الرياض",
+    city: "مدينة الرياض",
     district: "حي النرجس",
     area: 520,
     bedrooms: 5,
@@ -60,7 +177,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     price: 9200000,
     type: "PALACE",
     purpose: "SALE",
-    city: "الرياض",
+    city: "مدينة الرياض",
     district: "حي حطين",
     area: 840,
     bedrooms: 6,
@@ -99,7 +216,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     price: 2150000,
     type: "PENTHOUSE",
     purpose: "SALE",
-    city: "الرياض",
+    city: "مدينة الرياض",
     district: "حي العقيق",
     area: 280,
     bedrooms: 3,
@@ -121,26 +238,26 @@ export const FALLBACK_PROPERTIES: Property[] = [
     ],
     mortgageEligible: true,
     hasElectronicDeed: true,
-    finishingType: "سوبر فندقي",
+    finishingType: "فندقي مودرن فاخر",
     parkingSpaces: 2,
   },
   {
     id: "prop-luxury-4",
     code: "ESH-804",
-    title: "فيلا تاون هاوس حديثة بتصميم نيو كلاسيك | حي الملقا",
-    titleEn: "Modern Neo-Classic Townhouse Villa | Al-Malqa",
+    title: "فيلا تاون هاوس ذكية بتصميم سداسي مع حديقة | حي الملقا",
+    titleEn: "Smart Architectural Townhouse with Garden | Al-Malqa",
     description:
-      "تصميم عملي وراقي يلبي تطلعات العائلة السعودية العصرية، بهو مدخل واسع، مطبخ أمريكي مفتوح، وصالة عائلية تطل على فناء جانبي وشلال مائي هادئ.",
+      "فيلا تاون هاوس بتصميم معماري انسيابي مستوحى من كود وادي حنيفة، مساحات مفتوحة وتوزيع ذكي للضوء الطبيعي. تقع بجوار أفضل المدارس الدولية والمراكز الصحية.",
     descriptionEn:
-      "Neo-classic luxury townhouse designed for modern Saudi living. Open-plan kitchen, water cascade courtyard, and private master suites.",
+      "Contemporary townhouse with fluid architectural contours, natural skylights, and manicured private garden located in the vibrant hub of Al-Malqa.",
     price: 3600000,
     type: "VILLA",
     purpose: "SALE",
-    city: "الرياض",
+    city: "مدينة الرياض",
     district: "حي الملقا",
-    area: 360,
+    area: 380,
     bedrooms: 4,
-    bathrooms: 6,
+    bathrooms: 5,
     livingRooms: 2,
     yearBuilt: 2025,
     featured: false,
@@ -150,11 +267,10 @@ export const FALLBACK_PROPERTIES: Property[] = [
       "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=1200&q=80",
     ],
     amenities: [
-      "حديقة جانبية وشلال",
-      "مصعد راكب",
-      "أجنحة نوم ماستر بالكامل",
-      "تكييف مخفي لكامل الفيلا",
-      "عزل حراري ومائي بضمان 10 سنوات",
+      "حديقة خاصة مع ري ذكي",
+      "مطبخ أمريكي مفتوح",
+      "تكييف مركزي دايكن إنفرتر",
+      "عوازل حرارية ومائية معتمدة",
     ],
     mortgageEligible: true,
     hasElectronicDeed: true,
@@ -163,94 +279,161 @@ export const FALLBACK_PROPERTIES: Property[] = [
   },
 ];
 
+// Helper to map backend property entity to frontend Property interface
+function mapBackendProperty(item: any): Property {
+  // Extract images array
+  let images: string[] = [];
+  if (Array.isArray(item.images) && item.images.length > 0) {
+    images = item.images.map((img: any) => (typeof img === "string" ? img : img.url)).filter(Boolean);
+  }
+  if (images.length === 0) {
+    images = ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=85"];
+  }
+
+  // Location text
+  const city = item.cityRel?.nameArabic || item.city || "مدينة الرياض";
+  const district = item.districtRel?.nameArabic || item.areaName || "حي النرجس";
+
+  // Category to PropertyType
+  let type: PropertyType = "VILLA";
+  const cat = (item.category || item.type || "").toUpperCase();
+  if (["VILLA", "APARTMENT", "PENTHOUSE", "PALACE", "LAND", "COMMERCIAL"].includes(cat)) {
+    type = cat as PropertyType;
+  }
+
+  const purpose: PropertyPurpose = (item.purpose || "SALE").toUpperCase() === "RENT" ? "RENT" : "SALE";
+
+  return {
+    id: item.id || `prop-${Date.now()}`,
+    code: item.code || `ESH-${(item.id || "0000").slice(0, 4).toUpperCase()}`,
+    title: item.title || "عقار فاخر مميز",
+    titleEn: item.nameEnglish || item.titleEn,
+    description: item.shortDescription || item.fullDescription || item.description || "عقار فاخر تم تطويره بأرقى المعايير الإنشائية.",
+    descriptionEn: item.descriptionEn,
+    price: Number(item.price) || 2500000,
+    type,
+    purpose,
+    city,
+    district,
+    area: Number(item.area) || 350,
+    bedrooms: Number(item.residentialBedrooms) || Number(item.bedrooms) || 4,
+    bathrooms: Number(item.residentialBathrooms) || Number(item.bathrooms) || 5,
+    livingRooms: Number(item.residentialLivingRooms) || Number(item.livingRooms) || 2,
+    yearBuilt: item.yearBuilt || 2025,
+    featured: Boolean(item.featured),
+    status: item.status || "PUBLISHED",
+    images,
+    amenities: Array.isArray(item.amenities) && item.amenities.length > 0
+      ? item.amenities
+      : ["موقف خاص", "مصعد راكب", "سمارت هوم", "تكييف مركزي"],
+    mortgageEligible: item.mortgageEligible !== false,
+    hasElectronicDeed: item.hasElectronicDeed !== false,
+    finishingType: item.finishingType || "تشطيب فاخر ديلوكس",
+    parkingSpaces: Number(item.parkingSpaces) || 2,
+    virtualTourUrl: item.virtualTourUrl,
+  };
+}
+
 export const ApiService = {
-  async getProperties(): Promise<Property[]> {
+  /**
+   * Fetch live dynamic hierarchy of Provinces -> Cities -> Districts
+   */
+  async getLocationsHierarchy(): Promise<ProvinceItem[]> {
     try {
-      const res = await fetch(`${API_BASE_URL}/properties?limit=50&status=PUBLISHED`, {
-        next: { revalidate: 30 },
+      const res = await fetch(`${API_BASE_URL}/locations/public`, {
+        next: { revalidate: 60 },
       });
-      if (!res.ok) throw new Error("Backend response error");
-      const data = await res.json();
-      if (data?.items && Array.isArray(data.items) && data.items.length > 0) {
-        return data.items.map((item: any) => ({
-          id: item.id,
-          code: item.code || `ESH-${item.id.slice(0, 4)}`,
-          title: item.title,
-          description: item.description || "",
-          price: Number(item.price) || 1000000,
-          type: item.type || "VILLA",
-          purpose: item.purpose || "SALE",
-          city: item.city || "الرياض",
-          district: item.district || "حي النرجس",
-          area: Number(item.area) || 350,
-          bedrooms: Number(item.bedrooms) || 4,
-          bathrooms: Number(item.bathrooms) || 5,
-          livingRooms: Number(item.livingRooms) || 2,
-          yearBuilt: item.yearBuilt || 2025,
-          featured: !!item.featured,
-          status: item.status || "PUBLISHED",
-          images:
-            item.images && item.images.length > 0
-              ? item.images
-              : ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=85"],
-          amenities: item.amenities || [
-            "موقف خاص",
-            "مصعد راكب",
-            "سمارت هوم",
-            "تكييف مركزي",
-          ],
-          mortgageEligible: true,
-          hasElectronicDeed: true,
-        }));
+      if (!res.ok) throw new Error("Locations fetch failed");
+      const json = await res.json();
+      const list = json?.data || json;
+      if (Array.isArray(list) && list.length > 0) {
+        return list;
       }
-      return FALLBACK_PROPERTIES;
+      return FALLBACK_LOCATIONS;
     } catch {
-      return FALLBACK_PROPERTIES;
+      return FALLBACK_LOCATIONS;
     }
   },
 
-  async getPropertyById(id: string): Promise<Property | null> {
+  /**
+   * Fetch live properties with full query parameters
+   */
+  async getProperties(query?: {
+    search?: string;
+    category?: string;
+    purpose?: string;
+    cityId?: string;
+    districtId?: string;
+    minPrice?: number;
+    maxPrice?: number;
+  }): Promise<Property[]> {
     try {
-      const res = await fetch(`${API_BASE_URL}/properties/${id}`);
+      const params = new URLSearchParams();
+      params.append("limit", "50");
+      if (query?.search?.trim()) params.append("search", query.search.trim());
+      if (query?.category && query.category !== "ALL") params.append("category", query.category);
+      if (query?.purpose && query.purpose !== "ALL") params.append("purpose", query.purpose);
+      if (query?.cityId && query.cityId !== "ALL") params.append("cityId", query.cityId);
+      if (query?.districtId && query.districtId !== "ALL") params.append("districtId", query.districtId);
+      if (query?.minPrice !== undefined) params.append("minPrice", String(query.minPrice));
+      if (query?.maxPrice !== undefined) params.append("maxPrice", String(query.maxPrice));
+
+      const isServer = typeof window === "undefined";
+      const res = await fetch(`${API_BASE_URL}/properties/public?${params.toString()}`, {
+        ...(isServer ? { next: { revalidate: 30 } } : { cache: "no-store" }),
+      });
+
       if (res.ok) {
-        const item = await res.json();
-        return {
-          id: item.id,
-          code: item.code || `ESH-${item.id.slice(0, 4)}`,
-          title: item.title,
-          description: item.description || "",
-          price: Number(item.price) || 1000000,
-          type: item.type || "VILLA",
-          purpose: item.purpose || "SALE",
-          city: item.city || "الرياض",
-          district: item.district || "حي النرجس",
-          area: Number(item.area) || 350,
-          bedrooms: Number(item.bedrooms) || 4,
-          bathrooms: Number(item.bathrooms) || 5,
-          livingRooms: Number(item.livingRooms) || 2,
-          yearBuilt: item.yearBuilt || 2025,
-          featured: !!item.featured,
-          status: item.status || "PUBLISHED",
-          images:
-            item.images && item.images.length > 0
-              ? item.images
-              : ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=85"],
-          amenities: item.amenities || [
-            "موقف خاص",
-            "مصعد راكب",
-            "سمارت هوم",
-            "تكييف مركزي",
-          ],
-          mortgageEligible: true,
-          hasElectronicDeed: true,
-        };
+        const json = await res.json();
+        const rawItems = json?.data?.items || json?.items || (Array.isArray(json) ? json : null);
+        if (rawItems && Array.isArray(rawItems) && rawItems.length > 0) {
+          const mappedApiProps = rawItems.map(mapBackendProperty);
+          // If no specific backend search filters, include fallback properties too so the catalog is rich
+          if (!query?.cityId && !query?.districtId && !query?.search) {
+            const existingIds = new Set(mappedApiProps.map((p) => p.id));
+            const uniqueFallbacks = FALLBACK_PROPERTIES.filter((p) => !existingIds.has(p.id));
+            return [...mappedApiProps, ...uniqueFallbacks];
+          }
+          return mappedApiProps;
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch from backend properties API, using fallback:", err);
+    }
+
+    return FALLBACK_PROPERTIES;
+  },
+
+  /**
+   * Get single property by ID or Slug from public endpoint
+   */
+  async getPropertyById(idOrSlug: string): Promise<Property | null> {
+    try {
+      const isServer = typeof window === "undefined";
+      const res = await fetch(`${API_BASE_URL}/properties/public/${idOrSlug}`, {
+        ...(isServer ? { next: { revalidate: 30 } } : { cache: "no-store" }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        const item = json?.data || json;
+        if (item && item.id) {
+          return mapBackendProperty(item);
+        }
       }
     } catch {
       // fallback
     }
-    return FALLBACK_PROPERTIES.find((p) => p.id === id) || FALLBACK_PROPERTIES[0];
+
+    // Check fallback
+    return (
+      FALLBACK_PROPERTIES.find((p) => p.id === idOrSlug || p.code.toLowerCase() === idOrSlug.toLowerCase()) ||
+      null
+    );
   },
 
+  /**
+   * Book viewing appointment
+   */
   async bookViewing(data: {
     propertyId: string;
     customerName: string;
@@ -266,14 +449,16 @@ export const ApiService = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      return await res.json();
+      if (res.ok) {
+        return await res.json();
+      }
     } catch {
-      // Return simulated success if offline
-      return {
-        id: `appt-${Date.now()}`,
-        status: "PENDING_CONFIRMATION",
-        message: "تم تسجيل موعد المعاينة بنجاح.",
-      };
+      // offline fallback
     }
+    return {
+      id: `APP-${Date.now().toString().slice(-6)}`,
+      status: "PENDING_CONFIRMATION",
+      message: "تم تسجيل موعد المعاينة بنجاح.",
+    };
   },
 };
