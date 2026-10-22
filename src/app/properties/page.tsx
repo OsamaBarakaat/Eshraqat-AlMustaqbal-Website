@@ -225,21 +225,18 @@ function PropertiesCatalogContent() {
 
           {/* Bottom row: Dynamic 5 Filters Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-4 border-t border-white/5">
-            {/* 1. Type */}
+            {/* 1. Category (Aligned with Dashboard: سكني, تجاري وإداري, أراضي وزراعي) */}
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">نوع العقار</label>
+              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">تصنيف العقار</label>
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">جميع الأنواع</option>
-                <option value="VILLA">فلل فاخرة</option>
-                <option value="PALACE">قصور ملكية</option>
-                <option value="PENTHOUSE">بنتهاوس ورووف</option>
-                <option value="APARTMENT">شقق سكنية</option>
-                <option value="COMMERCIAL">مباني تجارية ومكاتب</option>
-                <option value="LAND">أراضي ومخططات</option>
+                <option value="ALL">كل التصنيفات</option>
+                <option value="RESIDENTIAL">سكني</option>
+                <option value="COMMERCIAL">تجاري وإداري</option>
+                <option value="AGRICULTURAL">أراضي وزراعي</option>
               </select>
             </div>
 

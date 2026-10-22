@@ -13,6 +13,8 @@ import {
   ArrowRight,
   RotateCcw,
   Sparkles,
+  Layers,
+  ArrowUpRight,
 } from "lucide-react";
 import { Property } from "@/types/property";
 import { PropertyCard } from "@/components/properties/property-card";
@@ -27,9 +29,9 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
   const router = useRouter();
   const { t, lang, dir } = useLanguage();
 
-  // Active Search & Filter state
+  // Active Search & Filter state - strictly aligned with Dashboard database enums
   const [activeTab, setActiveTab] = useState<"ALL" | "SALE" | "RENT" | "INVESTMENT">("ALL");
-  const [selectedType, setSelectedType] = useState<string>("ALL");
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [selectedLocation, setSelectedLocation] = useState<string>("ALL");
   const [selectedPriceRange, setSelectedPriceRange] = useState<string>("ALL");
   const [locations, setLocations] = useState<ProvinceItem[]>(FALLBACK_LOCATIONS);
@@ -45,22 +47,19 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
   // Filter properties based strictly on the upper search engine controls
   const filteredProperties = useMemo(() => {
     return initialProperties.filter((property) => {
-      // 1. Purpose filter
+      // 1. Purpose filter (SALE / RENT)
       if (activeTab === "SALE" && property.purpose !== "SALE") return false;
       if (activeTab === "RENT" && property.purpose !== "RENT") return false;
       if (activeTab === "INVESTMENT" && property.purpose !== "INVESTMENT" && property.purpose !== "SALE") {
         return false;
       }
 
-      // 2. Type filter
-      if (selectedType !== "ALL") {
-        if (selectedType === "VILLA" && property.type !== "VILLA" && property.type !== "PALACE") {
-          return false;
-        } else if (selectedType === "APARTMENT" && property.type !== "APARTMENT" && property.type !== "PENTHOUSE") {
-          return false;
-        } else if (selectedType !== "VILLA" && selectedType !== "APARTMENT" && property.type !== selectedType) {
-          return false;
-        }
+      // 2. Category filter matching exact database enums: RESIDENTIAL, COMMERCIAL, AGRICULTURAL
+      if (selectedCategory !== "ALL") {
+        const propCat = (property.category || "").toUpperCase();
+        if (selectedCategory === "RESIDENTIAL" && propCat !== "RESIDENTIAL") return false;
+        if (selectedCategory === "COMMERCIAL" && propCat !== "COMMERCIAL") return false;
+        if (selectedCategory === "AGRICULTURAL" && propCat !== "AGRICULTURAL") return false;
       }
 
       // 3. Location filter (City / District)
@@ -81,20 +80,29 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
 
       return true;
     });
-  }, [initialProperties, activeTab, selectedType, selectedLocation, selectedPriceRange]);
+  }, [initialProperties, activeTab, selectedCategory, selectedLocation, selectedPriceRange]);
+
+  // Strictly only show TOP 3 products on the homepage as requested, the rest are in /properties
+  const displayedProperties = useMemo(() => {
+    return filteredProperties.slice(0, 3);
+  }, [filteredProperties]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Smooth scroll down to the properties results grid
-    const target = document.getElementById("properties-showcase");
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
-    }
+    // Navigate to properties page with active filters applied
+    const params = new URLSearchParams();
+    if (activeTab !== "ALL") params.append("purpose", activeTab);
+    if (selectedCategory !== "ALL") params.append("category", selectedCategory);
+    if (selectedLocation !== "ALL") params.append("location", selectedLocation);
+    if (selectedPriceRange !== "ALL") params.append("priceRange", selectedPriceRange);
+
+    const targetUrl = `/properties?${params.toString()}`;
+    router.push(targetUrl);
   };
 
   const resetFilters = () => {
     setActiveTab("ALL");
-    setSelectedType("ALL");
+    setSelectedCategory("ALL");
     setSelectedLocation("ALL");
     setSelectedPriceRange("ALL");
   };
@@ -130,33 +138,32 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
             })}
           </div>
 
-          {/* Filter Controls Form */}
+          {/* Filter Controls Form (Strictly aligned with Dashboard Dropdowns) */}
           <form
             onSubmit={handleSearchSubmit}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-end"
           >
-            {/* 1. Property Type */}
+            {/* 1. Category Filter (Exact match to Dashboard: سكني, تجاري وإداري, أراضي وزراعي) */}
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1.5 text-right">
-                {t("search.type_label")}
+                {lang === "ar" ? "تصنيف العقار" : "Category"}
               </label>
               <div className="relative">
                 <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full appearance-none px-4 py-3 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs sm:text-sm focus:outline-none focus:border-[#C5A059] text-right cursor-pointer"
                 >
-                  <option value="ALL">{t("search.type_placeholder")}</option>
-                  <option value="VILLA">فلل وقصور سكنية</option>
-                  <option value="APARTMENT">شقق وبنتهاوس</option>
-                  <option value="COMMERCIAL">مباني ومقرات تجارية</option>
-                  <option value="LAND">أراضي ومخططات</option>
+                  <option value="ALL">{lang === "ar" ? "كل التصنيفات" : "All Categories"}</option>
+                  <option value="RESIDENTIAL">{lang === "ar" ? "سكني" : "Residential"}</option>
+                  <option value="COMMERCIAL">{lang === "ar" ? "تجاري وإداري" : "Commercial & Admin"}</option>
+                  <option value="AGRICULTURAL">{lang === "ar" ? "أراضي وزراعي" : "Land & Agriculture"}</option>
                 </select>
-                <Home className="absolute top-3.5 left-3.5 w-4 h-4 text-zinc-500 pointer-events-none" />
+                <Layers className="absolute top-3.5 left-3.5 w-4 h-4 text-zinc-500 pointer-events-none" />
               </div>
             </div>
 
-            {/* 2. Dynamic Location (Provinces & Cities) */}
+            {/* 2. Dynamic Location (Provinces & Cities from Database) */}
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1.5 text-right">
                 {t("search.location_label")}
@@ -203,7 +210,7 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
               </div>
             </div>
 
-            {/* 4. Search Button */}
+            {/* 4. Search Submit Button */}
             <div>
               <button
                 type="submit"
@@ -225,7 +232,7 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 text-xs font-semibold mb-3">
                 <Flame className="w-3.5 h-3.5 fill-current" />
-                <span>مختارات فاخرة حصرية</span>
+                <span>مختارات فاخرة حصرية (أعلى 3 عقارات)</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                 أحدث العقارات المتاحة للبيع والاستثمار
@@ -235,13 +242,14 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
               </p>
             </div>
 
-            {/* Matching Properties Count & Reset Badge */}
+            {/* Active matching count & Reset */}
             <div className="flex items-center gap-3">
               <span className="text-xs text-zinc-400">
-                المطابق: <strong className="text-[#C5A059] font-mono text-sm">{filteredProperties.length}</strong> عقار
+                المعروض: <strong className="text-[#C5A059] font-mono text-sm">{displayedProperties.length}</strong> من أصل{" "}
+                <strong className="text-white font-mono">{filteredProperties.length}</strong> عقار
               </span>
 
-              {(activeTab !== "ALL" || selectedType !== "ALL" || selectedLocation !== "ALL" || selectedPriceRange !== "ALL") && (
+              {(activeTab !== "ALL" || selectedCategory !== "ALL" || selectedLocation !== "ALL" || selectedPriceRange !== "ALL") && (
                 <button
                   type="button"
                   onClick={resetFilters}
@@ -254,8 +262,8 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
             </div>
           </div>
 
-          {/* Properties Grid */}
-          {filteredProperties.length === 0 ? (
+          {/* Properties Grid - ONLY TOP 3 ON HOMEPAGE */}
+          {displayedProperties.length === 0 ? (
             <div className="py-16 text-center rounded-3xl bg-[#141418]/80 border border-white/5 space-y-4 max-w-lg mx-auto">
               <div className="w-14 h-14 mx-auto rounded-full bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center">
                 <Home className="w-7 h-7" />
@@ -263,7 +271,7 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
               <div className="space-y-1">
                 <h3 className="text-base font-bold text-white">لا توجد عقارات مطابقة لخيارات الفلترة المحددة</h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  جرب تغيير خيار الغرض (شراء/إيجار) أو الموقع لعرض العقارات المتاحة.
+                  جرب اختيار تصنيف آخر (سكني أو تجاري) أو تغيير الموقع.
                 </p>
               </div>
               <button
@@ -276,19 +284,22 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {filteredProperties.map((property) => (
+              {displayedProperties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
             </div>
           )}
 
-          {/* Bottom CTA to View Full Catalog */}
+          {/* Bottom CTA to View Full Catalog on /properties */}
           <div className="text-center pt-6">
             <Link
               href="/properties"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm bg-[#1C1C22] hover:bg-[#C5A059] text-white hover:text-black border border-[#C5A059]/40 hover:border-[#C5A059] transition-all shadow-lg cursor-pointer group"
+              className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm bg-gradient-to-r from-[#1C1C22] to-[#25252E] hover:from-[#C5A059] hover:to-[#D4AF37] text-white hover:text-black border border-[#C5A059]/40 hover:border-[#C5A059] transition-all shadow-xl hover:shadow-[#C5A059]/20 cursor-pointer group"
             >
-              <span>استعراض كافة العقارات والمشاريع في الكتالوج الكامل</span>
+              <span>استعراض كافة العقارات والمشاريع في صفحة العقارات</span>
+              <span className="px-2 py-0.5 rounded-full bg-white/10 text-[11px] font-mono group-hover:bg-black/20">
+                {initialProperties.length} عقارات
+              </span>
               {dir === "rtl" ? (
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               ) : (

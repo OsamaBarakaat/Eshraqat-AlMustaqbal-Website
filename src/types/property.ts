@@ -1,3 +1,5 @@
+export type PropertyCategory = "RESIDENTIAL" | "COMMERCIAL" | "AGRICULTURAL";
+
 export type PropertyType =
   | "VILLA"
   | "APARTMENT"
@@ -18,6 +20,7 @@ export interface Property {
   description: string;
   descriptionEn?: string;
   price: number;
+  category?: PropertyCategory | string;
   type: PropertyType;
   purpose: PropertyPurpose;
   city: string;

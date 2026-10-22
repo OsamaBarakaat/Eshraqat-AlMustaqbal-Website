@@ -109,11 +109,26 @@ function mapBackendProperty(item: any): Property {
   const city = item.cityRel?.nameArabic || item.city || "مدينة الرياض";
   const district = item.districtRel?.nameArabic || item.areaName || "حي النرجس";
 
+  // Category from DB (RESIDENTIAL, COMMERCIAL, AGRICULTURAL)
+  const rawCategory = (item.category || "").toUpperCase();
+  let category: string = "RESIDENTIAL";
+  if (["RESIDENTIAL", "COMMERCIAL", "AGRICULTURAL"].includes(rawCategory)) {
+    category = rawCategory;
+  } else if (rawCategory.includes("COMMERCIAL") || rawCategory.includes("تجاري")) {
+    category = "COMMERCIAL";
+  } else if (rawCategory.includes("LAND") || rawCategory.includes("AGRICULTURAL") || rawCategory.includes("أراضي") || rawCategory.includes("زراعي")) {
+    category = "AGRICULTURAL";
+  }
+
   // Category to PropertyType
   let type: PropertyType = "VILLA";
-  const cat = (item.category || item.type || "").toUpperCase();
-  if (["VILLA", "APARTMENT", "PENTHOUSE", "PALACE", "LAND", "COMMERCIAL"].includes(cat)) {
-    type = cat as PropertyType;
+  if (category === "COMMERCIAL") type = "COMMERCIAL";
+  else if (category === "AGRICULTURAL") type = "LAND";
+  else {
+    const cat = (item.type || "").toUpperCase();
+    if (["VILLA", "APARTMENT", "PENTHOUSE", "PALACE"].includes(cat)) {
+      type = cat as PropertyType;
+    }
   }
 
   const purpose: PropertyPurpose = (item.purpose || "SALE").toUpperCase() === "RENT" ? "RENT" : "SALE";
@@ -126,6 +141,7 @@ function mapBackendProperty(item: any): Property {
     description: item.shortDescription || item.fullDescription || item.description || "عقار فاخر تم تطويره بأرقى المعايير الإنشائية.",
     descriptionEn: item.descriptionEn,
     price: Number(item.price) || 2500000,
+    category,
     type,
     purpose,
     city,
