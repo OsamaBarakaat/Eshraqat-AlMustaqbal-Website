@@ -11,6 +11,8 @@ import {
   Sparkles,
   RotateCcw,
   Loader2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   ApiService,
@@ -25,8 +27,10 @@ import { PropertyCard } from "@/components/properties/property-card";
 import { useLanguage } from "@/lib/i18n";
 import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
 
+const PAGE_SIZE = 12;
+
 export default function PropertiesCatalogPage() {
-  const { t, lang } = useLanguage();
+  const { t, lang, dir } = useLanguage();
 
   const [properties, setProperties] = useState<Property[]>(FALLBACK_PROPERTIES);
   const [locations, setLocations] = useState<ProvinceItem[]>(FALLBACK_LOCATIONS);
@@ -39,6 +43,9 @@ export default function PropertiesCatalogPage() {
   const [selectedCityId, setSelectedCityId] = useState<string>("ALL");
   const [selectedDistrictId, setSelectedDistrictId] = useState<string>("ALL");
   const [maxPrice, setMaxPrice] = useState<number>(15000000);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // 1. Fetch Dynamic Location Hierarchy from Backend API
   useEffect(() => {
@@ -57,6 +64,7 @@ export default function PropertiesCatalogPage() {
   useEffect(() => {
     let isMounted = true;
     setIsLoading(true);
+    setCurrentPage(1); // Reset to first page on filter change
 
     const debounceTimer = setTimeout(() => {
       ApiService.getProperties({
@@ -98,7 +106,6 @@ export default function PropertiesCatalogPage() {
   // Dynamically compute available districts based on selected city
   const availableDistricts = useMemo(() => {
     if (selectedCityId === "ALL") {
-      // Gather all unique districts from all cities
       const allDists: DistrictItem[] = [];
       for (const city of availableCities) {
         if (Array.isArray(city.districts)) {
@@ -111,7 +118,7 @@ export default function PropertiesCatalogPage() {
     return foundCity?.districts || [];
   }, [selectedCityId, availableCities]);
 
-  // When city changes, reset district if it doesn't belong to the newly selected city
+  // When city changes, reset district
   const handleCityChange = (cityId: string) => {
     setSelectedCityId(cityId);
     setSelectedDistrictId("ALL");
@@ -124,7 +131,26 @@ export default function PropertiesCatalogPage() {
     setSelectedCityId("ALL");
     setSelectedDistrictId("ALL");
     setMaxPrice(15000000);
+    setCurrentPage(1);
   };
+
+  // Pagination calculations (strictly when properties.length > 12)
+  const totalPages = Math.ceil(properties.length / PAGE_SIZE);
+  const paginatedProperties = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return properties.slice(start, start + PAGE_SIZE);
+  }, [properties, currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 320, behavior: "smooth" });
+    }
+  };
+
+  const startItemIndex = (currentPage - 1) * PAGE_SIZE + 1;
+  const endItemIndex = Math.min(currentPage * PAGE_SIZE, properties.length);
 
   return (
     <div className="relative min-h-screen pt-32 pb-28 bg-[#09090B] text-foreground text-right overflow-hidden">
@@ -291,11 +317,80 @@ export default function PropertiesCatalogPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </div>
+          <>
+            {/* Properties Grid (12 items max per page) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {paginatedProperties.map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+
+            {/* Pagination Controls - Strictly Hidden if Properties Count <= 12 */}
+            {totalPages > 1 && (
+              <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                {/* Information Text */}
+                <div className="text-xs text-zinc-400">
+                  {lang === "ar" ? (
+                    <span>
+                      عرض <strong className="text-white font-mono">{startItemIndex} - {endItemIndex}</strong> من أصل{" "}
+                      <strong className="text-[#C5A059] font-mono">{properties.length}</strong> عقار
+                    </span>
+                  ) : (
+                    <span>
+                      Showing <strong className="text-white font-mono">{startItemIndex} - {endItemIndex}</strong> of{" "}
+                      <strong className="text-[#C5A059] font-mono">{properties.length}</strong> properties
+                    </span>
+                  )}
+                </div>
+
+                {/* Page Navigation Buttons */}
+                <div className="flex items-center gap-1.5">
+                  {/* Prev Button */}
+                  <button
+                    type="button"
+                    disabled={currentPage === 1}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-semibold bg-[#141418] border border-white/5 text-zinc-300 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+                    title={lang === "ar" ? "الصفحة السابقة" : "Previous Page"}
+                  >
+                    {dir === "rtl" ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+                    <span className="hidden sm:inline">{lang === "ar" ? "السابق" : "Prev"}</span>
+                  </button>
+
+                  {/* Number Buttons */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                    const isActive = pageNum === currentPage;
+                    return (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          isActive
+                            ? "bg-gradient-to-r from-[#C5A059] to-[#D4AF37] text-black shadow-lg shadow-[#C5A059]/30 scale-105"
+                            : "bg-[#141418] border border-white/5 text-zinc-300 hover:text-white hover:bg-white/10"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  {/* Next Button */}
+                  <button
+                    type="button"
+                    disabled={currentPage === totalPages}
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-semibold bg-[#141418] border border-white/5 text-zinc-300 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+                    title={lang === "ar" ? "الصفحة التالية" : "Next Page"}
+                  >
+                    <span className="hidden sm:inline">{lang === "ar" ? "التالي" : "Next"}</span>
+                    {dir === "rtl" ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
