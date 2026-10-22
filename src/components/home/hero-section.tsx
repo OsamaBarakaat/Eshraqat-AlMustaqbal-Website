@@ -159,9 +159,9 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
 
   return (
     <>
-      <section className="relative min-h-screen flex flex-col justify-between pt-32 pb-12 overflow-hidden bg-[#09090B]">
+      <section className="relative min-h-screen flex flex-col justify-between pt-32 pb-12 bg-[#09090B]">
         {/* Background Image with Brighter Luxurious Visibility */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             src={
               homepageContent?.heroBannerImage ||
@@ -279,8 +279,8 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
 
                   {/* Autosuggest Dropdown Menu (Luxurious Dark Gold Glassmorphic) */}
                   {isDropdownOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2.5 bg-[#141418]/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-black border border-white/15 overflow-hidden z-50 text-right animate-in fade-in slide-in-from-top-2 duration-150">
-                      <div className="px-4 py-2.5 bg-black/40 border-b border-white/10 flex items-center justify-between text-[11px] text-zinc-400 font-semibold">
+                    <div className="absolute top-full left-0 right-0 mt-2.5 bg-[#141418]/98 backdrop-blur-3xl rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] border border-white/20 overflow-hidden z-50 text-right animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="px-4 py-2.5 bg-black/60 border-b border-white/10 flex items-center justify-between text-[11px] text-zinc-400 font-semibold">
                         <span className="flex items-center gap-1.5">
                           <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
                           <span>
@@ -294,13 +294,13 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                         </span>
                       </div>
 
-                      <div className="max-h-72 overflow-y-auto divide-y divide-white/5 scrollbar-thin scrollbar-thumb-white/10">
+                      <div className="max-h-56 overflow-y-auto divide-y divide-white/5 scrollbar-thin scrollbar-thumb-[#C5A059]/30">
                         {suggestedLocations.map((item) => (
                           <button
                             key={item.id}
                             type="button"
                             onClick={() => handleSelectLocation(item.titleArabic)}
-                            className="w-full px-4 py-3 text-right hover:bg-white/5 transition-colors flex items-center justify-between gap-3 group cursor-pointer"
+                            className="w-full px-4 py-3 text-right hover:bg-white/10 transition-colors flex items-center justify-between gap-3 group cursor-pointer"
                           >
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 rounded-xl bg-white/5 group-hover:bg-[#C5A059]/20 group-hover:text-[#C5A059] text-zinc-400 flex items-center justify-center shrink-0 transition-colors border border-white/5 group-hover:border-[#C5A059]/30">
