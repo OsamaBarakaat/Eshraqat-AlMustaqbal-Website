@@ -14,13 +14,17 @@ export async function POST(req: Request) {
     }
 
     const otp = OtpService.createOtp(email);
-    await sendOtpEmail(email, otp);
+    const emailResult = await sendOtpEmail(email, otp);
+
+    const isRealEmailSent = Boolean(emailResult?.success && !(emailResult as any)?.simulated);
 
     return NextResponse.json({
       success: true,
-      message: "تم إرسال رمز التحقق بنجاح إلى بريدك الإلكتروني.",
-      // Include debug OTP in development for super easy testing
-      debugOtp: process.env.NODE_ENV !== "production" ? otp : undefined,
+      message: isRealEmailSent
+        ? "تم إرسال رمز التحقق بنجاح إلى بريدك الإلكتروني."
+        : "تم إنشاء رمز التحقق الفوري بنجاح.",
+      debugOtp: otp,
+      isSimulated: !isRealEmailSent,
     });
   } catch (err: any) {
     return NextResponse.json(

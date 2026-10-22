@@ -49,29 +49,31 @@ export function Footer() {
                   <circle cx="12" cy="7" r="1.5" fill="currentColor" />
                 </svg>
               </div>
-              <div className="text-right">
+              <div className={lang === "en" ? "text-left" : "text-right"}>
                 <span className="block text-lg font-bold text-white tracking-wide">
-                  إشراقة المستقبل
+                  {lang === "en" ? "Eshraqat Al-Mustaqbal" : "إشراقة المستقبل"}
                 </span>
                 <span className="block text-[10px] text-[#C5A059] tracking-widest font-medium">
-                  للتطوير والاستثمار العقاري
+                  {lang === "en" ? "Real Estate Development & Investment" : "للتطوير والاستثمار العقاري"}
                 </span>
               </div>
             </Link>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light max-w-sm">
-              شركة تطوير عقاري سعودية رائدة، نبني مجتمعات سكنية ومقرات تجارية متكاملة ترتقي بجودة الحياة وتواكب مستهدفات رؤية المملكة 2030 في صناعة مستقبل عمراني مستدام.
+              {lang === "en"
+                ? "A leading Saudi real estate development company, building integrated residential communities and commercial headquarters that elevate the quality of life aligned with Saudi Vision 2030."
+                : "شركة تطوير عقاري سعودية رائدة، نبني مجتمعات سكنية ومقرات تجارية متكاملة ترتقي بجودة الحياة وتواكب مستهدفات رؤية المملكة 2030 في صناعة مستقبل عمراني مستدام."}
             </p>
 
             {/* Saudi Real Estate Authority Badges */}
             <div className="pt-2 flex flex-wrap gap-2 text-[11px]">
               <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#C5A059]" />
-                <span>رخصة فال: 1200000000</span>
+                <span>{lang === "en" ? "Fal License: 1200000000" : "رخصة فال: 1200000000"}</span>
               </div>
               <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 flex items-center gap-1.5">
                 <Award className="w-3.5 h-3.5 text-emerald-400" />
-                <span>معتمد من الهيئة العامة للعقار</span>
+                <span>{lang === "en" ? "Certified by Real Estate General Authority" : "معتمد من الهيئة العامة للعقار"}</span>
               </div>
             </div>
           </div>
@@ -79,32 +81,32 @@ export function Footer() {
           {/* Col 3: Quick Links */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">
-              روابط سريعة
+              {lang === "en" ? "Quick Links" : "روابط سريعة"}
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link href="/properties?type=VILLA" className="hover:text-[#C5A059] transition-colors">
-                  فلل وقصور فاخرة
+                  {lang === "en" ? "Luxury Villas & Mansions" : "فلل وقصور فاخرة"}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?type=APARTMENT" className="hover:text-[#C5A059] transition-colors">
-                  شقق سكنية ومجتمعات
+                  {lang === "en" ? "Apartments & Communities" : "شقق سكنية ومجتمعات"}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?type=COMMERCIAL" className="hover:text-[#C5A059] transition-colors">
-                  مباني ومقرات تجارية
+                  {lang === "en" ? "Commercial Buildings" : "مباني ومقرات تجارية"}
                 </Link>
               </li>
               <li>
                 <Link href="/compare" className="hover:text-[#C5A059] transition-colors">
-                  مقارنة العقارات
+                  {lang === "en" ? "Property Comparison" : "مقارنة العقارات"}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="hover:text-[#C5A059] transition-colors">
-                  عن إشراقة المستقبل
+                  {lang === "en" ? "About Eshraqat Al-Mustaqbal" : "عن إشراقة المستقبل"}
                 </Link>
               </li>
             </ul>
@@ -113,32 +115,32 @@ export function Footer() {
           {/* Col 4: Top Districts in Riyadh */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">
-              أبرز أحياء الرياض
+              {lang === "en" ? "Top Riyadh Districts" : "أبرز أحياء الرياض"}
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link href="/properties?district=حي النرجس" className="hover:text-[#C5A059] transition-colors">
-                  عقارات حي النرجس
+                  {lang === "en" ? "Al-Narjis Properties" : "عقارات حي النرجس"}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?district=حي حطين" className="hover:text-[#C5A059] transition-colors">
-                  عقارات حي حطين
+                  {lang === "en" ? "Hittin Properties" : "عقارات حي حطين"}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?district=حي الملقا" className="hover:text-[#C5A059] transition-colors">
-                  عقارات حي الملقا
+                  {lang === "en" ? "Al-Malqa Properties" : "عقارات حي الملقا"}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?district=حي الياسمين" className="hover:text-[#C5A059] transition-colors">
-                  عقارات حي الياسمين
+                  {lang === "en" ? "Al-Yasmin Properties" : "عقارات حي الياسمين"}
                 </Link>
               </li>
               <li>
                 <Link href="/properties?district=حي العقيق" className="hover:text-[#C5A059] transition-colors">
-                  عقارات حي العقيق (KAFD)
+                  {lang === "en" ? "Al-Aqeeq (KAFD) Properties" : "عقارات حي العقيق (KAFD)"}
                 </Link>
               </li>
             </ul>
@@ -147,7 +149,7 @@ export function Footer() {
           {/* Col 5: Contact & Location (Live from Dashboard CMS) */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">
-              المقر الرئيسي والتواصل
+              {lang === "en" ? "Headquarters & Contact" : "المقر الرئيسي والتواصل"}
             </h4>
             <div className="space-y-2.5 text-xs">
               <div className="flex items-start gap-2">
@@ -224,20 +226,28 @@ export function Footer() {
 
         {/* Bottom Strip */}
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
-          <p>© 2026 إشراقة المستقبل للتطوير العقاري. جميع الحقوق محفوظة.</p>
+          <p>
+            {lang === "en"
+              ? "© 2026 Eshraqat Al-Mustaqbal Real Estate Development. All rights reserved."
+              : "© 2026 إشراقة المستقبل للتطوير العقاري. جميع الحقوق محفوظة."}
+          </p>
 
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-start">
-            <Link href="/privacy" className="hover:underline">سياسة الخصوصية</Link>
+            <Link href="/privacy" className="hover:underline">
+              {lang === "en" ? "Privacy Policy" : "سياسة الخصوصية"}
+            </Link>
             <span>•</span>
-            <Link href="/terms" className="hover:underline">الشروط والأحكام</Link>
+            <Link href="/terms" className="hover:underline">
+              {lang === "en" ? "Terms & Conditions" : "الشروط والأحكام"}
+            </Link>
             <span>•</span>
             <button
               onClick={scrollToTop}
               className="p-2 rounded-xl bg-[#1C1C22] text-[#C5A059] hover:bg-[#C5A059] hover:text-black transition-all flex items-center gap-1 cursor-pointer"
-              title="العودة لأعلى الصفحة"
+              title={lang === "en" ? "Back to top" : "العودة لأعلى الصفحة"}
             >
               <ArrowUp className="w-3.5 h-3.5" />
-              <span>للأعلى</span>
+              <span>{lang === "en" ? "Top" : "للأعلى"}</span>
             </button>
           </div>
         </div>

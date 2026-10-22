@@ -118,7 +118,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 setShareModalOpen(true);
               }}
               className="p-2 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-[#C5A059] hover:bg-black/90 transition-colors cursor-pointer"
-              title="مشاركة العرض"
+              title={t("common.share")}
             >
               <Share2 className="w-4 h-4" />
             </button>
@@ -130,7 +130,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
                   ? "bg-[#C5A059] text-black"
                   : "bg-black/60 text-white hover:text-[#C5A059] hover:bg-black/90"
               }`}
-              title="إضافة للمقارنة"
+              title={t("common.compare")}
             >
               <Scale className="w-4 h-4" />
             </button>
@@ -139,9 +139,11 @@ export function PropertyCard({ property }: PropertyCardProps) {
           {/* Price Tag Overlay */}
           <div className="absolute bottom-3 right-3 z-10">
             <div className="px-3.5 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-[#C5A059]/40 text-white">
-              <span className="text-xs text-zinc-400 block font-light leading-none">السعر</span>
+              <span className="text-xs text-zinc-400 block font-light leading-none">
+                {lang === "en" ? "Price" : "السعر"}
+              </span>
               <span className="text-base sm:text-lg font-bold font-mono text-[#F3E5AB]">
-                {formatPrice(property.price)}
+                {formatPrice(property.price, undefined, lang)}
               </span>
             </div>
           </div>
@@ -174,16 +176,16 @@ export function PropertyCard({ property }: PropertyCardProps) {
           {/* Specs Bar */}
           <div className="pt-3 border-t border-white/5 grid grid-cols-3 gap-2 text-center text-xs">
             <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
-              <span className="text-[10px] text-zinc-400 block mb-0.5">المساحة</span>
-              <span className="font-bold text-white font-mono">{property.area} م²</span>
+              <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_area")}</span>
+              <span className="font-bold text-white font-mono">{property.area} {lang === "en" ? "sqm" : "م²"}</span>
             </div>
             <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
-              <span className="text-[10px] text-zinc-400 block mb-0.5">غرف النوم</span>
-              <span className="font-bold text-white font-mono">{property.bedrooms} غرف</span>
+              <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_rooms")}</span>
+              <span className="font-bold text-white font-mono">{property.bedrooms} {lang === "en" ? "Beds" : "غرف"}</span>
             </div>
             <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
-              <span className="text-[10px] text-zinc-400 block mb-0.5">دورات المياه</span>
-              <span className="font-bold text-white font-mono">{property.bathrooms} حمام</span>
+              <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_baths")}</span>
+              <span className="font-bold text-white font-mono">{property.bathrooms} {lang === "en" ? "Baths" : "حمام"}</span>
             </div>
           </div>
 
@@ -200,7 +202,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
             <Link
               href={`/properties/${property.id}`}
               className="p-2.5 rounded-xl bg-[#1C1C22] hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
-              title="عرض كافة التفاصيل"
+              title={t("common.view_details")}
             >
               <Eye className="w-4 h-4" />
             </Link>

@@ -170,7 +170,7 @@ function PropertiesCatalogContent() {
   const endItemIndex = Math.min(currentPage * PAGE_SIZE, properties.length);
 
   return (
-    <div className="relative min-h-screen pt-32 pb-28 bg-[#09090B] text-foreground text-right overflow-hidden">
+    <div className={`relative min-h-screen pt-32 pb-28 bg-[#09090B] text-foreground overflow-hidden ${dir === "rtl" ? "text-right" : "text-left"}`}>
       {/* 1. Floating Golden Ambient Bubbles */}
       <FloatingGoldenBubbles />
 
@@ -180,13 +180,15 @@ function PropertiesCatalogContent() {
         <div className="border-b border-white/10 pb-8 space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/15 text-[#C5A059] border border-[#C5A059]/30 text-xs font-semibold shadow-sm">
             <Building2 className="w-3.5 h-3.5" />
-            <span>كتالوج العقارات والمشاريع المعتمدة</span>
+            <span>{lang === "en" ? "Approved Projects & Properties Catalog" : "كتالوج العقارات والمشاريع المعتمدة"}</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            استكشف أحدث العقارات المتاحة
+            {lang === "en" ? "Explore Latest Available Properties" : "استكشف أحدث العقارات المتاحة"}
           </h1>
           <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed font-light">
-            مجموعة منتقاة بعناية من الفلل والقصور والشقق والمقرات التجارية في كافة مدن ومناطق المملكة، مربوطة مباشرة بقاعدة البيانات الرسمية مع ضمانات إنشائية وصكوك إلكترونية معتمدة.
+            {lang === "en"
+              ? "A curated collection of luxury villas, palaces, apartments, and corporate offices across the Kingdom, connected directly to official registries with structural guarantees."
+              : "مجموعة منتقاة بعناية من الفلل والقصور والشقق والمقرات التجارية في كافة مدن ومناطق المملكة، مربوطة مباشرة بقاعدة البيانات الرسمية مع ضمانات إنشائية وصكوك إلكترونية معتمدة."}
           </p>
         </div>
 
@@ -199,17 +201,17 @@ function PropertiesCatalogContent() {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="ابحث بالاسم، المدينة، الحي، أو الكود..."
+                placeholder={lang === "en" ? "Search by title, city, district, or code..." : "ابحث بالاسم، المدينة، الحي، أو الكود..."}
                 className="w-full pl-10 pr-4 py-2.5 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs sm:text-sm placeholder-zinc-500 focus:outline-none focus:border-[#C5A059] transition-colors"
               />
-              <Search className="absolute top-3 left-3 w-4 h-4 text-zinc-400" />
+              <Search className={`absolute top-3 ${dir === "rtl" ? "left-3" : "right-3"} w-4 h-4 text-zinc-400`} />
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
               <span className="text-xs text-zinc-400 flex items-center gap-2">
-                <span>المطابق:</span>
+                <span>{lang === "en" ? "Found:" : "المطابق:"}</span>
                 <strong className="text-[#C5A059] font-mono text-sm">{properties.length}</strong>
-                <span>عقار</span>
+                <span>{lang === "en" ? "properties" : "عقار"}</span>
                 {isLoading && <Loader2 className="w-3.5 h-3.5 text-[#C5A059] animate-spin" />}
               </span>
 
@@ -218,51 +220,57 @@ function PropertiesCatalogContent() {
                 className="text-xs text-zinc-400 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>إعادة ضبط</span>
+                <span>{lang === "en" ? "Reset" : "إعادة ضبط"}</span>
               </button>
             </div>
           </div>
 
           {/* Bottom row: Dynamic 5 Filters Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-4 border-t border-white/5">
-            {/* 1. Category (Aligned with Dashboard: سكني, تجاري وإداري, أراضي وزراعي) */}
+            {/* 1. Category */}
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">تصنيف العقار</label>
+              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">
+                {lang === "en" ? "Category" : "تصنيف العقار"}
+              </label>
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">كل التصنيفات</option>
-                <option value="RESIDENTIAL">سكني</option>
-                <option value="COMMERCIAL">تجاري وإداري</option>
-                <option value="AGRICULTURAL">أراضي وزراعي</option>
+                <option value="ALL">{lang === "en" ? "All Categories" : "كل التصنيفات"}</option>
+                <option value="RESIDENTIAL">{lang === "en" ? "Residential" : "سكني"}</option>
+                <option value="COMMERCIAL">{lang === "en" ? "Commercial & Office" : "تجاري وإداري"}</option>
+                <option value="AGRICULTURAL">{lang === "en" ? "Land & Agricultural" : "أراضي وزراعي"}</option>
               </select>
             </div>
 
             {/* 2. Purpose */}
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">الغرض</label>
+              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">
+                {lang === "en" ? "Purpose" : "الغرض"}
+              </label>
               <select
                 value={selectedPurpose}
                 onChange={(e) => setSelectedPurpose(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">الكل (بيع وإيجار)</option>
-                <option value="SALE">للبيع</option>
-                <option value="RENT">للإيجار</option>
+                <option value="ALL">{lang === "en" ? "All (Sale & Rent)" : "الكل (بيع وإيجار)"}</option>
+                <option value="SALE">{lang === "en" ? "For Sale" : "للبيع"}</option>
+                <option value="RENT">{lang === "en" ? "For Rent" : "للإيجار"}</option>
               </select>
             </div>
 
             {/* 3. Dynamic City Dropdown */}
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">المدينة</label>
+              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">
+                {lang === "en" ? "City" : "المدينة"}
+              </label>
               <select
                 value={selectedCityId}
                 onChange={(e) => handleCityChange(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">كافة المدن والمناطق</option>
+                <option value="ALL">{lang === "en" ? "All Cities & Regions" : "كافة المدن والمناطق"}</option>
                 {availableCities.map((city) => (
                   <option key={city.id} value={city.id}>
                     {lang === "ar" ? city.nameArabic : city.nameEnglish}
@@ -274,14 +282,16 @@ function PropertiesCatalogContent() {
             {/* 4. Dynamic District Dropdown (Depends on City) */}
             <div>
               <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">
-                الحي {selectedCityId !== "ALL" ? `(حسب المدينة)` : ""}
+                {lang === "en"
+                  ? `District ${selectedCityId !== "ALL" ? "(by city)" : ""}`
+                  : `الحي ${selectedCityId !== "ALL" ? `(حسب المدينة)` : ""}`}
               </label>
               <select
                 value={selectedDistrictId}
                 onChange={(e) => setSelectedDistrictId(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">كافة الأحياء</option>
+                <option value="ALL">{lang === "en" ? "All Districts" : "كافة الأحياء"}</option>
                 {availableDistricts.map((dist) => (
                   <option key={dist.id} value={dist.id}>
                     {lang === "ar" ? dist.nameArabic : dist.nameEnglish}
@@ -293,7 +303,10 @@ function PropertiesCatalogContent() {
             {/* 5. Max Price Range Slider */}
             <div>
               <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">
-                الحد الأقصى للسعر: <span className="font-mono text-[#C5A059]">{(maxPrice / 1000000).toFixed(1)}M ر.س</span>
+                {lang === "en" ? "Max Price:" : "الحد الأقصى للسعر:"}{" "}
+                <span className="font-mono text-[#C5A059]">
+                  {lang === "en" ? `${(maxPrice / 1000000).toFixed(1)}M SAR` : `${(maxPrice / 1000000).toFixed(1)}M ر.س`}
+                </span>
               </label>
               <input
                 type="range"
@@ -312,7 +325,9 @@ function PropertiesCatalogContent() {
         {isLoading ? (
           <div className="py-24 text-center rounded-3xl bg-[#141418]/60 border border-white/5 space-y-3">
             <Loader2 className="w-8 h-8 text-[#C5A059] animate-spin mx-auto" />
-            <p className="text-sm font-semibold text-zinc-300">جاري تحميل وتحديث العقارات من النظام...</p>
+            <p className="text-sm font-semibold text-zinc-300">
+              {lang === "en" ? "Loading and updating properties from system..." : "جاري تحميل وتحديث العقارات من النظام..."}
+            </p>
           </div>
         ) : properties.length === 0 ? (
           <div className="py-20 text-center rounded-3xl bg-[#141418]/80 border border-white/5 space-y-4">
@@ -320,14 +335,20 @@ function PropertiesCatalogContent() {
               <Home className="w-7 h-7" />
             </div>
             <div className="space-y-1">
-              <p className="text-base font-bold text-white">لا توجد عقارات مطابقة لمعايير البحث الحالية</p>
-              <p className="text-xs text-zinc-400">جرب اختيار مدينة أخرى أو توسيع نطاق السعر والأحياء</p>
+              <p className="text-base font-bold text-white">
+                {lang === "en" ? "No properties match your current search criteria" : "لا توجد عقارات مطابقة لمعايير البحث الحالية"}
+              </p>
+              <p className="text-xs text-zinc-400">
+                {lang === "en"
+                  ? "Try selecting another city or expanding price range and districts"
+                  : "جرب اختيار مدينة أخرى أو توسيع نطاق السعر والأحياء"}
+              </p>
             </div>
             <button
               onClick={resetFilters}
               className="px-6 py-2.5 rounded-xl text-xs font-bold bg-[#C5A059] text-black hover:brightness-110 cursor-pointer shadow-lg shadow-[#C5A059]/20 transition-all"
             >
-              عرض كافة العقارات
+              {lang === "en" ? "Show All Properties" : "عرض كافة العقارات"}
             </button>
           </div>
         ) : (

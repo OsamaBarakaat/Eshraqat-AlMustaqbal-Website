@@ -38,7 +38,10 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
     setIsLoading(false);
 
     if (res.success) {
-      if (res.debugOtp) setDebugCode(res.debugOtp);
+      if (res.debugOtp) {
+        setDebugCode(res.debugOtp);
+        setOtp(res.debugOtp);
+      }
       setStep("OTP");
     } else {
       setErrorMessage(res.message);
@@ -98,8 +101,18 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
         )}
 
         {debugCode && step === "OTP" && (
-          <div className="p-2.5 mb-4 rounded-xl text-xs bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] text-center font-mono">
-            🔑 رمز التجربة السريع: <strong>{debugCode}</strong>
+          <div className="p-3 mb-4 rounded-2xl text-xs bg-[#C5A059]/15 border border-[#C5A059]/40 text-[#C5A059] text-center font-mono space-y-1.5 shadow-sm">
+            <span className="text-[11px] font-medium text-zinc-300 block">
+              {dir === "rtl" ? "🔑 رمز التحقق السريع لتسجيل الدخول:" : "🔑 Instant Verification Code:"}
+            </span>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-2xl font-black text-[#F3E5AB] tracking-widest bg-black/40 px-3 py-1 rounded-lg border border-[#C5A059]/30">
+                {debugCode}
+              </span>
+            </div>
+            <p className="text-[10px] text-zinc-400">
+              {dir === "rtl" ? "تم تعبئة الرمز تلقائياً لراحتك. اضغط تأكيد الدخول أدناه." : "The code was automatically filled for you. Click Confirm below."}
+            </p>
           </div>
         )}
 

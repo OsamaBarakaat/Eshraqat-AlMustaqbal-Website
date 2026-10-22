@@ -74,12 +74,12 @@ export function Navbar() {
                 className="w-full h-full object-contain"
               />
             </div>
-            <div className="text-right">
+            <div className={dir === "rtl" ? "text-right" : "text-left"}>
               <span className="block text-sm sm:text-base lg:text-lg font-bold text-white tracking-wide group-hover:text-[#C5A059] transition-colors leading-tight">
-                إشراقة المستقبل
+                {lang === "en" ? "Eshraqat Al-Mustaqbal" : "إشراقة المستقبل"}
               </span>
               <span className="block text-[9px] sm:text-[10px] text-[#C5A059] tracking-wider font-medium">
-                نحو غدٍ مشرق
+                {lang === "en" ? "Towards a Brighter Future" : "نحو غدٍ مشرق"}
               </span>
             </div>
           </Link>

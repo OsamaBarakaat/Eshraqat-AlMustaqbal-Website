@@ -5,10 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(price: number, currency: string = "ر.س") {
-  return `${new Intl.NumberFormat("ar-SA").format(price)} ${currency}`;
+export function formatPrice(price: number, currency?: string, lang: string = "ar") {
+  const isEn = lang === "en";
+  const defaultCurrency = isEn ? "SAR" : "ر.س";
+  const curr = currency && currency !== "ر.س" ? currency : defaultCurrency;
+  const locale = isEn ? "en-US" : "ar-SA";
+  return `${new Intl.NumberFormat(locale).format(price)} ${curr}`;
 }
 
-export function formatNumber(num: number) {
-  return new Intl.NumberFormat("ar-SA").format(num);
+export function formatNumber(num: number, lang: string = "ar") {
+  return new Intl.NumberFormat(lang === "en" ? "en-US" : "ar-SA").format(num);
 }
