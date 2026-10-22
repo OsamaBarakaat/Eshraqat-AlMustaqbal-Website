@@ -15,6 +15,7 @@ import { FALLBACK_PROPERTIES } from "@/lib/api-service";
 import { Property, PropertyType, PropertyPurpose } from "@/types/property";
 import { PropertyCard } from "@/components/properties/property-card";
 import { useLanguage } from "@/lib/i18n";
+import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
 
 export default function PropertiesCatalogPage() {
   const { t } = useLanguage();
@@ -56,7 +57,10 @@ export default function PropertiesCatalogPage() {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right">
+    <div className="relative min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right overflow-hidden">
+      {/* Floating Golden Ambient Bubbles */}
+      <FloatingGoldenBubbles />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Header */}
         <div className="border-b border-white/10 pb-8 space-y-3">

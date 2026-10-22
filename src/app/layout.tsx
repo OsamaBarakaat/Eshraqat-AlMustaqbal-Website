@@ -28,7 +28,11 @@ export const metadata: Metadata = {
   description:
     "مشاريع سكنية وتجارية متكاملة في أرقى أحياء الرياض (النرجس، حطين، الملقا، العقيق). احجز معاينتك الميدانية واكتشف الفلل والقصور المعتمدة.",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/logo.png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: "/logo.png",
   },
 };
 

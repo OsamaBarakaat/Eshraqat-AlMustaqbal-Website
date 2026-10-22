@@ -43,11 +43,11 @@ export function Navbar() {
   const navLinks = [
     { href: "/", label: t("nav.home") },
     { href: "/properties", label: t("nav.properties") },
-    { href: "/#projects", label: t("nav.projects") },
     { href: "/#services", label: t("nav.services") },
     { href: "/#investment", label: t("nav.investment") },
     { href: "/about", label: t("nav.about") },
     { href: "/contact", label: t("nav.contact") },
+    { href: "/my-bookings", label: t("nav.my_bookings") },
   ];
 
   return (
@@ -62,26 +62,19 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* 1. Logo (Brand Emblem) */}
           <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-            <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-[#1C1C22] to-[#0D0D0F] border border-[#C5A059]/40 p-2 flex items-center justify-center shadow-lg shadow-[#C5A059]/15 group-hover:border-[#C5A059] transition-all">
-              {/* Sunburst Villa Icon */}
-              <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-[#C5A059]">
-                <path
-                  d="M12 3L2 12H5V20H19V12H22L12 3Z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <circle cx="12" cy="7" r="1.5" fill="currentColor" />
-                <path d="M12 15V20M9 20V17C9 15.3431 10.3431 14 12 14C13.6569 14 15 15.3431 15 17V20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
+            <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-black/60 border border-[#C5A059]/40 p-1 flex items-center justify-center shadow-lg shadow-[#C5A059]/15 group-hover:border-[#C5A059] transition-all overflow-hidden">
+              <img
+                src="/logo.png"
+                alt="إشراقة المستقبل"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div className="text-right">
               <span className="block text-base sm:text-lg font-bold text-white tracking-wide group-hover:text-[#C5A059] transition-colors">
                 إشراقة المستقبل
               </span>
               <span className="block text-[10px] text-[#C5A059] tracking-widest font-medium">
-                نحو غدٍ مشرق • LUXURY REAL ESTATE
+                نحو غدٍ مشرق
               </span>
             </div>
           </Link>
@@ -159,12 +152,12 @@ export function Navbar() {
                     </div>
 
                     <Link
-                      href="/properties"
+                      href="/my-bookings"
                       onClick={() => setUserDropdownOpen(false)}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-zinc-300 hover:bg-white/5 hover:text-[#C5A059] transition-colors"
                     >
                       <CalendarDays className="w-3.5 h-3.5 text-[#C5A059]" />
-                      <span>حجز معاينة جديدة</span>
+                      <span>{t("nav.my_bookings")}</span>
                     </Link>
 
                     <button
@@ -183,25 +176,12 @@ export function Navbar() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#1C1C22] text-zinc-200 hover:text-white border border-white/10 hover:border-[#C5A059]/50 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#1C1C22] text-zinc-200 hover:text-white border border-white/10 hover:border-[#C5A059]/50 transition-colors cursor-pointer"
               >
                 <User className="w-3.5 h-3.5 text-[#C5A059]" />
                 <span>{t("nav.login")}</span>
               </button>
             )}
-
-            {/* Primary Action Button (Explore Projects) */}
-            <Link
-              href="/properties"
-              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:brightness-110 text-black shadow-md shadow-[#C5A059]/20 transition-all cursor-pointer whitespace-nowrap"
-            >
-              <span>{t("nav.explore")}</span>
-              {dir === "rtl" ? (
-                <ArrowLeft className="w-3.5 h-3.5" />
-              ) : (
-                <ArrowRight className="w-3.5 h-3.5" />
-              )}
-            </Link>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -229,7 +209,7 @@ export function Navbar() {
               ))}
 
               <div className="pt-3 border-t border-white/5 space-y-2">
-                {!isLoggedIn && (
+                {!isLoggedIn ? (
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);
@@ -240,15 +220,16 @@ export function Navbar() {
                     <User className="w-4 h-4 text-[#C5A059]" />
                     <span>{t("nav.login")}</span>
                   </button>
+                ) : (
+                  <Link
+                    href="/my-bookings"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#1C1C22] text-white border border-white/10 flex items-center justify-center gap-2"
+                  >
+                    <CalendarDays className="w-4 h-4 text-[#C5A059]" />
+                    <span>{t("nav.my_bookings")}</span>
+                  </Link>
                 )}
-
-                <Link
-                  href="/properties"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#C5A059] to-[#D4AF37] text-black flex items-center justify-center gap-2"
-                >
-                  <span>{t("nav.explore")}</span>
-                </Link>
               </div>
             </div>
           </div>

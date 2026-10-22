@@ -53,37 +53,29 @@ export function HeroSection() {
   return (
     <>
       <section className="relative min-h-screen flex flex-col justify-between pt-32 pb-12 overflow-hidden bg-[#09090B]">
-        {/* Background Image with Cinematic Luxury Overlays */}
+        {/* Background Image with Brighter Luxurious Visibility */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=90"
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=95"
             alt="Eshraqat Al-Mustaqbal Luxury Architecture"
-            className="w-full h-full object-cover object-center scale-105 animate-in fade-in zoom-in-105 duration-1000"
+            className="w-full h-full object-cover object-center scale-105 brightness-115 contrast-105 animate-in fade-in zoom-in-105 duration-1000"
           />
-          {/* Multi-layered Gradients for ultimate contrast & depth */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/60 to-black/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#09090B]/90 via-[#09090B]/40 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#C5A059]/10 via-transparent to-transparent" />
+          {/* Gentle, balanced gradients to let the image shine through brilliantly */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-black/20 to-black/35" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#C5A059]/15 via-transparent to-transparent" />
         </div>
 
         {/* Ambient Top Glow */}
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#C5A059]/15 rounded-full blur-[140px] pointer-events-none" />
 
         {/* Main Content Hero Container */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 flex flex-col justify-center my-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Right Column: Hero Headline & Narrative */}
             <div className="lg:col-span-8 text-right space-y-6">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1C1C22]/80 backdrop-blur-md border border-[#C5A059]/30 shadow-lg">
-                <span className="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse" />
-                <span className="text-xs font-semibold text-[#C5A059] tracking-wide">
-                  {t("hero.badge")}
-                </span>
-              </div>
-
               {/* Huge Luxury Title */}
-              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold text-white leading-[1.15] tracking-tight">
+              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold text-white leading-[1.15] tracking-tight drop-shadow-md">
                 <span className="block text-zinc-100">{t("hero.title_part1")}</span>
                 <span className="block bg-gradient-to-r from-[#F3E5AB] via-[#D4AF37] to-[#C5A059] bg-clip-text text-transparent drop-shadow-sm">
                   {t("hero.title_part2")}
@@ -91,7 +83,7 @@ export function HeroSection() {
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-base lg:text-lg text-zinc-300 max-w-2xl leading-relaxed font-light">
+              <p className="text-sm sm:text-base lg:text-lg text-zinc-200 max-w-2xl leading-relaxed font-light drop-shadow-sm">
                 {t("hero.subtitle")}
               </p>
 
@@ -111,7 +103,7 @@ export function HeroSection() {
 
                 <button
                   onClick={() => setVideoModalOpen(true)}
-                  className="px-6 py-4 rounded-full font-semibold text-sm sm:text-base bg-[#141418]/80 hover:bg-[#141418] text-white border border-white/15 hover:border-[#C5A059]/60 backdrop-blur-md transition-all flex items-center gap-3 cursor-pointer group"
+                  className="px-6 py-4 rounded-full font-semibold text-sm sm:text-base bg-[#141418]/80 hover:bg-[#141418] text-white border border-white/20 hover:border-[#C5A059]/60 backdrop-blur-md transition-all flex items-center gap-3 cursor-pointer group shadow-lg"
                 >
                   <div className="w-7 h-7 rounded-full bg-white/10 group-hover:bg-[#C5A059] group-hover:text-black flex items-center justify-center transition-colors">
                     <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
@@ -121,25 +113,43 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* Left Column: Subtle Architectural Editorial Statement */}
-            <div className="hidden lg:flex lg:col-span-4 flex-col justify-between h-full text-left pl-6 border-l border-white/10">
+            {/* Left Column: Subtle Architectural Editorial Statement (RTL in Arabic / LTR in English) */}
+            <div
+              className={`hidden lg:flex lg:col-span-4 flex-col justify-between h-full ${
+                dir === "rtl"
+                  ? "text-right pr-6 border-r border-white/15"
+                  : "text-left pl-6 border-l border-white/15"
+              }`}
+            >
               <div className="space-y-4">
-                <span className="text-xs font-mono tracking-widest text-[#C5A059]">01 / 04</span>
-                <p className="text-xs text-zinc-400 font-light leading-relaxed max-w-xs">
-                  نبني أكثر من مبانٍ..
-                  <br />
-                  نبني مستقبلاً أفضل يلهم الأجيال.
+                <span className="text-xs font-mono tracking-widest text-[#C5A059] font-bold">01 / 04</span>
+                <p className="text-xs text-zinc-300 font-light leading-relaxed max-w-xs drop-shadow-sm">
+                  {lang === "ar" ? (
+                    <>
+                      نبني أكثر من مبانٍ..
+                      <br />
+                      نبني مستقبلاً أفضل يلهم الأجيال.
+                    </>
+                  ) : (
+                    <>
+                      Building more than structures..
+                      <br />
+                      shaping a future that inspires generations.
+                    </>
+                  )}
                 </p>
               </div>
 
               <div className="pt-20">
-                <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md max-w-xs">
+                <div className="p-3.5 rounded-2xl bg-black/50 border border-white/15 backdrop-blur-md max-w-xs shadow-xl">
                   <div className="flex items-center gap-2 text-xs text-[#C5A059] font-bold mb-1">
                     <MapPin className="w-3.5 h-3.5" />
-                    <span>الرياض • المملكة العربية السعودية</span>
+                    <span>{lang === "ar" ? "الرياض • المملكة العربية السعودية" : "Riyadh • Saudi Arabia"}</span>
                   </div>
-                  <p className="text-[11px] text-zinc-400">
-                    مشاريع نوعية في أرقى أحياء شمال وشرق العاصمة بالقرب من مركز الملك عبد الله المالي KAFD.
+                  <p className="text-[11px] text-zinc-300">
+                    {lang === "ar"
+                      ? "مشاريع نوعية في أرقى أحياء شمال وشرق العاصمة بالقرب من مركز الملك عبد الله المالي KAFD."
+                      : "Prime development projects in prestigious north Riyadh districts near KAFD."}
                   </p>
                 </div>
               </div>
@@ -147,9 +157,10 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Bottom Section: Stat Counters & Horizontal Showcase Cards */}
+        {/* Bottom Section: Showcase Cards */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-12 space-y-6">
-          {/* 1. Stat Counters Bar */}
+          {/* 1. Stat Counters Bar (Commented out as requested) */}
+          {/*
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 sm:p-5 rounded-2xl bg-[#141418]/80 backdrop-blur-xl border border-white/10 shadow-2xl">
             {stats.map((stat, idx) => {
               const Icon = stat.icon;
@@ -173,6 +184,7 @@ export function HeroSection() {
               );
             })}
           </div>
+          */}
 
           {/* 2. Floating Showcase Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">

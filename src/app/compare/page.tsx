@@ -23,6 +23,7 @@ import { formatPrice } from "@/lib/utils";
 import { BookingModal } from "@/components/booking/booking-modal";
 import { ShareModal } from "@/components/share/share-modal";
 import { Property } from "@/types/property";
+import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
 
 export default function ComparePage() {
   const { compareList, removeFromCompare, clearCompare } = useCompare();
@@ -51,7 +52,10 @@ export default function ComparePage() {
   ];
 
   return (
-    <div className="min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right">
+    <div className="relative min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right overflow-hidden">
+      {/* Floating Golden Bubbles */}
+      <FloatingGoldenBubbles />
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Breadcrumb & Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">

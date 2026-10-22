@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
 
 export default function ContactPage() {
   const { dir } = useLanguage();
@@ -49,7 +50,10 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right">
+    <div className="relative min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right overflow-hidden">
+      {/* Floating Golden Bubbles */}
+      <FloatingGoldenBubbles />
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
