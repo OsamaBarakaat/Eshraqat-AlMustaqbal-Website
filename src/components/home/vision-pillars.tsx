@@ -63,30 +63,66 @@ export function VisionPillars({ homepageContent }: VisionPillarsProps) {
         ];
 
   return (
-    <section id="services" className="py-28 bg-[#09090B] relative text-right border-t border-white/5 overflow-hidden">
-      {/* ================= Luxurious Golden Meteors Background Animation ================= */}
+    <section id="services" className="py-28 bg-[#070709] relative text-right border-t border-white/5 overflow-hidden">
+      {/* ================= Luxurious Golden Meteor Shower Background ================= */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Ambient Warm Golden Glows */}
-        <div className="absolute top-10 right-10 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[140px]" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-[#C5A059]/5 rounded-full blur-[160px]" />
+        {/* Deep Warm Golden Ambient Core */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-[#C5A059]/10 rounded-full blur-[170px]" />
+        <div className="absolute -top-10 left-10 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[150px]" />
+        <div className="absolute bottom-0 right-10 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[160px]" />
 
-        {/* Shooting Stars (شهب ذهبية بميل انسيابي من الأعلى للأسفل) */}
+        {/* Dynamic Golden Shooting Stars / Meteors (مطابقة تماماً للصورة: رأس متوهج وذيل ذهبي بزاوية 42 درجة) */}
         {[
-          { top: "-5%", right: "15%", width: "160px", duration: "7s", delay: "0s" },
-          { top: "5%", right: "35%", width: "130px", duration: "8.5s", delay: "2.5s" },
-          { top: "15%", right: "60%", width: "180px", duration: "9s", delay: "1.2s" },
-          { top: "-10%", right: "75%", width: "140px", duration: "7.8s", delay: "4s" },
-          { top: "25%", right: "20%", width: "170px", duration: "8.2s", delay: "5.5s" },
-          { top: "10%", right: "90%", width: "150px", duration: "9.5s", delay: "3.2s" },
-          { top: "35%", right: "45%", width: "120px", duration: "8s", delay: "6.8s" },
+          { top: "-10%", left: "5%", tailLength: "220px", duration: "6.5s", delay: "0s" },
+          { top: "-5%", left: "22%", tailLength: "280px", duration: "7.2s", delay: "2.1s" },
+          { top: "10%", left: "-8%", tailLength: "200px", duration: "6.8s", delay: "4.3s" },
+          { top: "-15%", left: "42%", tailLength: "320px", duration: "8s", delay: "1.4s" },
+          { top: "5%", left: "60%", tailLength: "260px", duration: "7s", delay: "3.5s" },
+          { top: "-10%", left: "75%", tailLength: "240px", duration: "6.2s", delay: "5.2s" },
+          { top: "15%", left: "30%", tailLength: "190px", duration: "7.5s", delay: "0.8s" },
+          { top: "-20%", left: "90%", tailLength: "300px", duration: "8.5s", delay: "2.8s" },
+          { top: "25%", left: "10%", tailLength: "210px", duration: "6.9s", delay: "4.8s" },
+          { top: "30%", left: "50%", tailLength: "250px", duration: "7.8s", delay: "6.1s" },
+        ].map((meteor, idx) => (
+          <div
+            key={idx}
+            className="golden-meteor"
+            style={{
+              top: meteor.top,
+              left: meteor.left,
+              animationDuration: meteor.duration,
+              animationDelay: meteor.delay,
+            }}
+          >
+            {/* Glowing Meteor Tail */}
+            <div
+              className="meteor-tail"
+              style={{ width: meteor.tailLength }}
+            />
+            {/* Blazing Golden Star Head */}
+            <div className="meteor-head" />
+          </div>
+        ))}
+
+        {/* Ambient Starlight / Golden Dust Particles */}
+        {[
+          { top: "15%", left: "18%", size: "4px", duration: "3.5s", delay: "0.2s" },
+          { top: "35%", left: "28%", size: "3px", duration: "4.2s", delay: "1.5s" },
+          { top: "20%", left: "72%", size: "5px", duration: "3.8s", delay: "0.8s" },
+          { top: "60%", left: "85%", size: "3px", duration: "4.6s", delay: "2.1s" },
+          { top: "75%", left: "15%", size: "4px", duration: "3.9s", delay: "1.2s" },
+          { top: "80%", left: "45%", size: "3px", duration: "4.1s", delay: "2.7s" },
+          { top: "25%", left: "92%", size: "4px", duration: "3.4s", delay: "0.5s" },
+          { top: "70%", left: "68%", size: "3px", duration: "4.8s", delay: "1.9s" },
         ].map((star, idx) => (
           <span
             key={idx}
-            className="meteor"
+            className="golden-sparkle"
             style={{
               top: star.top,
-              right: star.right,
-              width: star.width,
+              left: star.left,
+              width: star.size,
+              height: star.size,
               animationDuration: star.duration,
               animationDelay: star.delay,
             }}
