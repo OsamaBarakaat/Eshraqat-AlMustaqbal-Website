@@ -21,6 +21,12 @@ import {
 import { useLanguage } from "@/lib/i18n";
 import { ApiService, FALLBACK_LOCATIONS, ProvinceItem } from "@/lib/api-service";
 
+const heroDateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
+  timeZone: "Asia/Riyadh",
+});
+
 interface HeroSectionProps {
   homepageContent?: {
     heroTitle?: string;
@@ -35,6 +41,11 @@ interface HeroSectionProps {
 export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
   const router = useRouter();
   const { t, dir, lang } = useLanguage();
+  const currentDate = heroDateFormatter
+    .formatToParts(new Date())
+    .filter(({ type }) => type === "day" || type === "month")
+    .map(({ value }) => value)
+    .join(" / ");
   const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   // Search by City / Location state
@@ -345,7 +356,7 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
               }`}
             >
               <div className="space-y-4">
-                <span className="text-xs font-mono tracking-widest text-[#C5A059] font-bold">01 / 04</span>
+                <span className="text-xs font-mono tracking-widest text-[#C5A059] font-bold">{currentDate}</span>
                 <p className="text-xs text-zinc-300 font-light leading-relaxed max-w-xs drop-shadow-sm">
                   {lang === "ar" ? (
                     <>
