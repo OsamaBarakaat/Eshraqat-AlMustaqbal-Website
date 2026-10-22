@@ -210,9 +210,8 @@ export const ApiService = {
       if (query?.minPrice !== undefined) params.append("minPrice", String(query.minPrice));
       if (query?.maxPrice !== undefined) params.append("maxPrice", String(query.maxPrice));
 
-      const isServer = typeof window === "undefined";
       const res = await fetch(`${API_BASE_URL}/properties/public?${params.toString()}`, {
-        ...(isServer ? { next: { revalidate: 30 } } : { cache: "no-store" }),
+        cache: "no-store",
       });
 
       if (res.ok) {
@@ -349,7 +348,7 @@ export const ApiService = {
   async getWebsiteConfig() {
     try {
       const res = await fetch(`${API_BASE_URL}/cms/public/bootstrap`, {
-        next: { revalidate: 30 },
+        cache: "no-store",
       });
       if (res.ok) {
         const json = await res.json();

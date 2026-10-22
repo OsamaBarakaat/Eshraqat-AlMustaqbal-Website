@@ -6,6 +6,9 @@ import { VisionPillars } from "@/components/home/vision-pillars";
 import { TestimonialsSection } from "@/components/home/testimonials-section";
 import { ApiService } from "@/lib/api-service";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata = {
   title: "إشراقة المستقبل | وجهة جديدة لحياة أرقى • فلل وقصور ومشاريع فاخرة بالرياض",
   description:

@@ -103,12 +103,29 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
 
                 {/* Huge Luxury Title with Masked Background Animation */}
                 <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold leading-[1.15] tracking-tight">
-                  <span className="block masked-text font-black">
-                    {t("hero.title_part1")}
-                  </span>
-                  <span className="block masked-text-gold font-black">
-                    {t("hero.title_part2")}
-                  </span>
+                  {lang === "ar" && homepageContent?.heroTitle ? (
+                    (() => {
+                      const words = homepageContent.heroTitle.trim().split(" ");
+                      const mid = Math.ceil(words.length / 2);
+                      const part1 = words.slice(0, mid).join(" ");
+                      const part2 = words.slice(mid).join(" ");
+                      return (
+                        <>
+                          <span className="block masked-text font-black">{part1}</span>
+                          {part2 && <span className="block masked-text-gold font-black">{part2}</span>}
+                        </>
+                      );
+                    })()
+                  ) : (
+                    <>
+                      <span className="block masked-text font-black">
+                        {t("hero.title_part1")}
+                      </span>
+                      <span className="block masked-text-gold font-black">
+                        {t("hero.title_part2")}
+                      </span>
+                    </>
+                  )}
                 </h1>
 
                 {/* Subtitle */}
