@@ -180,7 +180,7 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#C5A059]/15 rounded-full blur-[140px] pointer-events-none" />
 
         {/* Main Content Hero Container */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 flex flex-col justify-center my-auto">
+        <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 flex flex-col justify-center my-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Start Column: Hero Headline & Narrative (Structured at the start) */}
             <div
@@ -231,11 +231,12 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                     : t("hero.subtitle")}
                 </p>
 
-                {/* Zillow-Style Location Search Bar */}
-                <div ref={searchContainerRef} className="relative w-full max-w-xl pt-2">
+                {/* Luxury Glassmorphic Location Search Bar */}
+                <div ref={searchContainerRef} className="relative w-full max-w-xl pt-2 z-50">
                   <form onSubmit={handleSearchSubmit} className="relative">
-                    <div className="relative flex items-center bg-white/95 backdrop-blur-md rounded-2xl p-1.5 shadow-2xl border-2 border-white focus-within:border-[#C5A059] transition-all">
-                      <div className="flex-1 flex items-center px-3.5">
+                    <div className="relative flex items-center bg-[#141418]/90 hover:bg-[#18181D] focus-within:bg-[#18181D] backdrop-blur-xl rounded-2xl p-1.5 sm:p-2 shadow-2xl border border-white/20 focus-within:border-[#C5A059] focus-within:ring-4 focus-within:ring-[#C5A059]/15 transition-all">
+                      <div className="flex-1 flex items-center px-3 gap-2.5">
+                        <MapPin className="w-4 h-4 text-[#C5A059] shrink-0" />
                         <input
                           type="text"
                           value={searchQuery}
@@ -246,10 +247,10 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                           onFocus={() => setIsDropdownOpen(true)}
                           placeholder={
                             lang === "ar"
-                              ? "أدخل اسم المدينة أو الحي (مثل: الرياض، حي النرجس، جدة...)"
+                              ? "أدخل اسم المدينة أو الحي (مثل: الرياض، النرجس، حطين، جدة...)"
                               : "Enter a city, neighborhood, or district..."
                           }
-                          className="w-full bg-transparent text-zinc-900 placeholder-zinc-400 text-xs sm:text-sm font-medium outline-none py-2 text-right"
+                          className="w-full bg-transparent text-white placeholder-zinc-400 text-xs sm:text-sm font-medium outline-none py-2 text-right selection:bg-[#C5A059] selection:text-black"
                           dir={dir}
                         />
                         {searchQuery && (
@@ -259,7 +260,7 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                               setSearchQuery("");
                               setIsDropdownOpen(false);
                             }}
-                            className="p-1 hover:bg-zinc-200 rounded-full text-zinc-500 transition-colors mx-1 cursor-pointer"
+                            className="p-1 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors mx-1 cursor-pointer"
                           >
                             <X className="w-3.5 h-3.5" />
                           </button>
@@ -268,60 +269,63 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
 
                       <button
                         type="submit"
-                        className="px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 text-black font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md transition-all cursor-pointer shrink-0"
+                        className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 active:scale-[0.98] text-black font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-[#C5A059]/20 transition-all cursor-pointer shrink-0"
                       >
-                        <Search className="w-4 h-4" />
+                        <Search className="w-4 h-4 stroke-[2.5]" />
                         <span>{lang === "ar" ? "بحث" : "Search"}</span>
                       </button>
                     </div>
                   </form>
 
-                  {/* Autosuggest Dropdown Menu (Zillow-Style) */}
+                  {/* Autosuggest Dropdown Menu (Luxurious Dark Gold Glassmorphic) */}
                   {isDropdownOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden z-50 text-right animate-in fade-in slide-in-from-top-2 duration-150">
-                      <div className="px-4 py-2 bg-zinc-50 border-b border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500 font-semibold">
-                        <span>
-                          {lang === "ar"
-                            ? "أبرز المدن والأحياء المتاحة"
-                            : "Available Cities & Districts"}
+                    <div className="absolute top-full left-0 right-0 mt-2.5 bg-[#141418]/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-black border border-white/15 overflow-hidden z-50 text-right animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="px-4 py-2.5 bg-black/40 border-b border-white/10 flex items-center justify-between text-[11px] text-zinc-400 font-semibold">
+                        <span className="flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+                          <span>
+                            {lang === "ar"
+                              ? "أبرز المدن والأحياء العقارية المتاحة"
+                              : "Available Cities & Districts"}
+                          </span>
                         </span>
-                        <span className="text-[10px] text-[#C5A059] font-bold">
+                        <span className="text-[10px] text-[#C5A059] font-mono bg-[#C5A059]/10 px-2 py-0.5 rounded-full border border-[#C5A059]/20">
                           {suggestedLocations.length} موقع
                         </span>
                       </div>
 
-                      <div className="max-h-64 overflow-y-auto divide-y divide-zinc-100">
+                      <div className="max-h-72 overflow-y-auto divide-y divide-white/5 scrollbar-thin scrollbar-thumb-white/10">
                         {suggestedLocations.map((item) => (
                           <button
                             key={item.id}
                             type="button"
                             onClick={() => handleSelectLocation(item.titleArabic)}
-                            className="w-full px-4 py-3 text-right hover:bg-[#C5A059]/10 transition-colors flex items-center justify-between gap-3 group cursor-pointer"
+                            className="w-full px-4 py-3 text-right hover:bg-white/5 transition-colors flex items-center justify-between gap-3 group cursor-pointer"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-xl bg-zinc-100 group-hover:bg-[#C5A059]/20 group-hover:text-[#997736] text-zinc-600 flex items-center justify-center shrink-0 transition-colors">
+                              <div className="w-8 h-8 rounded-xl bg-white/5 group-hover:bg-[#C5A059]/20 group-hover:text-[#C5A059] text-zinc-400 flex items-center justify-center shrink-0 transition-colors border border-white/5 group-hover:border-[#C5A059]/30">
                                 <MapPin className="w-4 h-4" />
                               </div>
                               <div>
-                                <span className="block text-xs sm:text-sm font-bold text-zinc-900 group-hover:text-[#997736]">
+                                <span className="block text-xs sm:text-sm font-bold text-white group-hover:text-[#C5A059] transition-colors">
                                   {lang === "ar" ? item.titleArabic : item.titleEnglish}
                                 </span>
-                                <span className="block text-[10px] text-zinc-500">
+                                <span className="block text-[10px] text-zinc-400">
                                   {item.provinceArabic}
                                 </span>
                               </div>
                             </div>
 
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-zinc-100 group-hover:bg-[#C5A059]/20 text-zinc-600 group-hover:text-[#997736]">
+                            <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-white/5 group-hover:bg-[#C5A059]/20 text-zinc-300 group-hover:text-[#C5A059] border border-white/5 group-hover:border-[#C5A059]/30 transition-colors">
                               {item.type === "CITY" ? (lang === "ar" ? "مدينة" : "City") : (lang === "ar" ? "حي" : "District")}
                             </span>
                           </button>
                         ))}
 
                         {suggestedLocations.length === 0 && (
-                          <div className="px-4 py-6 text-center text-xs text-zinc-500">
+                          <div className="px-4 py-8 text-center text-xs text-zinc-400">
                             {lang === "ar"
-                              ? "لا توجد نتائج مطابقة لاسم المدينة المدخل"
+                              ? "لا توجد نتائج مطابقة لاسم المدينة أو الحي المدخل"
                               : "No matching cities or districts found"}
                           </div>
                         )}
