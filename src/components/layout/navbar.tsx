@@ -20,6 +20,8 @@ import {
   Home,
   Phone,
   ShieldCheck,
+  MessageSquare,
+  MessageCircle,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useClientAuth } from "@/lib/client-auth";
@@ -164,6 +166,21 @@ export function Navbar() {
                     </Link>
 
                     <button
+                      type="button"
+                      onClick={() => {
+                        setUserDropdownOpen(false);
+                        window.dispatchEvent(new CustomEvent("open-client-chat"));
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-zinc-300 hover:bg-white/5 hover:text-[#C5A059] transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="w-3.5 h-3.5 text-[#C5A059]" />
+                        <span>{lang === "en" ? "My Inquiries & Replies" : "استفساراتي والردود"}</span>
+                      </div>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    </button>
+
+                    <button
                       onClick={() => {
                         logout();
                         setUserDropdownOpen(false);
@@ -287,6 +304,18 @@ export function Navbar() {
                       <CalendarDays className="w-4 h-4" />
                       <span>{t("nav.my_bookings")}</span>
                     </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        window.dispatchEvent(new CustomEvent("open-client-chat"));
+                      }}
+                      className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#1C1C22] border border-[#C5A059]/40 text-white hover:bg-white/10 flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <MessageSquare className="w-4 h-4 text-[#C5A059]" />
+                      <span>{lang === "en" ? "My Inquiries & Replies" : "صندوق استفساراتي والردود"}</span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    </button>
                     <button
                       onClick={() => {
                         logout();

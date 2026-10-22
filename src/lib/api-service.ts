@@ -31,6 +31,24 @@ export interface ProvinceItem {
 }
 
 // Fallback Location Hierarchy matching Saudi Cities & Districts if offline
+export interface ClientInquiry {
+  id: string;
+  senderName: string;
+  senderPhone: string;
+  senderEmail?: string;
+  type: string;
+  relatedPropertyId?: string;
+  relatedPropertyTitle?: string;
+  relatedPropertyCode?: string;
+  subject: string;
+  message: string;
+  status: "NEW" | "IN_PROGRESS" | "REPLIED" | "CLOSED";
+  assignedEmployeeName?: string;
+  replyNotes?: string;
+  submittedAt: string;
+  repliedAt?: string;
+}
+
 export const FALLBACK_LOCATIONS: ProvinceItem[] = [
   {
     id: "prov-riyadh",
@@ -384,6 +402,87 @@ export const ApiService = {
     }
     return null;
   },
+  /**
+   * Submit a customer message / inquiry from the website
+   */
+  async submitInquiry(data: {
+    name: string;
+    email?: string;
+    phone?: string;
+    subject: string;
+    message: string;
+    propertyId?: string;
+    type?: string;
+  }): Promise<{ success: boolean; data?: any; message?: string }> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/inquiries/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          senderName: data.name.trim(),
+          senderEmail: data.email?.trim() || undefined,
+          senderPhone: data.phone?.trim() || "لم يحدد بعد",
+          subject: data.subject.trim(),
+          message: data.message.trim(),
+          relatedPropertyId: data.propertyId || undefined,
+          type: data.type || "GENERAL_CONTACT",
+        }),
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        return { success: true, data: json?.data || json };
+      }
+      const errJson = await res.json().catch(() => null);
+      return { success: false, message: errJson?.message || "تعذر إرسال الرسالة." };
+    } catch {
+      return { success: false, message: "فشل الاتصال بالخادم. يرجى المحاولة لاحقاً." };
+    }
+  },
+
+  /**
+   * Fetch customer inquiries and admin replies by email or phone
+   */
+  async getClientInquiries(email?: string, phone?: string): Promise<ClientInquiry[]> {
+    if (!email && !phone) return [];
+    try {
+      const params = new URLSearchParams();
+      if (email) params.append("email", email.trim().toLowerCase());
+      if (phone) params.append("phone", phone.trim());
+
+      const res = await fetch(`${API_BASE_URL}/inquiries/client?${params.toString()}`, {
+        cache: "no-store",
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        const items = json?.data || json;
+        if (Array.isArray(items)) {
+          return items.map((inq: any) => ({
+            id: inq.id,
+            senderName: inq.senderName,
+            senderPhone: inq.senderPhone,
+            senderEmail: inq.senderEmail,
+            type: inq.type,
+            relatedPropertyId: inq.relatedPropertyId,
+            relatedPropertyTitle: inq.relatedPropertyTitle,
+            relatedPropertyCode: inq.relatedPropertyCode,
+            subject: inq.subject,
+            message: inq.message,
+            status: inq.status,
+            assignedEmployeeName: inq.assignedEmployeeName,
+            replyNotes: inq.replyNotes,
+            submittedAt: inq.submittedAt,
+            repliedAt: inq.repliedAt,
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch client inquiries from API:", err);
+    }
+    return [];
+  },
+
   /**
    * Sync or register a client in backend CRM
    */

@@ -8,6 +8,7 @@ import { CompareProvider } from "@/lib/compare-context";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { CompareDock } from "@/components/compare/compare-dock";
+import { ClientChatWidget } from "@/components/chat/client-chat-widget";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -64,6 +65,7 @@ export default function RootLayout({
               </Suspense>
               <div className="flex-1 w-full max-w-[100vw] overflow-x-hidden">{children}</div>
               <CompareDock />
+              <ClientChatWidget />
               <Footer />
             </CompareProvider>
           </ClientAuthProvider>

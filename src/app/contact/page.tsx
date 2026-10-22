@@ -40,16 +40,12 @@ export default function ContactPage() {
     setIsLoading(true);
 
     try {
-      await fetch("https://eshraqat-almustaqbal-backend.vercel.app/api/v1/inquiries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerName: name.trim(),
-          customerEmail: email.trim(),
-          customerPhone: phone.trim(),
-          subject: subject.trim(),
-          message: message.trim(),
-        }),
+      await ApiService.submitInquiry({
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        subject: subject.trim(),
+        message: message.trim(),
       });
     } catch {
       // ignore
