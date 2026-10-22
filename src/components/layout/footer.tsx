@@ -25,7 +25,8 @@ export function Footer() {
   }, []);
 
   const contact = cmsConfig?.contact;
-  const socialLinks = Array.isArray(cmsConfig?.socialLinks) ? cmsConfig.socialLinks : [];
+  const rawSocial = cmsConfig?.socialLinks;
+  const socialLinks = Array.isArray(rawSocial) ? rawSocial.filter((s: any) => s.enabled !== false) : [];
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });

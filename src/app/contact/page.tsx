@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MapPin,
   Phone,
@@ -13,9 +13,19 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
+import { ApiService } from "@/lib/api-service";
 
 export default function ContactPage() {
   const { dir } = useLanguage();
+  const [cmsConfig, setCmsConfig] = useState<any>(null);
+
+  useEffect(() => {
+    ApiService.getWebsiteConfig().then((data) => {
+      if (data) setCmsConfig(data);
+    });
+  }, []);
+
+  const contact = cmsConfig?.contact;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -82,7 +92,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <span className="block font-bold text-white">المقر الرئيسي</span>
-                    <span className="text-zinc-400">الرياض، طريق الملك فهد، برج المستقبل، الطابق 14</span>
+                    <span className="text-zinc-400">
+                      {contact?.address || "الرياض، طريق الملك فهد، برج المستقبل، الطابق 14"}
+                    </span>
                   </div>
                 </div>
 
@@ -92,9 +104,25 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <span className="block font-bold text-white">الهاتف الموحد</span>
-                    <span className="text-zinc-400 font-mono dir-ltr">+966 11 000 0000</span>
+                    <span className="text-zinc-400 font-mono dir-ltr">
+                      {contact?.contactPhone || "+966 11 000 0000"}
+                    </span>
                   </div>
                 </div>
+
+                {contact?.secondaryPhone && (
+                  <div className="flex items-start gap-3">
+                    <div className="p-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] shrink-0 mt-0.5">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="block font-bold text-white">رقم إضافي</span>
+                      <span className="text-zinc-400 font-mono dir-ltr">
+                        {contact.secondaryPhone}
+                      </span>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex items-start gap-3">
                   <div className="p-2.5 rounded-xl bg-[#C5A059]/10 text-[#C5A059] shrink-0 mt-0.5">
@@ -102,7 +130,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <span className="block font-bold text-white">البريد الإلكتروني</span>
-                    <span className="text-zinc-400 font-mono dir-ltr">vip@eshraqat-almustaqbal.sa</span>
+                    <span className="text-zinc-400 font-mono dir-ltr">
+                      {contact?.email || "vip@eshraqat-almustaqbal.sa"}
+                    </span>
                   </div>
                 </div>
 
@@ -112,7 +142,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <span className="block font-bold text-white">ساعات العمل الرسمية</span>
-                    <span className="text-zinc-400">الأحد - الخميس: 9:00 ص - 6:00 م</span>
+                    <span className="text-zinc-400">
+                      {contact?.workingHours || "الأحد - الخميس: 9:00 ص - 6:00 م"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -120,7 +152,7 @@ export default function ContactPage() {
               {/* Direct WhatsApp CTA */}
               <div className="pt-4 border-t border-white/5">
                 <a
-                  href="https://api.whatsapp.com/send?phone=966500000000&text=مرحباً%20إشراقة%20المستقبل،%20أود%20الاستفسار%20عن%20المشاريع"
+                  href={`https://api.whatsapp.com/send?phone=${(contact?.secondaryPhone || contact?.contactPhone || "966500000000").replace(/[^0-9]/g, "")}&text=${encodeURIComponent("مرحباً إشراقة المستقبل، أود الاستفسار عن المشاريع")}`}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] transition-all flex items-center justify-center gap-2"
