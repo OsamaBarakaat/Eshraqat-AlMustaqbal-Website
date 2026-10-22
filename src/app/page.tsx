@@ -36,7 +36,7 @@ export default async function HomePage() {
       <VisionPillars homepageContent={cmsConfig?.homepage} />
 
       {/* 5. Testimonials & Client Trust */}
-      <TestimonialsSection />
+      <TestimonialsSection homepageContent={cmsConfig?.homepage} />
     </main>
   );
 }
