@@ -5,6 +5,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
 import { ClientAuthProvider } from "@/lib/client-auth";
 import { CompareProvider } from "@/lib/compare-context";
+import { InquiriesProvider } from "@/lib/inquiries-context";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { CompareDock } from "@/components/compare/compare-dock";
@@ -60,13 +61,15 @@ export default function RootLayout({
         <LanguageProvider>
           <ClientAuthProvider>
             <CompareProvider>
-              <Suspense fallback={<div className="h-20 bg-[#09090B]" />}>
-                <Navbar />
-              </Suspense>
-              <div className="flex-1 w-full max-w-[100vw] overflow-x-hidden">{children}</div>
-              <CompareDock />
-              <ClientChatWidget />
-              <Footer />
+              <InquiriesProvider>
+                <Suspense fallback={<div className="h-20 bg-[#09090B]" />}>
+                  <Navbar />
+                </Suspense>
+                <div className="flex-1 w-full max-w-[100vw] overflow-x-hidden">{children}</div>
+                <CompareDock />
+                <ClientChatWidget />
+                <Footer />
+              </InquiriesProvider>
             </CompareProvider>
           </ClientAuthProvider>
         </LanguageProvider>

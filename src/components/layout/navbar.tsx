@@ -26,6 +26,7 @@ import {
 import { useLanguage } from "@/lib/i18n";
 import { useClientAuth } from "@/lib/client-auth";
 import { useCompare } from "@/lib/compare-context";
+import { useInquiries } from "@/lib/inquiries-context";
 import { ClientAuthModal } from "@/components/auth/client-auth-modal";
 
 export function Navbar() {
@@ -33,6 +34,7 @@ export function Navbar() {
   const { t, lang, toggleLang, dir } = useLanguage();
   const { user, isLoggedIn, logout } = useClientAuth();
   const { compareList } = useCompare();
+  const { inquiries, unreadCount, hasUnreadReply, openChat } = useInquiries();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -169,7 +171,7 @@ export function Navbar() {
                       type="button"
                       onClick={() => {
                         setUserDropdownOpen(false);
-                        window.dispatchEvent(new CustomEvent("open-client-chat"));
+                        openChat("HISTORY");
                       }}
                       className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-zinc-300 hover:bg-white/5 hover:text-[#C5A059] transition-colors cursor-pointer"
                     >
@@ -177,7 +179,12 @@ export function Navbar() {
                         <MessageSquare className="w-3.5 h-3.5 text-[#C5A059]" />
                         <span>{lang === "en" ? "My Inquiries & Replies" : "استفساراتي والردود"}</span>
                       </div>
-                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      {hasUnreadReply && unreadCount > 0 && inquiries.length > 0 && (
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                        </span>
+                      )}
                     </button>
 
                     <button
@@ -308,13 +315,18 @@ export function Navbar() {
                       type="button"
                       onClick={() => {
                         setMobileMenuOpen(false);
-                        window.dispatchEvent(new CustomEvent("open-client-chat"));
+                        openChat("HISTORY");
                       }}
                       className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#1C1C22] border border-[#C5A059]/40 text-white hover:bg-white/10 flex items-center justify-center gap-2 transition-colors cursor-pointer"
                     >
                       <MessageSquare className="w-4 h-4 text-[#C5A059]" />
                       <span>{lang === "en" ? "My Inquiries & Replies" : "صندوق استفساراتي والردود"}</span>
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      {hasUnreadReply && unreadCount > 0 && inquiries.length > 0 && (
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                        </span>
+                      )}
                     </button>
                     <button
                       onClick={() => {
