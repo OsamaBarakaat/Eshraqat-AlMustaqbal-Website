@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   CalendarDays,
@@ -21,12 +21,15 @@ import {
   AlertCircle,
   Trash2,
   Sparkles,
+  RefreshCw,
+  Loader2,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useClientAuth } from "@/lib/client-auth";
 import { ClientBookingsService, ClientBooking } from "@/lib/client-bookings";
 import { ClientAuthModal } from "@/components/auth/client-auth-modal";
 import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
+import { ApiService } from "@/lib/api-service";
 
 export default function MyBookingsPage() {
   const { t, dir, lang } = useLanguage();
@@ -36,28 +39,72 @@ export default function MyBookingsPage() {
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  // Load bookings for current user
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (user?.email) {
-        const userBookings = ClientBookingsService.getByUserEmail(user.email);
-        setBookings(userBookings);
-      } else {
-        // If not logged in or no email, check all local bookings
-        const all = ClientBookingsService.getAll();
-        setBookings(all);
+  // Synchronize Bookings with live Backend & Local Cache
+  const syncBookings = useCallback(async () => {
+    if (typeof window === "undefined") return;
+
+    // 1. Immediately load local bookings
+    const local = user?.email
+      ? ClientBookingsService.getByUserEmail(user.email)
+      : ClientBookingsService.getAll();
+    setBookings(local);
+
+    // 2. Fetch live data from backend
+    const emailToQuery = user?.email || (local[0]?.customerEmail);
+    const phoneToQuery = user?.phone || (local[0]?.customerPhone);
+
+    if (emailToQuery || phoneToQuery) {
+      setIsSyncing(true);
+      try {
+        const serverItems = await ApiService.getClientBookings(emailToQuery, phoneToQuery);
+        if (serverItems.length > 0) {
+          const merged = ClientBookingsService.syncWithServer(serverItems);
+          const userUpdated = user?.email
+            ? merged.filter(
+                (b) => (b.customerEmail || "").toLowerCase() === user.email.toLowerCase()
+              )
+            : merged;
+          setBookings(userUpdated);
+        }
+      } catch (err) {
+        console.warn("Failed to sync bookings from server:", err);
+      } finally {
+        setIsSyncing(false);
       }
     }
   }, [user]);
 
-  const handleCancelBooking = (id: string) => {
-    if (confirm(lang === "ar" ? "هل أنت متأكد من رغبتك في إلغاء موعد المعاينة هذا؟" : "Are you sure you want to cancel this viewing appointment?")) {
+  // Initial load and periodic poll every 15s to keep live status in sync
+  useEffect(() => {
+    syncBookings();
+    const timer = setInterval(() => {
+      syncBookings();
+    }, 15000);
+    return () => clearInterval(timer);
+  }, [syncBookings]);
+
+  const handleCancelBooking = async (id: string) => {
+    if (
+      confirm(
+        lang === "ar"
+          ? "هل أنت متأكد من رغبتك في إلغاء موعد المعاينة هذا؟"
+          : "Are you sure you want to cancel this viewing appointment?"
+      )
+    ) {
+      setCancellingId(id);
       ClientBookingsService.cancel(id);
-      if (user?.email) {
-        setBookings(ClientBookingsService.getByUserEmail(user.email));
-      } else {
-        setBookings(ClientBookingsService.getAll());
+      setBookings((prev) =>
+        prev.map((b) => (b.id === id ? { ...b, status: "CANCELLED" } : b))
+      );
+      try {
+        await ApiService.cancelClientBooking(id, user?.email);
+      } catch {
+        // ignore
+      } finally {
+        setCancellingId(null);
+        syncBookings();
       }
     }
   };
@@ -94,26 +141,38 @@ export default function MyBookingsPage() {
             </p>
           </div>
 
-          {/* User Sign In / Status */}
-          {isLoggedIn ? (
-            <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-[#141418] border border-white/10">
-              <div className="w-10 h-10 rounded-xl bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] flex items-center justify-center font-bold">
-                {user?.email?.charAt(0).toUpperCase()}
-              </div>
-              <div className="text-xs text-right">
-                <span className="block text-zinc-400 text-[10px]">{lang === "ar" ? "مسجل باسم" : "Signed in as"}</span>
-                <span className="block text-white font-mono font-semibold truncate max-w-[150px]">{user?.email}</span>
-              </div>
-            </div>
-          ) : (
+          {/* Actions & User Status */}
+          <div className="flex items-center gap-3">
             <button
-              onClick={() => setShowAuthModal(true)}
-              className="px-5 py-3 rounded-full text-xs sm:text-sm font-bold bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:brightness-110 text-black shadow-lg shadow-[#C5A059]/20 transition-all flex items-center gap-2 cursor-pointer"
+              onClick={() => syncBookings()}
+              disabled={isSyncing}
+              className="px-3.5 py-2.5 rounded-2xl bg-[#141418] border border-white/10 hover:border-[#C5A059]/50 text-xs font-semibold text-zinc-300 hover:text-[#C5A059] flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+              title={lang === "ar" ? "مزامنة وتحديث حالة المعاينات من الخادم" : "Sync viewing statuses from server"}
             >
-              <Sparkles className="w-4 h-4" />
-              <span>{lang === "ar" ? "تسجيل الدخول بالـ OTP" : "Sign in with OTP"}</span>
+              <RefreshCw className={`w-3.5 h-3.5 text-[#C5A059] ${isSyncing ? "animate-spin" : ""}`} />
+              <span>{isSyncing ? (lang === "ar" ? "جاري التحديث..." : "Syncing...") : (lang === "ar" ? "تحديث المواعيد" : "Refresh")}</span>
             </button>
-          )}
+
+            {isLoggedIn ? (
+              <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-[#141418] border border-white/10">
+                <div className="w-10 h-10 rounded-xl bg-[#C5A059]/20 border border-[#C5A059]/40 text-[#C5A059] flex items-center justify-center font-bold">
+                  {user?.email?.charAt(0).toUpperCase()}
+                </div>
+                <div className="text-xs text-right">
+                  <span className="block text-zinc-400 text-[10px]">{lang === "ar" ? "مسجل باسم" : "Signed in as"}</span>
+                  <span className="block text-white font-mono font-semibold truncate max-w-[150px]">{user?.email}</span>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="px-5 py-3 rounded-full text-xs sm:text-sm font-bold bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:brightness-110 text-black shadow-lg shadow-[#C5A059]/20 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>{lang === "ar" ? "تسجيل الدخول بالـ OTP" : "Sign in with OTP"}</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Not Logged In Banner Notice */}

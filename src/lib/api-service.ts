@@ -1,4 +1,5 @@
 import { Property, PropertyType, PropertyPurpose } from "@/types/property";
+import { ClientBooking } from "@/lib/client-bookings";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -270,7 +271,8 @@ export const ApiService = {
         body: JSON.stringify(data),
       });
       if (res.ok) {
-        return await res.json();
+        const json = await res.json();
+        return json?.data || json;
       }
     } catch {
       // offline fallback
@@ -280,5 +282,64 @@ export const ApiService = {
       status: "PENDING_CONFIRMATION",
       message: "تم تسجيل موعد المعاينة بنجاح.",
     };
+  },
+
+  /**
+   * Fetch live bookings for a client by email or phone
+   */
+  async getClientBookings(email?: string, phone?: string): Promise<ClientBooking[]> {
+    if (!email && !phone) return [];
+    try {
+      const params = new URLSearchParams();
+      if (email) params.append("email", email);
+      if (phone) params.append("phone", phone);
+
+      const res = await fetch(`${API_BASE_URL}/appointments/client?${params.toString()}`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const json = await res.json();
+        const items = json?.data || json;
+        if (Array.isArray(items)) {
+          return items.map((item: any) => ({
+            id: item.id,
+            propertyId: item.propertyId,
+            propertyCode: item.propertyCode || `ESH-${(item.propertyId || "").slice(0, 4).toUpperCase()}`,
+            propertyTitle: item.propertyTitle || "عقار إشراقة",
+            propertyImage: item.propertyImage || "",
+            propertyCity: item.propertyLocation?.split(" - ")[0] || "",
+            propertyDistrict: item.propertyLocation?.split(" - ")[1] || "",
+            propertyPrice: Number(item.propertyPrice) || 0,
+            date: item.requestedDate,
+            time: item.requestedTime,
+            customerName: item.customerName,
+            customerPhone: item.customerPhone,
+            customerEmail: item.customerEmail,
+            notes: item.notes || "",
+            status: item.status,
+            createdAt: item.createdAt,
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch client bookings from API:", err);
+    }
+    return [];
+  },
+
+  /**
+   * Cancel client viewing appointment on the backend
+   */
+  async cancelClientBooking(id: string, email?: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/appointments/client/${id}/cancel`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
   },
 };
