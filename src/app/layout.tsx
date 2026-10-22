@@ -1,0 +1,63 @@
+import React, { Suspense } from "react";
+import type { Metadata } from "next";
+import { Cairo, Plus_Jakarta_Sans } from "next/font/google";
+import "./globals.css";
+import { LanguageProvider } from "@/lib/i18n";
+import { ClientAuthProvider } from "@/lib/client-auth";
+import { CompareProvider } from "@/lib/compare-context";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import { CompareDock } from "@/components/compare/compare-dock";
+
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-cairo",
+  display: "swap",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-jakarta",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "إشراقة المستقبل للتطوير العقاري | وجهة جديدة لحياة أرقى",
+  description:
+    "مشاريع سكنية وتجارية متكاملة في أرقى أحياء الرياض (النرجس، حطين، الملقا، العقيق). احجز معاينتك الميدانية واكتشف الفلل والقصور المعتمدة.",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html
+      lang="ar"
+      dir="rtl"
+      className={`${cairo.variable} ${plusJakartaSans.variable} dark scroll-smooth`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-screen bg-[#09090B] text-[#EDEDED] font-arabic antialiased selection:bg-[#C5A059] selection:text-black">
+        <LanguageProvider>
+          <ClientAuthProvider>
+            <CompareProvider>
+              <Suspense fallback={<div className="h-20 bg-[#09090B]" />}>
+                <Navbar />
+              </Suspense>
+              <div className="flex-1">{children}</div>
+              <CompareDock />
+              <Footer />
+            </CompareProvider>
+          </ClientAuthProvider>
+        </LanguageProvider>
+      </body>
+    </html>
+  );
+}
