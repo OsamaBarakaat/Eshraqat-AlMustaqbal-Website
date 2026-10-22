@@ -173,3 +173,100 @@ body {
   animation-fill-mode: both;
   pointer-events: none;
 }
+
+/* ================= CMS Rich Content Prose Styling ================= */
+.policy-content {
+  color: #d4d4d8;
+  line-height: 1.85;
+  font-size: 0.95rem;
+}
+
+.policy-content h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.policy-content h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  border-right: 3px solid #C5A059;
+  padding-right: 0.75rem;
+}
+
+.policy-content h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffe082;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.policy-content h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.policy-content h5,
+.policy-content h6 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #a1a1aa;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.policy-content p {
+  margin-bottom: 1rem;
+}
+
+.policy-content b,
+.policy-content strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.policy-content ul {
+  list-style-type: disc;
+  padding-right: 1.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.policy-content ol {
+  list-style-type: decimal;
+  padding-right: 1.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.policy-content li {
+  margin-bottom: 0.5rem;
+  color: #d4d4d8;
+}
+
+.policy-content hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2rem 0;
+}
+
+.policy-content a {
+  color: #C5A059;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.policy-content a:hover {
+  color: #ffe082;
+}

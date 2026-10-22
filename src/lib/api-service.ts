@@ -359,4 +359,34 @@ export const ApiService = {
     }
     return null;
   },
+
+  /**
+   * Fetch a public CMS page content by slug (e.g. 'privacy-policy' or 'terms-conditions')
+   */
+  async getPublicPage(slug: string): Promise<{
+    id?: string;
+    slug?: string;
+    title?: string;
+    content?: string;
+    metaTitle?: string;
+    metaDescription?: string;
+    updatedAt?: string;
+  } | null> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/cms/public/pages/${slug}`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json?.data || json;
+      }
+    } catch (err) {
+      console.warn(`Failed to fetch public page (${slug}) from CMS API:`, err);
+    }
+    return null;
+  },
 };
+
+export const apiService = ApiService;
+export default ApiService;
+

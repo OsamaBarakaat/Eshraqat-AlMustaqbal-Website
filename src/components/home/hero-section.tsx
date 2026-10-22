@@ -369,11 +369,11 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                     <MapPin className="w-3.5 h-3.5" />
                     <span>{lang === "ar" ? "الرياض • المملكة العربية السعودية" : "Riyadh • Saudi Arabia"}</span>
                   </div>
-                  <p className="text-[11px] text-zinc-300">
+                  {/* <p className="text-[11px] text-zinc-300">
                     {lang === "ar"
-                      ? "مشاريع نوعية في أرقى أحياء شمال وشرق العاصمة بالقرب من مركز الملك عبد الله المالي KAFD."
-                      : "Prime development projects in prestigious north Riyadh districts near KAFD."}
-                  </p>
+                      ? "مشاريع نوعية في أرقى أحياء الرياض."
+                      : "Prime development projects in prestigious Riyadh."}
+                  </p> */}
                 </div>
               </div>
             </div>
