@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Play,
   ArrowLeft,
@@ -15,8 +16,10 @@ import {
   ChevronLeft,
   Sparkles,
   X,
+  Search,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import { ApiService, FALLBACK_LOCATIONS, ProvinceItem } from "@/lib/api-service";
 
 interface HeroSectionProps {
   homepageContent?: {
@@ -30,8 +33,101 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
+  const router = useRouter();
   const { t, dir, lang } = useLanguage();
   const [videoModalOpen, setVideoModalOpen] = useState(false);
+
+  // Search by City / Location state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [locations, setLocations] = useState<ProvinceItem[]>(FALLBACK_LOCATIONS);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    ApiService.getLocationsHierarchy().then((data) => {
+      if (data && data.length > 0) {
+        setLocations(data);
+      }
+    });
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Flatten cities and districts for autosuggest
+  const suggestedLocations = React.useMemo(() => {
+    const items: Array<{
+      id: string;
+      titleArabic: string;
+      titleEnglish: string;
+      provinceArabic: string;
+      type: "CITY" | "DISTRICT";
+      cityName?: string;
+    }> = [];
+
+    locations.forEach((prov) => {
+      prov.cities?.forEach((city) => {
+        items.push({
+          id: city.id,
+          titleArabic: city.nameArabic,
+          titleEnglish: city.nameEnglish,
+          provinceArabic: prov.nameArabic,
+          type: "CITY",
+        });
+        city.districts?.forEach((dist) => {
+          items.push({
+            id: dist.id,
+            titleArabic: dist.nameArabic,
+            titleEnglish: dist.nameEnglish,
+            provinceArabic: `${prov.nameArabic} • ${city.nameArabic}`,
+            type: "DISTRICT",
+            cityName: city.nameArabic,
+          });
+        });
+      });
+    });
+
+    if (!searchQuery.trim()) {
+      return items.slice(0, 7);
+    }
+
+    const q = searchQuery.toLowerCase().trim();
+    return items
+      .filter(
+        (it) =>
+          it.titleArabic.toLowerCase().includes(q) ||
+          it.titleEnglish.toLowerCase().includes(q) ||
+          it.provinceArabic.toLowerCase().includes(q)
+      )
+      .slice(0, 8);
+  }, [locations, searchQuery]);
+
+  const handleSelectLocation = (locName: string) => {
+    setSearchQuery(locName);
+    setIsDropdownOpen(false);
+    router.push(`/properties?location=${encodeURIComponent(locName)}`);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setIsDropdownOpen(false);
+      router.push(`/properties?location=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push("/properties");
+    }
+  };
 
   const stats = [
     { value: "500+", label: t("hero.units"), icon: Users2 },
@@ -135,33 +231,103 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                     : t("hero.subtitle")}
                 </p>
 
-                {/* Action Buttons */}
-                <div className="flex flex-wrap items-center gap-4 pt-2">
-                  <Link
-                    href={homepageContent?.ctaLink || "/properties"}
-                    className="px-7 py-4 rounded-full font-bold text-sm sm:text-base bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 text-black shadow-xl shadow-[#C5A059]/25 transition-all flex items-center gap-2.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    <span>
-                      {lang === "ar" && homepageContent?.ctaLabel
-                        ? homepageContent.ctaLabel
-                        : t("hero.cta_explore")}
-                    </span>
-                    {dir === "rtl" ? (
-                      <ArrowLeft className="w-4 h-4" />
-                    ) : (
-                      <ArrowRight className="w-4 h-4" />
-                    )}
-                  </Link>
+                {/* Zillow-Style Location Search Bar */}
+                <div ref={searchContainerRef} className="relative w-full max-w-xl pt-2">
+                  <form onSubmit={handleSearchSubmit} className="relative">
+                    <div className="relative flex items-center bg-white/95 backdrop-blur-md rounded-2xl p-1.5 shadow-2xl border-2 border-white focus-within:border-[#C5A059] transition-all">
+                      <div className="flex-1 flex items-center px-3.5">
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            setIsDropdownOpen(true);
+                          }}
+                          onFocus={() => setIsDropdownOpen(true)}
+                          placeholder={
+                            lang === "ar"
+                              ? "أدخل اسم المدينة أو الحي (مثل: الرياض، حي النرجس، جدة...)"
+                              : "Enter a city, neighborhood, or district..."
+                          }
+                          className="w-full bg-transparent text-zinc-900 placeholder-zinc-400 text-xs sm:text-sm font-medium outline-none py-2 text-right"
+                          dir={dir}
+                        />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSearchQuery("");
+                              setIsDropdownOpen(false);
+                            }}
+                            className="p-1 hover:bg-zinc-200 rounded-full text-zinc-500 transition-colors mx-1 cursor-pointer"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
 
-                  <button
-                    onClick={() => setVideoModalOpen(true)}
-                    className="px-6 py-4 rounded-full font-semibold text-sm sm:text-base bg-[#141418]/80 hover:bg-[#141418] text-white border border-white/20 hover:border-[#C5A059]/60 backdrop-blur-md transition-all flex items-center gap-3 cursor-pointer group shadow-lg"
-                  >
-                    <div className="w-7 h-7 rounded-full bg-white/10 group-hover:bg-[#C5A059] group-hover:text-black flex items-center justify-center transition-colors">
-                      <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                      <button
+                        type="submit"
+                        className="px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 text-black font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md transition-all cursor-pointer shrink-0"
+                      >
+                        <Search className="w-4 h-4" />
+                        <span>{lang === "ar" ? "بحث" : "Search"}</span>
+                      </button>
                     </div>
-                    <span>{t("hero.cta_video")}</span>
-                  </button>
+                  </form>
+
+                  {/* Autosuggest Dropdown Menu (Zillow-Style) */}
+                  {isDropdownOpen && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden z-50 text-right animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="px-4 py-2 bg-zinc-50 border-b border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500 font-semibold">
+                        <span>
+                          {lang === "ar"
+                            ? "أبرز المدن والأحياء المتاحة"
+                            : "Available Cities & Districts"}
+                        </span>
+                        <span className="text-[10px] text-[#C5A059] font-bold">
+                          {suggestedLocations.length} موقع
+                        </span>
+                      </div>
+
+                      <div className="max-h-64 overflow-y-auto divide-y divide-zinc-100">
+                        {suggestedLocations.map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => handleSelectLocation(item.titleArabic)}
+                            className="w-full px-4 py-3 text-right hover:bg-[#C5A059]/10 transition-colors flex items-center justify-between gap-3 group cursor-pointer"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-xl bg-zinc-100 group-hover:bg-[#C5A059]/20 group-hover:text-[#997736] text-zinc-600 flex items-center justify-center shrink-0 transition-colors">
+                                <MapPin className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <span className="block text-xs sm:text-sm font-bold text-zinc-900 group-hover:text-[#997736]">
+                                  {lang === "ar" ? item.titleArabic : item.titleEnglish}
+                                </span>
+                                <span className="block text-[10px] text-zinc-500">
+                                  {item.provinceArabic}
+                                </span>
+                              </div>
+                            </div>
+
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-zinc-100 group-hover:bg-[#C5A059]/20 text-zinc-600 group-hover:text-[#997736]">
+                              {item.type === "CITY" ? (lang === "ar" ? "مدينة" : "City") : (lang === "ar" ? "حي" : "District")}
+                            </span>
+                          </button>
+                        ))}
+
+                        {suggestedLocations.length === 0 && (
+                          <div className="px-4 py-6 text-center text-xs text-zinc-500">
+                            {lang === "ar"
+                              ? "لا توجد نتائج مطابقة لاسم المدينة المدخل"
+                              : "No matching cities or districts found"}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
