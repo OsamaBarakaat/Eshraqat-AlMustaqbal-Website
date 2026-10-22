@@ -204,7 +204,7 @@ export function Navbar() {
         {/* Mobile Dropdown / Drawer Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden mt-3 px-3 sm:px-4 pb-4 animate-in slide-in-from-top-3 duration-200">
-            <div className="p-4 rounded-3xl bg-[#141418]/98 backdrop-blur-2xl border border-[#C5A059]/30 shadow-2xl shadow-black space-y-4 text-right">
+            <div className="p-4 rounded-3xl bg-[#141418]/98 backdrop-blur-2xl border border-[#C5A059]/30 shadow-2xl shadow-black space-y-4 text-right max-h-[calc(100vh-90px)] overflow-y-auto">
               {/* Navigation Links */}
               <div className="grid grid-cols-1 divide-y divide-white/5">
                 {navLinks.map((item) => {

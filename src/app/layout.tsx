@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cairo, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n";
@@ -23,6 +23,13 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#09090B",
+};
+
 export const metadata: Metadata = {
   title: "إشراقة المستقبل للتطوير العقاري | وجهة جديدة لحياة أرقى",
   description:
@@ -45,17 +52,17 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${cairo.variable} ${plusJakartaSans.variable} dark scroll-smooth`}
+      className={`${cairo.variable} ${plusJakartaSans.variable} dark scroll-smooth overflow-x-hidden max-w-[100vw]`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-[#09090B] text-[#EDEDED] font-arabic antialiased selection:bg-[#C5A059] selection:text-black">
+      <body className="min-h-screen bg-[#09090B] text-[#EDEDED] font-arabic antialiased selection:bg-[#C5A059] selection:text-black overflow-x-hidden max-w-[100vw] w-full">
         <LanguageProvider>
           <ClientAuthProvider>
             <CompareProvider>
               <Suspense fallback={<div className="h-20 bg-[#09090B]" />}>
                 <Navbar />
               </Suspense>
-              <div className="flex-1">{children}</div>
+              <div className="flex-1 w-full max-w-[100vw] overflow-x-hidden">{children}</div>
               <CompareDock />
               <Footer />
             </CompareProvider>

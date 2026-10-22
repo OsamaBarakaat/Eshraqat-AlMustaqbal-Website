@@ -130,15 +130,15 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
   return (
     <div className="relative">
       {/* ================= 1. THE UPPER SEARCH ENGINE DOCK ================= */}
-      <div className="relative z-20 max-w-5xl mx-auto px-4 -mt-8 sm:-mt-10">
-        <div className="p-4 sm:p-6 rounded-3xl bg-[#141418]/95 backdrop-blur-2xl border border-[#C5A059]/30 shadow-2xl shadow-black/90 space-y-4">
+      <div className="relative z-20 max-w-5xl mx-auto px-3.5 sm:px-4 mt-6 sm:-mt-10">
+        <div className="p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#141418]/95 backdrop-blur-2xl border border-[#C5A059]/30 shadow-2xl shadow-black/90 space-y-3.5 sm:space-y-4">
           {/* Purpose Tabs */}
-          <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-3">
+          <div className="grid grid-cols-4 gap-1 sm:flex sm:flex-wrap sm:gap-2 border-b border-white/10 pb-3">
             {[
-              { id: "ALL", labelAr: "جميع العقارات", labelEn: "All Properties" },
-              { id: "SALE", labelAr: "شراء", labelEn: "Buy / For Sale" },
-              { id: "RENT", labelAr: "إيجار", labelEn: "Rent" },
-              { id: "INVESTMENT", labelAr: "استثمار", labelEn: "Invest" },
+              { id: "ALL", labelAr: "الكل", labelFullAr: "جميع العقارات", labelEn: "All", labelFullEn: "All Properties" },
+              { id: "SALE", labelAr: "شراء", labelFullAr: "شراء", labelEn: "Buy", labelFullEn: "Buy / For Sale" },
+              { id: "RENT", labelAr: "إيجار", labelFullAr: "إيجار", labelEn: "Rent", labelFullEn: "Rent" },
+              { id: "INVESTMENT", labelAr: "استثمار", labelFullAr: "استثمار", labelEn: "Invest", labelFullEn: "Invest" },
             ].map((tab) => {
               const isSelected = activeTab === tab.id;
               return (
@@ -146,13 +146,14 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  className={`px-1.5 sm:px-5 py-2 rounded-xl text-[11px] sm:text-sm font-bold text-center transition-all cursor-pointer ${
                     isSelected
-                      ? "bg-gradient-to-r from-[#C5A059] to-[#D4AF37] text-black shadow-md shadow-[#C5A059]/25 scale-105"
+                      ? "bg-gradient-to-r from-[#C5A059] to-[#D4AF37] text-black shadow-md shadow-[#C5A059]/25 scale-100 sm:scale-105"
                       : "text-zinc-400 hover:text-white hover:bg-white/5"
                   }`}
                 >
-                  {lang === "ar" ? tab.labelAr : tab.labelEn}
+                  <span className="hidden sm:inline">{lang === "ar" ? tab.labelFullAr : tab.labelFullEn}</span>
+                  <span className="sm:hidden">{lang === "ar" ? tab.labelAr : tab.labelEn}</span>
                 </button>
               );
             })}
@@ -161,7 +162,7 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
           {/* Filter Controls Form (Strictly aligned with Dashboard Dropdowns) */}
           <form
             onSubmit={handleSearchSubmit}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-end"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 items-end"
           >
             {/* 1. Category Filter (Exact match to Dashboard: سكني, تجاري وإداري, أراضي وزراعي) */}
             <div>
@@ -245,7 +246,7 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
       </div>
 
       {/* ================= 2. THE PROPERTIES SHOWCASE SECTION ================= */}
-      <section id="properties-showcase" className="py-24 bg-[#09090B] relative">
+      <section id="properties-showcase" className="py-14 sm:py-24 bg-[#09090B] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Section Header (Bottom filter pills completely removed!) */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 text-right border-b border-white/10 pb-6">

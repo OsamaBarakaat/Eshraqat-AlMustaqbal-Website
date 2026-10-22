@@ -29,14 +29,14 @@ export function TestimonialsSection() {
   ];
 
   return (
-    <section className="py-24 bg-[#0D0D10] relative text-right border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+    <section className="py-16 sm:py-24 bg-[#0D0D10] relative text-right border-t border-white/5 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-14">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 text-xs font-semibold">
             <Star className="w-3.5 h-3.5 fill-current" />
             <span>ثقة وشهادات عملائنا</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
             ماذا يقول عملاؤنا ومستثمرونا؟
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">

@@ -63,7 +63,7 @@ export function VisionPillars({ homepageContent }: VisionPillarsProps) {
         ];
 
   return (
-    <section id="services" className="py-28 bg-[#070709] relative text-right border-t border-white/5 overflow-hidden">
+    <section id="services" className="py-16 sm:py-28 bg-[#070709] relative text-right border-t border-white/5 overflow-hidden">
       {/* ================= Luxurious Golden Meteor Shower Background ================= */}
       <div 
         className="absolute inset-0 pointer-events-none overflow-hidden z-0"
@@ -136,13 +136,13 @@ export function VisionPillars({ homepageContent }: VisionPillarsProps) {
         ))}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-16">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 text-xs font-semibold">
             <Award className="w-3.5 h-3.5" />
             <span>{badge}</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
             {title}
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light">

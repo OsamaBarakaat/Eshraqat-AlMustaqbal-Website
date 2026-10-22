@@ -14,7 +14,11 @@
   --font-sans: var(--font-sans);
 }
 
+html,
 body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
   background-color: #09090b;
   color: #ededed;
   font-family: var(--font-cairo), sans-serif;

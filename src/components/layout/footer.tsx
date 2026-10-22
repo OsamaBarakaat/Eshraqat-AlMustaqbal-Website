@@ -226,7 +226,7 @@ export function Footer() {
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
           <p>© 2026 إشراقة المستقبل للتطوير العقاري. جميع الحقوق محفوظة.</p>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-start">
             <Link href="/privacy" className="hover:underline">سياسة الخصوصية</Link>
             <span>•</span>
             <Link href="/terms" className="hover:underline">الشروط والأحكام</Link>
