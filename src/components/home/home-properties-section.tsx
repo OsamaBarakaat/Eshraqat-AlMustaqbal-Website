@@ -62,12 +62,32 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
         if (selectedCategory === "AGRICULTURAL" && propCat !== "AGRICULTURAL") return false;
       }
 
-      // 3. Location filter (City / District)
+      // 3. Location filter (City / District) with Arabic Normalization
       if (selectedLocation !== "ALL") {
-        const locLower = selectedLocation.toLowerCase();
-        const cityMatch = property.city?.toLowerCase().includes(locLower);
-        const districtMatch = property.district?.toLowerCase().includes(locLower);
-        if (!cityMatch && !districtMatch) return false;
+        const normalize = (s: string) =>
+          (s || "")
+            .toLowerCase()
+            .replace(/[\u064B-\u0652]/g, "")
+            .replace(/[أإآٱ]/g, "ا")
+            .replace(/ة/g, "ه")
+            .replace(/ى/g, "ي")
+            .replace(/^(مدينة|مدينه|حي|محافظة|محافظه)\s+/, "")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        const locNorm = normalize(selectedLocation);
+        const cityNorm = normalize(property.city || "");
+        const distNorm = normalize(property.district || "");
+        const titleNorm = normalize(property.title || "");
+
+        const match =
+          cityNorm.includes(locNorm) ||
+          locNorm.includes(cityNorm) ||
+          distNorm.includes(locNorm) ||
+          locNorm.includes(distNorm) ||
+          titleNorm.includes(locNorm);
+
+        if (!match) return false;
       }
 
       // 4. Price range filter
