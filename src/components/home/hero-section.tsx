@@ -188,17 +188,17 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                 dir === "rtl" ? "text-right" : "text-left"
               }`}
             >
-              <div className="p-6 sm:p-10 rounded-3xl bg-black/40 lg:bg-black/30 backdrop-blur-md border border-white/10 shadow-2xl space-y-6 max-w-3xl">
+              <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-black/45 lg:bg-black/30 backdrop-blur-md border border-white/10 shadow-2xl space-y-4 sm:space-y-6 max-w-3xl">
                 {/* Badge Tag from Dashboard if present */}
                 {homepageContent?.badgeText && (
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/15 text-[#C5A059] border border-[#C5A059]/30 text-xs font-semibold">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#C5A059]/15 text-[#C5A059] border border-[#C5A059]/30 text-[11px] sm:text-xs font-semibold">
                     <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
                     <span>{homepageContent.badgeText}</span>
                   </div>
                 )}
 
-                {/* Huge Luxury Title with Masked Background Animation */}
-                <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold leading-[1.15] tracking-tight">
+                {/* Huge Luxury Title */}
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.2] sm:leading-[1.15] tracking-tight">
                   {lang === "ar" && homepageContent?.heroTitle ? (
                     (() => {
                       const words = homepageContent.heroTitle.trim().split(" ");
@@ -225,17 +225,17 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-sm sm:text-base lg:text-lg text-zinc-200 max-w-2xl leading-relaxed font-light drop-shadow-sm">
+                <p className="text-xs sm:text-base lg:text-lg text-zinc-200 max-w-2xl leading-relaxed font-light drop-shadow-sm">
                   {lang === "ar" && homepageContent?.heroSubtitle
                     ? homepageContent.heroSubtitle
                     : t("hero.subtitle")}
                 </p>
 
                 {/* Luxury Glassmorphic Location Search Bar */}
-                <div ref={searchContainerRef} className="relative w-full max-w-xl pt-2 z-50">
+                <div ref={searchContainerRef} className="relative w-full max-w-xl pt-1 sm:pt-2 z-50">
                   <form onSubmit={handleSearchSubmit} className="relative">
-                    <div className="relative flex items-center bg-[#141418]/90 hover:bg-[#18181D] focus-within:bg-[#18181D] backdrop-blur-xl rounded-2xl p-1.5 sm:p-2 shadow-2xl border border-white/20 focus-within:border-[#C5A059] focus-within:ring-4 focus-within:ring-[#C5A059]/15 transition-all">
-                      <div className="flex-1 flex items-center px-3 gap-2.5">
+                    <div className="relative flex items-center bg-[#141418]/90 hover:bg-[#18181D] focus-within:bg-[#18181D] backdrop-blur-xl rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-2xl border border-white/20 focus-within:border-[#C5A059] focus-within:ring-4 focus-within:ring-[#C5A059]/15 transition-all">
+                      <div className="flex-1 flex items-center px-2 sm:px-3 gap-2 min-w-0">
                         <MapPin className="w-4 h-4 text-[#C5A059] shrink-0" />
                         <input
                           type="text"
@@ -247,10 +247,10 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                           onFocus={() => setIsDropdownOpen(true)}
                           placeholder={
                             lang === "ar"
-                              ? "أدخل اسم المدينة أو الحي (مثل: الرياض، النرجس، حطين، جدة...)"
+                              ? "أدخل اسم المدينة أو الحي (الرياض، جدة...)"
                               : "Enter a city, neighborhood, or district..."
                           }
-                          className="w-full bg-transparent text-white placeholder-zinc-400 text-xs sm:text-sm font-medium outline-none py-2 text-right selection:bg-[#C5A059] selection:text-black"
+                          className="w-full bg-transparent text-white placeholder-zinc-400 text-xs sm:text-sm font-medium outline-none py-1.5 sm:py-2 text-right selection:bg-[#C5A059] selection:text-black min-w-0"
                           dir={dir}
                         />
                         {searchQuery && (
@@ -260,7 +260,7 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                               setSearchQuery("");
                               setIsDropdownOpen(false);
                             }}
-                            className="p-1 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors mx-1 cursor-pointer"
+                            className="p-1 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors mx-1 cursor-pointer shrink-0"
                           >
                             <X className="w-3.5 h-3.5" />
                           </button>
@@ -269,9 +269,9 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
 
                       <button
                         type="submit"
-                        className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 active:scale-[0.98] text-black font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-[#C5A059]/20 transition-all cursor-pointer shrink-0"
+                        className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 active:scale-[0.98] text-black font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 shadow-lg shadow-[#C5A059]/20 transition-all cursor-pointer shrink-0"
                       >
-                        <Search className="w-4 h-4 stroke-[2.5]" />
+                        <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
                         <span>{lang === "ar" ? "بحث" : "Search"}</span>
                       </button>
                     </div>
@@ -410,12 +410,12 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
           */}
 
           {/* 2. Floating Showcase Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
             {categories.map((cat, idx) => (
               <Link
                 key={idx}
                 href={cat.href}
-                className={`group relative h-28 sm:h-32 rounded-2xl overflow-hidden border border-white/10 hover:border-[#C5A059]/60 transition-all p-4 flex flex-col justify-end cursor-pointer ${
+                className={`group relative h-24 sm:h-32 rounded-xl sm:rounded-2xl overflow-hidden border border-white/10 hover:border-[#C5A059]/60 transition-all p-2.5 sm:p-4 flex flex-col justify-end cursor-pointer ${
                   dir === "rtl" ? "text-right" : "text-left"
                 }`}
               >
@@ -424,25 +424,25 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                   alt={cat.title}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 brightness-75 group-hover:brightness-90"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent" />
 
                 <div
-                  className={`relative z-10 flex items-end justify-between gap-2 ${
+                  className={`relative z-10 flex items-end justify-between gap-1.5 sm:gap-2 ${
                     dir === "rtl" ? "flex-row" : "flex-row-reverse"
                   }`}
                 >
-                  <div className="w-7 h-7 rounded-full bg-black/60 border border-white/20 group-hover:bg-[#C5A059] group-hover:text-black text-white flex items-center justify-center transition-colors shrink-0">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-black/60 border border-white/20 group-hover:bg-[#C5A059] group-hover:text-black text-white flex items-center justify-center transition-colors shrink-0">
                     {dir === "rtl" ? (
-                      <ChevronLeft className="w-4 h-4" />
+                      <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     ) : (
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     )}
                   </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white group-hover:text-[#C5A059] transition-colors">
+                  <div className="min-w-0">
+                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#C5A059] transition-colors truncate leading-tight">
                       {cat.title}
                     </h3>
-                    <p className="text-[11px] text-zinc-300 font-light">
+                    <p className="text-[9px] sm:text-[11px] text-zinc-300 font-light truncate">
                       {cat.subtitle}
                     </p>
                   </div>
@@ -453,31 +453,31 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
             {/* 4th Card: Strategic Riyadh Map Explorer */}
             <Link
               href="/properties"
-              className={`group relative h-28 sm:h-32 rounded-2xl overflow-hidden border border-[#C5A059]/40 hover:border-[#C5A059] transition-all p-4 flex flex-col justify-end bg-gradient-to-br from-[#1C1C22] to-[#0D0D0F] cursor-pointer ${
+              className={`group relative h-24 sm:h-32 rounded-xl sm:rounded-2xl overflow-hidden border border-[#C5A059]/40 hover:border-[#C5A059] transition-all p-2.5 sm:p-4 flex flex-col justify-end bg-gradient-to-br from-[#1C1C22] to-[#0D0D0F] cursor-pointer ${
                 dir === "rtl" ? "text-right" : "text-left"
               }`}
             >
               <div
-                className={`relative z-10 flex items-end justify-between gap-2 ${
+                className={`relative z-10 flex items-end justify-between gap-1.5 sm:gap-2 ${
                   dir === "rtl" ? "flex-row" : "flex-row-reverse"
                 }`}
               >
-                <div className="w-7 h-7 rounded-full bg-[#C5A059] text-black flex items-center justify-center shrink-0">
-                  <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#C5A059] text-black flex items-center justify-center shrink-0">
+                  <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current ml-0.5" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <div
-                    className={`flex items-center gap-1.5 text-[#C5A059] text-xs font-bold mb-0.5 ${
+                    className={`flex items-center gap-1 text-[#C5A059] text-[9px] sm:text-xs font-bold mb-0.5 ${
                       dir === "rtl" ? "justify-end" : "justify-start"
                     }`}
                   >
-                    <MapPin className="w-3 h-3" />
+                    <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                     <span>{lang === "ar" ? "الرياض" : "Riyadh"}</span>
                   </div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-xs sm:text-sm font-bold text-white truncate leading-tight">
                     {t("showcase.lands")}
                   </h3>
-                  <p className="text-[10px] text-zinc-400">
+                  <p className="text-[9px] sm:text-[10px] text-zinc-400 truncate">
                     {t("showcase.map_link")}
                   </p>
                 </div>
