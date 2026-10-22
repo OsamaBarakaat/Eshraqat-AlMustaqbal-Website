@@ -72,44 +72,52 @@ export function HeroSection() {
         {/* Main Content Hero Container */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 flex flex-col justify-center my-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Right Column: Hero Headline & Narrative */}
-            <div className="lg:col-span-8 text-right space-y-6">
-              {/* Huge Luxury Title */}
-              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold text-white leading-[1.15] tracking-tight drop-shadow-md">
-                <span className="block text-zinc-100">{t("hero.title_part1")}</span>
-                <span className="block bg-gradient-to-r from-[#F3E5AB] via-[#D4AF37] to-[#C5A059] bg-clip-text text-transparent drop-shadow-sm">
-                  {t("hero.title_part2")}
-                </span>
-              </h1>
+            {/* Start Column: Hero Headline & Narrative (Structured at the start) */}
+            <div
+              className={`lg:col-span-8 ${
+                dir === "rtl" ? "text-right" : "text-left"
+              }`}
+            >
+              <div className="p-6 sm:p-10 rounded-3xl bg-black/40 lg:bg-black/30 backdrop-blur-md border border-white/10 shadow-2xl space-y-6 max-w-3xl">
+                {/* Huge Luxury Title with Masked Background Animation */}
+                <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold leading-[1.15] tracking-tight">
+                  <span className="block masked-text font-black">
+                    {t("hero.title_part1")}
+                  </span>
+                  <span className="block masked-text-gold font-black">
+                    {t("hero.title_part2")}
+                  </span>
+                </h1>
 
-              {/* Subtitle */}
-              <p className="text-sm sm:text-base lg:text-lg text-zinc-200 max-w-2xl leading-relaxed font-light drop-shadow-sm">
-                {t("hero.subtitle")}
-              </p>
+                {/* Subtitle */}
+                <p className="text-sm sm:text-base lg:text-lg text-zinc-200 max-w-2xl leading-relaxed font-light drop-shadow-sm">
+                  {t("hero.subtitle")}
+                </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <Link
-                  href="/properties"
-                  className="px-7 py-4 rounded-full font-bold text-sm sm:text-base bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 text-black shadow-xl shadow-[#C5A059]/25 transition-all flex items-center gap-2.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  <span>{t("hero.cta_explore")}</span>
-                  {dir === "rtl" ? (
-                    <ArrowLeft className="w-4 h-4" />
-                  ) : (
-                    <ArrowRight className="w-4 h-4" />
-                  )}
-                </Link>
+                {/* Action Buttons */}
+                <div className="flex flex-wrap items-center gap-4 pt-2">
+                  <Link
+                    href="/properties"
+                    className="px-7 py-4 rounded-full font-bold text-sm sm:text-base bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#997736] hover:brightness-110 text-black shadow-xl shadow-[#C5A059]/25 transition-all flex items-center gap-2.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <span>{t("hero.cta_explore")}</span>
+                    {dir === "rtl" ? (
+                      <ArrowLeft className="w-4 h-4" />
+                    ) : (
+                      <ArrowRight className="w-4 h-4" />
+                    )}
+                  </Link>
 
-                <button
-                  onClick={() => setVideoModalOpen(true)}
-                  className="px-6 py-4 rounded-full font-semibold text-sm sm:text-base bg-[#141418]/80 hover:bg-[#141418] text-white border border-white/20 hover:border-[#C5A059]/60 backdrop-blur-md transition-all flex items-center gap-3 cursor-pointer group shadow-lg"
-                >
-                  <div className="w-7 h-7 rounded-full bg-white/10 group-hover:bg-[#C5A059] group-hover:text-black flex items-center justify-center transition-colors">
-                    <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
-                  </div>
-                  <span>{t("hero.cta_video")}</span>
-                </button>
+                  <button
+                    onClick={() => setVideoModalOpen(true)}
+                    className="px-6 py-4 rounded-full font-semibold text-sm sm:text-base bg-[#141418]/80 hover:bg-[#141418] text-white border border-white/20 hover:border-[#C5A059]/60 backdrop-blur-md transition-all flex items-center gap-3 cursor-pointer group shadow-lg"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-white/10 group-hover:bg-[#C5A059] group-hover:text-black flex items-center justify-center transition-colors">
+                      <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                    </div>
+                    <span>{t("hero.cta_video")}</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -192,7 +200,9 @@ export function HeroSection() {
               <Link
                 key={idx}
                 href={cat.href}
-                className="group relative h-28 sm:h-32 rounded-2xl overflow-hidden border border-white/10 hover:border-[#C5A059]/60 transition-all p-4 flex flex-col justify-end text-right cursor-pointer"
+                className={`group relative h-28 sm:h-32 rounded-2xl overflow-hidden border border-white/10 hover:border-[#C5A059]/60 transition-all p-4 flex flex-col justify-end cursor-pointer ${
+                  dir === "rtl" ? "text-right" : "text-left"
+                }`}
               >
                 <img
                   src={cat.image}
@@ -201,7 +211,11 @@ export function HeroSection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
-                <div className="relative z-10 flex items-end justify-between">
+                <div
+                  className={`relative z-10 flex items-end justify-between gap-2 ${
+                    dir === "rtl" ? "flex-row" : "flex-row-reverse"
+                  }`}
+                >
                   <div className="w-7 h-7 rounded-full bg-black/60 border border-white/20 group-hover:bg-[#C5A059] group-hover:text-black text-white flex items-center justify-center transition-colors shrink-0">
                     {dir === "rtl" ? (
                       <ChevronLeft className="w-4 h-4" />
@@ -224,22 +238,32 @@ export function HeroSection() {
             {/* 4th Card: Strategic Riyadh Map Explorer */}
             <Link
               href="/properties"
-              className="group relative h-28 sm:h-32 rounded-2xl overflow-hidden border border-[#C5A059]/40 hover:border-[#C5A059] transition-all p-4 flex flex-col justify-end text-right bg-gradient-to-br from-[#1C1C22] to-[#0D0D0F] cursor-pointer"
+              className={`group relative h-28 sm:h-32 rounded-2xl overflow-hidden border border-[#C5A059]/40 hover:border-[#C5A059] transition-all p-4 flex flex-col justify-end bg-gradient-to-br from-[#1C1C22] to-[#0D0D0F] cursor-pointer ${
+                dir === "rtl" ? "text-right" : "text-left"
+              }`}
             >
-              <div className="relative z-10 flex items-end justify-between">
+              <div
+                className={`relative z-10 flex items-end justify-between gap-2 ${
+                  dir === "rtl" ? "flex-row" : "flex-row-reverse"
+                }`}
+              >
                 <div className="w-7 h-7 rounded-full bg-[#C5A059] text-black flex items-center justify-center shrink-0">
                   <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5 text-[#C5A059] text-xs font-bold mb-0.5 justify-end">
+                  <div
+                    className={`flex items-center gap-1.5 text-[#C5A059] text-xs font-bold mb-0.5 ${
+                      dir === "rtl" ? "justify-end" : "justify-start"
+                    }`}
+                  >
                     <MapPin className="w-3 h-3" />
-                    <span>الرياض</span>
+                    <span>{lang === "ar" ? "الرياض" : "Riyadh"}</span>
                   </div>
                   <h3 className="text-sm font-bold text-white">
-                    موقع استراتيجي لقيمة أكبر
+                    {t("showcase.lands")}
                   </h3>
                   <p className="text-[10px] text-zinc-400">
-                    اكتشف مشاريعنا على الخريطة
+                    {t("showcase.map_link")}
                   </p>
                 </div>
               </div>
