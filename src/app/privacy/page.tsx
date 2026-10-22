@@ -128,13 +128,7 @@ export default async function PrivacyPage() {
           {/* Footer of Card */}
           <div className="pt-8 mt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
             <span>شركة إشراقة المستقبل للتطوير والاستثمار العقاري © 2026</span>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-1.5 text-[#C5A059] hover:underline font-semibold"
-            >
-              <span>هل لديك أي استفسار حول سياسة الخصوصية؟ تواصل معنا</span>
-              <ArrowRight className="w-3.5 h-3.5 rotate-180" />
-            </Link>
+            
           </div>
         </div>
 

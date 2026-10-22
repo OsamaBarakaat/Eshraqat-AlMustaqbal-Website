@@ -1,7 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
-import { FileText, ShieldCheck, ArrowRight, Clock, HelpCircle, PhoneCall, Scale } from "lucide-react";
+import {
+  FileText,
+  ShieldCheck,
+  ArrowRight,
+  Clock,
+  HelpCircle,
+  PhoneCall,
+  Scale,
+} from "lucide-react";
 import { apiService } from "@/lib/api-service";
 import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
 
@@ -10,7 +18,8 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const page = await apiService.getPublicPage("terms-conditions");
   return {
-    title: page?.metaTitle || "الشروط والأحكام العامة | إشراقة المستقبل للعقارات",
+    title:
+      page?.metaTitle || "الشروط والأحكام العامة | إشراقة المستقبل للعقارات",
     description:
       page?.metaDescription ||
       "الشروط والأحكام المنظمة للتعاملات وتصفح العقارات وحجز المعاينات عبر منصة إشراقة المستقبل للتطوير والاستثمار العقاري بالمملكة.",
@@ -96,7 +105,9 @@ export default async function TermsPage() {
             <span>•</span>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-emerald-400 font-medium">معتمدة وفق لوائح الهيئة العامة للعقار بالمملكة</span>
+              <span className="text-emerald-400 font-medium">
+                معتمدة وفق لوائح الهيئة العامة للعقار بالمملكة
+              </span>
             </div>
           </div>
         </div>
@@ -129,13 +140,6 @@ export default async function TermsPage() {
           {/* Footer of Card */}
           <div className="pt-8 mt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
             <span>شركة إشراقة المستقبل للتطوير والاستثمار العقاري © 2026</span>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-1.5 text-[#C5A059] hover:underline font-semibold"
-            >
-              <span>هل لديك أي استفسار حول الشروط والأحكام؟ تواصل معنا</span>
-              <ArrowRight className="w-3.5 h-3.5 rotate-180" />
-            </Link>
           </div>
         </div>
 
@@ -146,8 +150,13 @@ export default async function TermsPage() {
               <HelpCircle className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white">هل ترغب في استشارة قانونية أو عقارية؟</h4>
-              <p className="text-xs text-zinc-400">مستشارونا العقاريون والقانونيون جاهزون لخدمتكم ومساعدتكم بكل شفافية.</p>
+              <h4 className="text-sm font-bold text-white">
+                هل ترغب في استشارة قانونية أو عقارية؟
+              </h4>
+              <p className="text-xs text-zinc-400">
+                مستشارونا العقاريون والقانونيون جاهزون لخدمتكم ومساعدتكم بكل
+                شفافية.
+              </p>
             </div>
           </div>
           <Link
