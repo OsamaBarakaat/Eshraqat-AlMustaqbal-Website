@@ -71,12 +71,45 @@ export function InquiriesProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
+  const fetchInquiries = useCallback(
+    async (emailToQuery: string) => {
+      if (!emailToQuery || !emailToQuery.includes("@")) {
+        setInquiries([]);
+        return;
+      }
+      setIsLoading(true);
+      try {
+        const items = await ApiService.getClientInquiries(emailToQuery);
+        setInquiries(items);
+      } catch {
+        // ignore
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
   // Sync with logged-in user
   useEffect(() => {
     if (user?.email) {
       setEffectiveEmailState(user.email);
     }
   }, [user]);
+
+  // Listen to external refresh-inquiries events
+  useEffect(() => {
+    const handleRefresh = () => {
+      const savedGuestEmail = localStorage.getItem(GUEST_EMAIL_STORAGE);
+      const email = user?.email || savedGuestEmail || effectiveEmail;
+      if (email && email.includes("@")) {
+        setEffectiveEmailState(email);
+        fetchInquiries(email);
+      }
+    };
+    window.addEventListener("refresh-inquiries", handleRefresh);
+    return () => window.removeEventListener("refresh-inquiries", handleRefresh);
+  }, [user, effectiveEmail, fetchInquiries]);
 
   const setEffectiveEmail = useCallback((email: string) => {
     const cleaned = email.trim().toLowerCase();
@@ -102,25 +135,6 @@ export function InquiriesProvider({ children }: { children: React.ReactNode }) {
       return readKeys.includes(key);
     },
     [readKeys]
-  );
-
-  const fetchInquiries = useCallback(
-    async (emailToQuery: string) => {
-      if (!emailToQuery || !emailToQuery.includes("@")) {
-        setInquiries([]);
-        return;
-      }
-      setIsLoading(true);
-      try {
-        const items = await ApiService.getClientInquiries(emailToQuery);
-        setInquiries(items);
-      } catch {
-        // ignore
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
   );
 
   // Poll for inquiries every 30 seconds

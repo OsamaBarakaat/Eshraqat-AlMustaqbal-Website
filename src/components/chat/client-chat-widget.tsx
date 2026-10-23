@@ -115,6 +115,11 @@ export function ClientChatWidget() {
     }
   };
 
+  // Hide this section if the client has no messages and the widget is not open
+  if (inquiries.length === 0 && !isOpen) {
+    return null;
+  }
+
   return (
     <>
       {/* Floating Launcher Button */}
@@ -147,8 +152,7 @@ export function ClientChatWidget() {
           type="button"
           onClick={isOpen ? closeChat : () => openChat()}
           className="relative group p-4 rounded-full bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:brightness-110 active:scale-95 text-black shadow-2xl shadow-[#C5A059]/40 border border-white/20 transition-all cursor-pointer flex items-center justify-center"
-          title={lang === "en" ? "Chat with property consultants" : "استفسارات ومحادثة مستشاري إشراقة"}
-          aria-label="محادثة الدعم"
+          aria-label={lang === "en" ? "Inquiries & Consultations" : "صندوق الاستفسارات والردود"}
         >
           {isOpen ? (
             <X className="w-6 h-6" />
@@ -164,10 +168,14 @@ export function ClientChatWidget() {
             </span>
           )}
 
-          {/* Tooltip on hover if no unread */}
-          {(!hasUnreadReply || inquiries.length === 0) && !isOpen && (
-            <span className="hidden sm:group-hover:inline-block absolute bottom-full mb-2 px-3 py-1.5 rounded-xl bg-black/90 text-white text-xs font-semibold whitespace-nowrap border border-white/10 shadow-lg pointer-events-none">
-              {lang === "en" ? "Messages & Consultations" : "صندوق الاستفسارات والردود"}
+          {/* Tooltip on hover - Fully visible without any clipping */}
+          {!isOpen && (
+            <span
+              className={`hidden sm:group-hover:inline-flex items-center gap-2 absolute bottom-full mb-3 px-3.5 py-2 rounded-2xl bg-[#141418]/95 text-white text-xs font-semibold whitespace-nowrap border border-[#C5A059]/40 shadow-2xl backdrop-blur-md pointer-events-none z-50 transition-all duration-200 ${
+                dir === "rtl" ? "left-0" : "right-0"
+              }`}
+            >
+              <span>{lang === "en" ? "Messages & Consultations" : "صندوق الاستفسارات والردود"}</span>
             </span>
           )}
         </button>

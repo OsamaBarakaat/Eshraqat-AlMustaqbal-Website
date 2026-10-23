@@ -47,6 +47,12 @@ export default function ContactPage() {
         subject: subject.trim(),
         message: message.trim(),
       });
+      try {
+        localStorage.setItem("eshraqat_guest_inquiry_email_v1", email.trim().toLowerCase());
+        window.dispatchEvent(new CustomEvent("refresh-inquiries"));
+      } catch {
+        // ignore
+      }
     } catch {
       // ignore
     }
