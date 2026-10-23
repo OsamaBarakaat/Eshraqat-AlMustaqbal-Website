@@ -17,19 +17,32 @@ function getResendClient(): Resend | null {
 export async function sendOtpEmail(email: string, otp: string) {
   const resend = getResendClient();
 
-  // If no API key configured, log and simulate in dev
+  // If no API key configured on Vercel/server, report it clearly
   if (!resend) {
-    console.warn("[Resend Warning] RESEND_API_KEY not set. Falling back to simulated log.");
-    console.log(`\n========================================\n[EMAIL DISPATCH - SIMULATED] To: ${email}\n[OTP CODE]: ${otp}\n========================================\n`);
-    return { success: true, simulated: true };
+    console.error("[Resend Error] RESEND_API_KEY is not defined in environment variables.");
+    return {
+      success: false,
+      error: "مفتاح RESEND_API_KEY غير مضاف في إعدادات البيئة (Vercel Environment Variables) لمشروع الويب سايت.",
+    };
   }
 
-  // On Resend free tier (using onboarding@resend.dev), only the account owner's email can receive emails.
-  // In development/testing, if the recipient is an internal or placeholder email, we ensure it goes to the verified email.
+  // Free Tier Rule (onboarding@resend.dev):
+  // Resend strictly blocks sending to any address other than the verified account owner (osaamabarakaat@gmail.com).
+  // If using onboarding@resend.dev or if the target is different, route it to the verified receiver to ensure delivery.
+  const isTestingDomain = FROM_EMAIL.includes("resend.dev");
+  const normalizedTarget = email.trim().toLowerCase();
+  const normalizedVerified = VERIFIED_RECEIVER.trim().toLowerCase();
+
   const recipientEmail =
-    email.endsWith("@eshraqat.sa") || email.includes("localhost")
-      ? VERIFIED_RECEIVER
-      : email;
+    isTestingDomain && normalizedTarget !== normalizedVerified
+      ? normalizedVerified
+      : email.trim();
+
+  const isRerouted = recipientEmail !== email.trim();
+
+  const subject = isRerouted
+    ? `[تحويل تجريبي لـ ${email}] رمز التحقق: ${otp} | إشراقة المستقبل`
+    : `رمز التحقق الخاص بك: ${otp} | إشراقة المستقبل`;
 
   const html = `
     <!DOCTYPE html>
@@ -84,8 +97,13 @@ export async function sendOtpEmail(email: string, otp: string) {
         <tr>
           <td style="background-color: #0E0E12; padding: 20px 24px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05);">
             <p style="color: #71717A; font-size: 12px; margin: 0 0 4px;">
-              المرسل إليه: <span dir="ltr" style="font-family: monospace; color: #A1A1AA;">${email}</span>
+              البريد المطلوب: <span dir="ltr" style="font-family: monospace; color: #A1A1AA;">${email}</span>
             </p>
+            ${
+              isRerouted
+                ? `<p style="color: #EAB308; font-size: 11px; margin: 0 0 4px;">(تم التوجيه لحساب Resend المسجل: ${recipientEmail})</p>`
+                : ""
+            }
             <p style="color: #52525B; font-size: 11px; margin: 0;">
               جميع الحقوق محفوظة © ${new Date().getFullYear()} شركة إشراقة المستقبل للعقارات
             </p>
@@ -100,40 +118,26 @@ export async function sendOtpEmail(email: string, otp: string) {
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: recipientEmail,
-      subject: `رمز التحقق الخاص بك: ${otp} | إشراقة المستقبل`,
+      subject,
       html,
     });
 
     if (error) {
       console.error("[Resend Error]:", error);
-      // Fallback for free plan testing
-      if (recipientEmail !== VERIFIED_RECEIVER) {
-        console.warn(`[Resend Fallback]: Retrying delivery to verified receiver ${VERIFIED_RECEIVER}`);
-        const retry = await resend.emails.send({
-          from: FROM_EMAIL,
-          to: VERIFIED_RECEIVER,
-          subject: `[تحويل تجريبي لـ ${email}] رمز التحقق: ${otp} | إشراقة المستقبل`,
-          html,
-        });
-        return {
-          success: !retry.error,
-          data: retry.data,
-          error: retry.error,
-          fallbackSent: true,
-          recipient: VERIFIED_RECEIVER,
-        };
-      }
-      return { success: false, error };
+      return {
+        success: false,
+        error: error.message || "فشل إرسال البريد عبر Resend",
+      };
     }
 
     return {
       success: true,
       data,
       recipient: recipientEmail,
-      fallbackSent: recipientEmail !== email,
+      fallbackSent: isRerouted,
     };
   } catch (err: any) {
     console.error("[Resend Send Exception]:", err);
-    return { success: false, error: err?.message || "Unknown error" };
+    return { success: false, error: err?.message || "حدث خطأ غير متوقع أثناء إرسال البريد" };
   }
 }

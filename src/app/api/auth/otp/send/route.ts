@@ -18,19 +18,24 @@ export async function POST(req: Request) {
     const { code, token, expiresAt } = OtpService.createOtp(email);
     const emailResult = await sendOtpEmail(email, code);
 
-    const isRealEmailSent = Boolean(emailResult?.success && !(emailResult as any)?.simulated);
+    if (!emailResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: emailResult.error || "فشل إرسال رمز التحقق عبر البريد الإلكتروني.",
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      message: isRealEmailSent
-        ? "تم إرسال رمز التحقق بنجاح إلى بريدك الإلكتروني عبر Resend."
-        : "تم إنشاء رمز التحقق بنجاح.",
+      message: "تم إرسال رمز التحقق بنجاح إلى بريدك الإلكتروني عبر Resend.",
       debugOtp: process.env.NODE_ENV !== "production" ? code : undefined,
       token,
       expiresAt,
-      fallbackSent: (emailResult as any)?.fallbackSent,
-      sentTo: (emailResult as any)?.recipient,
-      isSimulated: !isRealEmailSent,
+      fallbackSent: emailResult.fallbackSent,
+      sentTo: emailResult.recipient,
     });
   } catch (err: any) {
     console.error("[OTP Send Route Error]:", err);
