@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Star, CheckCircle2 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 export interface TestimonialItem {
   id?: string;
@@ -20,44 +21,46 @@ interface TestimonialsSectionProps {
   };
 }
 
-const DEFAULT_TESTIMONIALS: TestimonialItem[] = [
-  {
-    name: "م. خالد السبيعي",
-    title: "مالك فيلا مودرن - حي حطين",
-    content:
-      "تجربة شراء استثنائية من كافة النواحي. الجودة الإنشائية للفيلا وتشطيبات الرخام والمسبح كانت مطابقة تماماً للمواصفات المعروضة، وفريق خدمة العملاء كان متواجداً معنا في كل خطوة حتى الإفراغ الإلكتروني.",
-    rating: 5,
-  },
-  {
-    name: "عبد العزيز الراجحي",
-    title: "مستثمر في المجمعات التجارية",
-    content:
-      "استثمرت في مبنى تجاري من تطوير إشراقة المستقبل شمال الرياض، وحققت عائداً إيجارياً سنوياً تجاوز 9.5%. الدراسات الاستثمارية التي يقدمونها تتميز بدقة متناهية والتزام تام بمواعيد التسليم.",
-    rating: 5,
-  },
-  {
-    name: "د. نورة الشمري",
-    title: "مالكة بنتهاوس - حي العقيق",
-    content:
-      "إطلالة الروف على أبراج كافد خيالية! النظام الذكي للتحكم بالمنزل والخصوصية في المصعد يعطي شعوراً حقيقياً بالفخامة الفندقية. فخورة بأن تكون هذه بداية مسكني الجديد في الرياض.",
-    rating: 5,
-  },
-];
-
 export function TestimonialsSection({ homepageContent }: TestimonialsSectionProps) {
-  const badge = homepageContent?.testimonialsBadge || "ثقة وشهادات عملائنا";
-  const title = homepageContent?.testimonialsTitle || "ماذا يقول عملاؤنا ومستثمرونا؟";
-  const subtitle =
-    homepageContent?.testimonialsSubtitle ||
-    "نفخر بأن نكون الخيار الأول للعائلات والمستثمرين في السوق العقاري السعودي.";
+  const { t: translate, lang, dir } = useLanguage();
+  const isEn = lang === "en";
 
-  const testimonials =
-    homepageContent?.testimonials && homepageContent.testimonials.length > 0
-      ? homepageContent.testimonials
-      : DEFAULT_TESTIMONIALS;
+  const badge = isEn ? translate("testimonials.badge") : (homepageContent?.testimonialsBadge || translate("testimonials.badge"));
+  const title = isEn ? translate("testimonials.title") : (homepageContent?.testimonialsTitle || translate("testimonials.title"));
+  const subtitle = isEn ? translate("testimonials.subtitle") : (homepageContent?.testimonialsSubtitle || translate("testimonials.subtitle"));
+
+  const defaultTestimonials: TestimonialItem[] = [
+    {
+      id: "1",
+      name: translate("testimonials.item1_name"),
+      title: translate("testimonials.item1_role"),
+      content: translate("testimonials.item1_text"),
+      rating: 5,
+    },
+    {
+      id: "2",
+      name: translate("testimonials.item2_name"),
+      title: translate("testimonials.item2_role"),
+      content: translate("testimonials.item2_text"),
+      rating: 5,
+    },
+    {
+      id: "3",
+      name: translate("testimonials.item3_name"),
+      title: translate("testimonials.item3_role"),
+      content: translate("testimonials.item3_text"),
+      rating: 5,
+    },
+  ];
+
+  const testimonials = isEn
+    ? defaultTestimonials
+    : (homepageContent?.testimonials && homepageContent.testimonials.length > 0
+        ? homepageContent.testimonials
+        : defaultTestimonials);
 
   return (
-    <section className="py-16 sm:py-24 bg-[#0D0D10] relative text-right border-t border-white/5 overflow-hidden">
+    <section className={`py-16 sm:py-24 bg-[#0D0D10] relative ${dir === "rtl" ? "text-right" : "text-left"} border-t border-white/5 overflow-hidden`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-14">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 text-xs font-semibold">

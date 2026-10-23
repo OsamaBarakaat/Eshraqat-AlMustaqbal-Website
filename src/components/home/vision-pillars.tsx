@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ShieldCheck, Cpu, Banknote, Building2, Award, Sparkles, CheckCircle } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Building2,
@@ -26,44 +27,44 @@ interface VisionPillarsProps {
 }
 
 export function VisionPillars({ homepageContent }: VisionPillarsProps) {
-  const badge = homepageContent?.pillarsBadge || "ركائز التميز المؤسسي";
-  const title = homepageContent?.pillarsTitle || 'لماذا يختار النخبة "إشراقة المستقبل"؟';
-  const subtitle =
-    homepageContent?.pillarsSubtitle ||
-    "نضع الشفافية والجودة الهندسية وراحة العميل في صدارة أولوياتنا منذ مرحلة المخططات الأولى وحتى تسليم المفتاح.";
+  const { t, lang, dir } = useLanguage();
+  const isEn = lang === "en";
 
-  const rawPillars =
-    homepageContent?.pillars && homepageContent.pillars.length > 0
-      ? homepageContent.pillars
-      : [
-          {
-            title: "معايير معمارية استثنائية",
-            description:
-              "تصاميم عصرية مستوحاة من العمارة السلمانية الحديثة بأعلى معايير الإضاءة الطبيعية والواجهات الزجاجية العازلة للصوت والحرارة.",
-            icon: "Building2",
-          },
-          {
-            title: "صكوك إلكترونية وضمانات شاملة",
-            description:
-              "صكوك ملكية إلكترونية فورية مرخصة، مع ضمانات تصل إلى 10 سنوات على الهيكل الإنشائي والعوازل وتركيبات السباكة والكهرباء.",
-            icon: "ShieldCheck",
-          },
-          {
-            title: "تقنيات Smart Home ذكية",
-            description:
-              "تكامل ذكي كامل للتحكم بالتكييف والإضاءة والمداخل والمسابح عبر تطبيقات الهواتف الذكية مع نظام توفير الطاقة الصديق للبيئة.",
-            icon: "Cpu",
-          },
-          {
-            title: "عوائد استثمارية متنامية",
-            description:
-              "دراسات جدوى متخصصة للمواقع الواعدة تضمن للمستثمر عوائد إيجارية مجزية وارتفاعاً مستمراً في القيمة الرأسمالية للعقار.",
-            icon: "Banknote",
-          },
-        ];
+  const badge = isEn ? t("pillars.badge") : (homepageContent?.pillarsBadge || t("pillars.badge"));
+  const title = isEn ? t("pillars.title") : (homepageContent?.pillarsTitle || t("pillars.title"));
+  const subtitle = isEn ? t("pillars.subtitle") : (homepageContent?.pillarsSubtitle || t("pillars.subtitle"));
+
+  const defaultPillars = [
+    {
+      title: t("pillars.item1_title"),
+      description: t("pillars.item1_desc"),
+      icon: "Building2",
+    },
+    {
+      title: t("pillars.item2_title"),
+      description: t("pillars.item2_desc"),
+      icon: "ShieldCheck",
+    },
+    {
+      title: t("pillars.item3_title"),
+      description: t("pillars.item3_desc"),
+      icon: "Cpu",
+    },
+    {
+      title: t("pillars.item4_title"),
+      description: t("pillars.item4_desc"),
+      icon: "Banknote",
+    },
+  ];
+
+  const rawPillars = isEn
+    ? defaultPillars
+    : (homepageContent?.pillars && homepageContent.pillars.length > 0
+        ? homepageContent.pillars
+        : defaultPillars);
 
   return (
-    <section id="services" className="py-16 sm:py-28 bg-[#070709] relative text-right border-t border-white/5 overflow-hidden">
+    <section id="services" className={`py-16 sm:py-28 bg-[#070709] relative ${dir === "rtl" ? "text-right" : "text-left"} border-t border-white/5 overflow-hidden`}>
       {/* ================= Luxurious Golden Meteor Shower Background ================= */}
       <div 
         className="absolute inset-0 pointer-events-none overflow-hidden z-0"

@@ -15,7 +15,7 @@ import { useLanguage } from "@/lib/i18n";
 import { ApiService } from "@/lib/api-service";
 
 export function Footer() {
-  const { t, lang } = useLanguage();
+  const { t, lang, dir } = useLanguage();
   const [cmsConfig, setCmsConfig] = useState<any>(null);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-[#070709] border-t border-white/10 text-zinc-400 pt-16 pb-12 overflow-hidden text-right">
+    <footer className={`relative bg-[#070709] border-t border-white/10 text-zinc-400 pt-16 pb-12 overflow-hidden ${dir === "rtl" ? "text-right" : "text-left"}`}>
       {/* Ambient background glow */}
       <div className="absolute top-0 right-1/3 w-80 h-80 bg-[#C5A059]/5 rounded-full blur-[120px] pointer-events-none" />
 
@@ -154,7 +154,11 @@ export function Footer() {
             <div className="space-y-2.5 text-xs">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-[#C5A059] shrink-0 mt-0.5" />
-                <span>{contact?.address || "الرياض، طريق الملك فهد، برج المستقبل"}</span>
+                <span>
+                  {lang === "en"
+                    ? (contact?.addressEn || "Riyadh, King Fahd Road, Al-Malqa District, Future Tower, 9th Floor, Saudi Arabia")
+                    : (contact?.address || "الرياض، طريق الملك فهد، حي الملقا، برج المستقبل")}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#C5A059] shrink-0" />

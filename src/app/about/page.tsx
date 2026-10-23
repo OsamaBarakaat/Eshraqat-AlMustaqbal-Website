@@ -7,10 +7,10 @@ import { useLanguage } from "@/lib/i18n";
 import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
 
 export default function AboutPage() {
-  const { dir } = useLanguage();
+  const { dir, t } = useLanguage();
 
   return (
-    <div className="relative min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground text-right overflow-hidden">
+    <div className={`relative min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground ${dir === "rtl" ? "text-right" : "text-left"} overflow-hidden`}>
       {/* Floating Golden Bubbles */}
       <FloatingGoldenBubbles />
 
@@ -19,13 +19,13 @@ export default function AboutPage() {
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 text-xs font-semibold">
             <Building2 className="w-3.5 h-3.5" />
-            <span>ريادة التطوير والاستثمار العقاري بالمملكة</span>
+            <span>{t("about.badge")}</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            نصنع مجتمعات تلهم الحياة وترتقي بمستقبل الرياض
+            {t("about.title")}
           </h1>
           <p className="text-xs sm:text-base text-zinc-300 leading-relaxed font-light">
-            تأسست إشراقة المستقبل للتطوير العقاري لتكون نموذجاً وطنياً في تطوير البيئات السكنية الفاخرة والمقرات التجارية المبتكرة التي تترجم طموحات رؤية السعودية 2030.
+            {t("about.subtitle")}
           </p>
         </div>
 
@@ -39,16 +39,16 @@ export default function AboutPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
           <div className="absolute bottom-6 right-6 left-6 flex flex-col sm:flex-row items-end justify-between gap-4">
             <div className="space-y-1">
-              <span className="text-xs text-[#C5A059] font-bold">رؤيتنا ورسالتنا</span>
+              <span className="text-xs text-[#C5A059] font-bold">{t("about.vision_badge")}</span>
               <h3 className="text-xl sm:text-2xl font-bold text-white">
-                البناء بإتقان، والتصميم بشغف، والاستثمار بثقة
+                {t("about.vision_title")}
               </h3>
             </div>
             <Link
               href="/properties"
               className="px-6 py-3 rounded-full font-bold text-xs sm:text-sm bg-[#C5A059] text-black hover:brightness-110 shadow-lg cursor-pointer"
             >
-              استكشف مشاريعنا
+              {t("about.cta_explore")}
             </Link>
           </div>
         </div>
@@ -59,9 +59,9 @@ export default function AboutPage() {
             <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center">
               <Award className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-white">التميز الهندسي والمعماري</h3>
+            <h3 className="text-lg font-bold text-white">{t("about.val1_title")}</h3>
             <p className="text-xs text-zinc-400 leading-relaxed font-light">
-              نختار أجود المواد الخام، ونعتمد أرقى تصاميم العمارة السلمانية المعاصرة التي تجمع بين الأصالة السعودية وقمة الحداثة.
+              {t("about.val1_desc")}
             </p>
           </div>
 
@@ -69,9 +69,9 @@ export default function AboutPage() {
             <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center">
               <ShieldCheck className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-white">الشفافية والموثوقية</h3>
+            <h3 className="text-lg font-bold text-white">{t("about.val2_title")}</h3>
             <p className="text-xs text-zinc-400 leading-relaxed font-light">
-              جميع مشاريعنا مرخصة رسمياً وموثقة بصكوك إلكترونية فورية وضمانات إنشائية ممتدة تمنح المستثمر والمالك راحة بال مطلقة.
+              {t("about.val2_desc")}
             </p>
           </div>
 
@@ -79,9 +79,9 @@ export default function AboutPage() {
             <div className="w-12 h-12 rounded-2xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center">
               <Sparkles className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-white">استدامة المستقبل</h3>
+            <h3 className="text-lg font-bold text-white">{t("about.val3_title")}</h3>
             <p className="text-xs text-zinc-400 leading-relaxed font-light">
-              نلتزم بحلول الطاقة الذكية، العزل المائي والحراري المعتمد، وتوفير المساحات الخضراء بما يتماشى مع مبادرة السعودية الخضراء.
+              {t("about.val3_desc")}
             </p>
           </div>
         </div>

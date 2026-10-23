@@ -249,25 +249,25 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
       <section id="properties-showcase" className="py-14 sm:py-24 bg-[#09090B] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* Section Header (Bottom filter pills completely removed!) */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 text-right border-b border-white/10 pb-6">
+          <div className={`flex flex-col md:flex-row md:items-end justify-between gap-6 ${dir === "rtl" ? "text-right" : "text-left"} border-b border-white/10 pb-6`}>
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 text-xs font-semibold mb-3">
                 <Flame className="w-3.5 h-3.5 fill-current" />
-                <span>مختارات فاخرة حصرية (أعلى 3 عقارات)</span>
+                <span>{t("home_props.badge")}</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                أحدث العقارات المتاحة للبيع والاستثمار
+                {t("home_props.title")}
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 mt-2 max-w-xl leading-relaxed">
-                تصفح نخبة من مشاريعنا السكنية والتجارية المطروحة حالياً، مع ضمانات إنشائية معتمدة وصكوك إلكترونية فورية.
+                {t("home_props.subtitle")}
               </p>
             </div>
 
             {/* Active matching count & Reset */}
             <div className="flex items-center gap-3">
               <span className="text-xs text-zinc-400">
-                المعروض: <strong className="text-[#C5A059] font-mono text-sm">{displayedProperties.length}</strong> من أصل{" "}
-                <strong className="text-white font-mono">{filteredProperties.length}</strong> عقار
+                {t("home_props.showing")}: <strong className="text-[#C5A059] font-mono text-sm">{displayedProperties.length}</strong> {t("home_props.of")}{" "}
+                <strong className="text-white font-mono">{filteredProperties.length}</strong> {t("home_props.properties")}
               </span>
 
               {(activeTab !== "ALL" || selectedCategory !== "ALL" || selectedLocation !== "ALL" || selectedPriceRange !== "ALL") && (
@@ -277,7 +277,7 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
                   className="px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>إعادة ضبط</span>
+                  <span>{t("home_props.reset")}</span>
                 </button>
               )}
             </div>
@@ -290,9 +290,9 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
                 <Home className="w-7 h-7" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-base font-bold text-white">لا توجد عقارات مطابقة لخيارات الفلترة المحددة</h3>
+                <h3 className="text-base font-bold text-white">{t("home_props.empty_title")}</h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  جرب اختيار تصنيف آخر (سكني أو تجاري) أو تغيير الموقع.
+                  {t("home_props.empty_subtitle")}
                 </p>
               </div>
               <button
@@ -300,7 +300,7 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
                 onClick={resetFilters}
                 className="px-5 py-2 rounded-xl text-xs font-bold bg-[#C5A059] text-black hover:brightness-110 shadow-md shadow-[#C5A059]/20 transition-all cursor-pointer"
               >
-                عرض كافة العقارات
+                {t("home_props.view_all")}
               </button>
             </div>
           ) : (
@@ -317,9 +317,9 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
               href="/properties"
               className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm bg-gradient-to-r from-[#1C1C22] to-[#25252E] hover:from-[#C5A059] hover:to-[#D4AF37] text-white hover:text-black border border-[#C5A059]/40 hover:border-[#C5A059] transition-all shadow-xl hover:shadow-[#C5A059]/20 cursor-pointer group"
             >
-              <span>استعراض كافة العقارات والمشاريع في صفحة العقارات</span>
+              <span>{t("home_props.explore_all")}</span>
               <span className="px-2 py-0.5 rounded-full bg-white/10 text-[11px] font-mono group-hover:bg-black/20">
-                {initialProperties.length} عقارات
+                {initialProperties.length} {t("home_props.properties")}
               </span>
               {dir === "rtl" ? (
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

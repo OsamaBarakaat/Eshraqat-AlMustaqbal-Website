@@ -16,6 +16,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronLeft,
+  ChevronRight,
   Building2,
   Home,
   Phone,
@@ -150,9 +151,11 @@ export function Navbar() {
                 </button>
 
                 {userDropdownOpen && (
-                  <div className="absolute top-full mt-2 left-0 w-48 p-2 rounded-2xl bg-[#141418] border border-[#C5A059]/30 shadow-2xl shadow-black/80 space-y-1 text-right animate-in fade-in zoom-in-95 z-50">
+                  <div className={`absolute top-full mt-2 left-0 w-48 p-2 rounded-2xl bg-[#141418] border border-[#C5A059]/30 shadow-2xl shadow-black/80 space-y-1 ${dir === "rtl" ? "text-right" : "text-left"} animate-in fade-in zoom-in-95 z-50`}>
                     <div className="px-3 py-2 border-b border-white/5">
-                      <span className="block text-[10px] text-zinc-500">الحساب المسجل</span>
+                      <span className="block text-[10px] text-zinc-500">
+                        {lang === "en" ? "Signed in as" : "الحساب المسجل"}
+                      </span>
                       <span className="block text-xs font-bold text-white truncate font-mono">
                         {user?.email}
                       </span>
@@ -195,7 +198,7 @@ export function Navbar() {
                       className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
                     >
                       <LogOut className="w-3.5 h-3.5" />
-                      <span>تسجيل الخروج</span>
+                      <span>{lang === "en" ? "Logout" : "تسجيل الخروج"}</span>
                     </button>
                   </div>
                 )}
@@ -228,7 +231,7 @@ export function Navbar() {
         {/* Mobile Dropdown / Drawer Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden mt-3 px-3 sm:px-4 pb-4 animate-in slide-in-from-top-3 duration-200">
-            <div className="p-4 rounded-3xl bg-[#141418]/98 backdrop-blur-2xl border border-[#C5A059]/30 shadow-2xl shadow-black space-y-4 text-right max-h-[calc(100vh-90px)] overflow-y-auto">
+            <div className={`p-4 rounded-3xl bg-[#141418]/98 backdrop-blur-2xl border border-[#C5A059]/30 shadow-2xl shadow-black space-y-4 ${dir === "rtl" ? "text-right" : "text-left"} max-h-[calc(100vh-90px)] overflow-y-auto`}>
               {/* Navigation Links */}
               <div className="grid grid-cols-1 divide-y divide-white/5">
                 {navLinks.map((item) => {
@@ -245,7 +248,11 @@ export function Navbar() {
                       }`}
                     >
                       <span>{item.label}</span>
-                      <ChevronLeft className="w-4 h-4 text-zinc-500" />
+                      {dir === "rtl" ? (
+                        <ChevronLeft className="w-4 h-4 text-zinc-500" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4 text-zinc-500" />
+                      )}
                     </Link>
                   );
                 })}
@@ -254,7 +261,7 @@ export function Navbar() {
               {/* Property Category Quick Filters */}
               <div className="pt-2 border-t border-white/10">
                 <span className="block text-[11px] font-bold text-zinc-400 mb-2 px-1">
-                  تصفح فئات العقارات
+                  {lang === "en" ? "Property Categories" : "تصفح فئات العقارات"}
                 </span>
                 <div className="grid grid-cols-2 gap-2 text-xs font-medium">
                   <Link
@@ -262,28 +269,28 @@ export function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="p-2.5 rounded-xl bg-white/5 hover:bg-[#C5A059]/20 hover:text-[#C5A059] text-zinc-300 transition-colors text-center border border-white/5"
                   >
-                    فلل وقصور
+                    {lang === "en" ? "Villas & Mansions" : "فلل وقصور"}
                   </Link>
                   <Link
                     href="/properties?type=APARTMENT"
                     onClick={() => setMobileMenuOpen(false)}
                     className="p-2.5 rounded-xl bg-white/5 hover:bg-[#C5A059]/20 hover:text-[#C5A059] text-zinc-300 transition-colors text-center border border-white/5"
                   >
-                    شقق ومجتمعات
+                    {lang === "en" ? "Apartments" : "شقق ومجتمعات"}
                   </Link>
                   <Link
                     href="/properties?type=COMMERCIAL"
                     onClick={() => setMobileMenuOpen(false)}
                     className="p-2.5 rounded-xl bg-white/5 hover:bg-[#C5A059]/20 hover:text-[#C5A059] text-zinc-300 transition-colors text-center border border-white/5"
                   >
-                    مباني تجارية
+                    {lang === "en" ? "Commercial" : "مباني تجارية"}
                   </Link>
                   <Link
                     href="/properties?type=LAND"
                     onClick={() => setMobileMenuOpen(false)}
                     className="p-2.5 rounded-xl bg-white/5 hover:bg-[#C5A059]/20 hover:text-[#C5A059] text-zinc-300 transition-colors text-center border border-white/5"
                   >
-                    أراضي ومخططات
+                    {lang === "en" ? "Lands & Plots" : "أراضي ومخططات"}
                   </Link>
                 </div>
               </div>
@@ -299,7 +306,7 @@ export function Navbar() {
                     className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-[#C5A059] text-black hover:brightness-110 flex items-center justify-center gap-2 shadow-lg cursor-pointer transition-all"
                   >
                     <User className="w-4 h-4" />
-                    <span>{t("nav.login")} / إنشاء حساب</span>
+                    <span>{t("nav.login")} / {lang === "en" ? "Register" : "إنشاء حساب"}</span>
                   </button>
                 ) : (
                   <div className="space-y-1.5">
@@ -336,7 +343,7 @@ export function Navbar() {
                       className="w-full py-2 px-4 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <LogOut className="w-3.5 h-3.5" />
-                      <span>تسجيل الخروج</span>
+                      <span>{lang === "en" ? "Logout" : "تسجيل الخروج"}</span>
                     </button>
                   </div>
                 )}

@@ -204,7 +204,11 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                 {homepageContent?.badgeText && (
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#C5A059]/15 text-[#C5A059] border border-[#C5A059]/30 text-[10px] sm:text-xs font-semibold">
                     <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
-                    <span>{homepageContent.badgeText}</span>
+                    <span>
+                      {lang === "en"
+                        ? ((homepageContent as any)?.badgeTextEn || "Your Trusted Investment Destination in the Kingdom")
+                        : homepageContent.badgeText}
+                    </span>
                   </div>
                 )}
 
