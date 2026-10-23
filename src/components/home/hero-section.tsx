@@ -222,18 +222,28 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                       const part2 = words.slice(mid).join(" ");
                       return (
                         <>
-                          <span className="block masked-text font-black">{part1}</span>
-                          {part2 && <span className="block masked-text-gold font-black">{part2}</span>}
+                          <span className="block">
+                            <span className="inline-block masked-text font-black">{part1}</span>
+                          </span>
+                          {part2 && (
+                            <span className="block">
+                              <span className="inline-block masked-text-gold font-black">{part2}</span>
+                            </span>
+                          )}
                         </>
                       );
                     })()
                   ) : (
                     <>
-                      <span className="block masked-text font-black">
-                        {t("hero.title_part1")}
+                      <span className="block">
+                        <span className="inline-block masked-text font-black">
+                          {t("hero.title_part1")}
+                        </span>
                       </span>
-                      <span className="block masked-text-gold font-black">
-                        {t("hero.title_part2")}
+                      <span className="block">
+                        <span className="inline-block masked-text-gold font-black">
+                          {t("hero.title_part2")}
+                        </span>
                       </span>
                     </>
                   )}
