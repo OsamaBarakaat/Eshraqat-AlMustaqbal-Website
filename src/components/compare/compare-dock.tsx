@@ -10,8 +10,13 @@ import { formatPrice } from "@/lib/utils";
 export function CompareDock() {
   const { compareList, removeFromCompare, clearCompare } = useCompare();
   const { dir, lang } = useLanguage();
+  const [mounted, setMounted] = React.useState(false);
 
-  if (compareList.length === 0) return null;
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || compareList.length === 0) return null;
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-2xl animate-in slide-in-from-bottom-5 duration-300">

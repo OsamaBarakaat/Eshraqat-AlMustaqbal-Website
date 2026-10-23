@@ -125,8 +125,14 @@ export function ClientChatWidget() {
     }
   };
 
-  // Hide this section if the client has no messages and the widget is not open
-  if (inquiries.length === 0 && !isOpen) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Hide this section if not mounted or if the client has no messages and the widget is not open
+  if (!mounted || (inquiries.length === 0 && !isOpen)) {
     return null;
   }
 

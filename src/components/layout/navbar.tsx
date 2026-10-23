@@ -37,12 +37,14 @@ export function Navbar() {
   const { compareList } = useCompare();
   const { inquiries, unreadCount, hasUnreadReply, openChat } = useInquiries();
 
+  const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -112,7 +114,7 @@ export function Navbar() {
           {/* 3. Action Controls */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Compare Badge */}
-            {compareList.length > 0 && (
+            {mounted && compareList.length > 0 && (
               <Link
                 href="/compare"
                 className="relative p-2 sm:p-2.5 rounded-full bg-[#1C1C22] border border-[#C5A059]/40 text-[#C5A059] hover:bg-[#C5A059]/15 transition-colors cursor-pointer shrink-0"
@@ -136,7 +138,7 @@ export function Navbar() {
             </button>
 
             {/* Client User / Login */}
-            {isLoggedIn ? (
+            {mounted && isLoggedIn ? (
               <div className="relative shrink-0">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -297,7 +299,7 @@ export function Navbar() {
 
               {/* Auth / My Bookings */}
               <div className="pt-2 border-t border-white/10 space-y-2">
-                {!isLoggedIn ? (
+                {!mounted || !isLoggedIn ? (
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);
