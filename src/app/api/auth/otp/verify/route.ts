@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { OtpService } from "@/lib/otp-store";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
-    const { email, otp, rememberMe } = await req.json();
+    const { email, otp, rememberMe, token } = await req.json();
 
     if (!email || !otp) {
       return NextResponse.json(
@@ -12,7 +14,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const result = OtpService.verifyOtp(email, otp);
+    const result = OtpService.verifyOtp(email, otp, token);
 
     if (!result.valid) {
       return NextResponse.json(
@@ -58,15 +60,16 @@ export async function POST(req: Request) {
     response.cookies.set("eshraqat_client_token", clientToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       maxAge,
       path: "/",
-      sameSite: "lax",
     });
 
     return response;
   } catch (err: any) {
+    console.error("[OTP Verify Route Error]:", err);
     return NextResponse.json(
-      { success: false, message: err?.message || "فشل التحقق من الرمز." },
+      { success: false, message: err?.message || "حدث خطأ أثناء التحقق." },
       { status: 500 }
     );
   }

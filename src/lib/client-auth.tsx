@@ -14,8 +14,21 @@ interface ClientAuthContextType {
   user: ClientUser | null;
   isLoggedIn: boolean;
   isLoading: boolean;
-  sendOtp: (email: string) => Promise<{ success: boolean; message: string; debugOtp?: string }>;
-  verifyOtp: (email: string, otp: string, rememberMe: boolean) => Promise<{ success: boolean; message: string }>;
+  sendOtp: (email: string) => Promise<{
+    success: boolean;
+    message: string;
+    debugOtp?: string;
+    token?: string;
+    expiresAt?: number;
+    fallbackSent?: boolean;
+    sentTo?: string;
+  }>;
+  verifyOtp: (
+    email: string,
+    otp: string,
+    rememberMe: boolean,
+    token?: string
+  ) => Promise<{ success: boolean; message: string }>;
   updateProfile: (data: Partial<ClientUser>) => void;
   logout: () => void;
 }
@@ -63,12 +76,17 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
-  const verifyOtp = async (email: string, otp: string, rememberMe: boolean) => {
+  const verifyOtp = async (
+    email: string,
+    otp: string,
+    rememberMe: boolean,
+    token?: string
+  ) => {
     try {
       const res = await fetch("/api/auth/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp, rememberMe }),
+        body: JSON.stringify({ email, otp, rememberMe, token }),
       });
       const data = await res.json();
       if (data.success && data.user) {

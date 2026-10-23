@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Mail, KeyRound, CheckCircle2, X, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Mail, KeyRound, CheckCircle2, X, Sparkles, Loader2, ArrowRight, RefreshCw } from "lucide-react";
 import { useClientAuth } from "@/lib/client-auth";
 import { useLanguage } from "@/lib/i18n";
 
@@ -18,15 +18,33 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
   const [step, setStep] = useState<"EMAIL" | "OTP">("EMAIL");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
+  const [otpToken, setOtpToken] = useState<string>("");
+  const [countdown, setCountdown] = useState(0); // 180s = 3 minutes
+  const [fallbackNotice, setFallbackNotice] = useState<{ sentTo?: string } | null>(null);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [debugCode, setDebugCode] = useState<string | null>(null);
 
+  // Countdown timer (decrements every second)
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setInterval(() => {
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
   if (!isOpen) return null;
 
-  const handleSendOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSendOtp = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setErrorMessage("");
     if (!email.trim() || !email.includes("@")) {
       setErrorMessage(dir === "rtl" ? "يرجى إدخال بريد إلكتروني صحيح." : "Please enter a valid email address.");
@@ -38,11 +56,20 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
     setIsLoading(false);
 
     if (res.success) {
+      if (res.token) {
+        setOtpToken(res.token);
+      }
+      if (res.fallbackSent) {
+        setFallbackNotice({ sentTo: res.sentTo });
+      } else {
+        setFallbackNotice(null);
+      }
       if (res.debugOtp) {
         setDebugCode(res.debugOtp);
         setOtp(res.debugOtp);
       }
       setStep("OTP");
+      setCountdown(180); // 3 minutes countdown
     } else {
       setErrorMessage(res.message);
     }
@@ -57,7 +84,7 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
     }
 
     setIsLoading(true);
-    const res = await verifyOtp(email.trim(), otp.trim(), rememberMe);
+    const res = await verifyOtp(email.trim(), otp.trim(), rememberMe, otpToken);
     setIsLoading(false);
 
     if (res.success) {
@@ -157,7 +184,7 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>جاري الإرسال...</span>
+                  <span>جاري الإرسال عبر Resend...</span>
                 </>
               ) : (
                 <>
@@ -196,6 +223,13 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
                 />
                 <KeyRound className="absolute top-3.5 left-3.5 w-4 h-4 text-[#C5A059]" />
               </div>
+
+              {fallbackNotice && (
+                <p className="text-[11px] text-amber-300/90 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 mt-2 text-center">
+                  ملاحظة الحساب التجريبي لـ Resend: تم إرسال الرمز للبريد المسجل ({fallbackNotice.sentTo}).
+                </p>
+              )}
+
               <p className="text-[11px] text-zinc-500 mt-1.5 text-center">
                 {t("auth.otp_desc")}
               </p>
@@ -203,7 +237,7 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || otp.length < 4}
               className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:brightness-110 text-black shadow-lg shadow-[#C5A059]/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isLoading ? (
@@ -220,13 +254,22 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
             </button>
 
             <div className="text-center pt-2">
-              <button
-                type="button"
-                onClick={handleSendOtp}
-                className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer"
-              >
-                لم يصلك الرمز؟ <span className="text-[#C5A059] font-medium">{t("auth.resend")}</span>
-              </button>
+              {countdown > 0 ? (
+                <span className="text-xs text-zinc-400">
+                  إعادة الإرسال بعد:{" "}
+                  <strong className="text-[#C5A059] font-mono font-bold">{formatTime(countdown)}</strong>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleSendOtp()}
+                  disabled={isLoading}
+                  className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-[#C5A059]" />
+                  <span>لم يصلك الرمز؟ <span className="text-[#C5A059] font-medium">{t("auth.resend")}</span></span>
+                </button>
+              )}
             </div>
           </form>
         )}
