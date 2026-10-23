@@ -39,6 +39,13 @@ export default function ContactPage() {
     e.preventDefault();
     setIsLoading(true);
 
+    const TYPE_MAP: Record<string, string> = {
+      "استفسار عن عقار": "PROPERTY_INQUIRY",
+      "حجز موعد معاينة خاصة": "PROPERTY_INQUIRY",
+      "فرصة استثمارية": "PARTNERSHIP",
+      "طلب تسويق عقاري": "PARTNERSHIP",
+    };
+
     try {
       await ApiService.submitInquiry({
         name: name.trim(),
@@ -46,6 +53,7 @@ export default function ContactPage() {
         phone: phone.trim(),
         subject: subject.trim(),
         message: message.trim(),
+        type: TYPE_MAP[subject.trim()] || "GENERAL_CONTACT",
       });
       try {
         localStorage.setItem("eshraqat_guest_inquiry_email_v1", email.trim().toLowerCase());

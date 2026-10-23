@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Check,
   CheckCheck,
+  Archive,
 } from "lucide-react";
 import { ApiService } from "@/lib/api-service";
 import { useClientAuth } from "@/lib/client-auth";
@@ -93,12 +94,21 @@ export function ClientChatWidget() {
     setIsSubmitting(true);
     setSubmitSuccess(false);
 
+    const TYPE_MAP: Record<string, string> = {
+      "استفسار عن عقار": "PROPERTY_INQUIRY",
+      "طلب استشارة استثمارية": "PARTNERSHIP",
+      "حاسبة التمويل العقاري": "PRICE_REQUEST",
+      "عرض عقار للبيع": "PARTNERSHIP",
+      "استفسار عام": "GENERAL_CONTACT",
+    };
+
     const res = await ApiService.submitInquiry({
       name: newName.trim() || user?.name || emailToSend.split("@")[0],
       email: emailToSend,
       phone: newPhone.trim() || user?.phone || undefined,
       subject: newSubject,
       message: newMessage.trim(),
+      type: TYPE_MAP[newSubject] || "GENERAL_CONTACT",
     });
 
     setIsSubmitting(false);
@@ -404,6 +414,8 @@ export function ClientChatWidget() {
                                   className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${
                                     isReplied
                                       ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                                      : inq.status === "CLOSED"
+                                      ? "bg-zinc-800 text-zinc-300 border border-zinc-700/80"
                                       : inq.status === "IN_PROGRESS"
                                       ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
                                       : "bg-zinc-700/40 text-zinc-300 border border-zinc-600/30"
@@ -413,6 +425,10 @@ export function ClientChatWidget() {
                                     ? lang === "en"
                                       ? "Replied"
                                       : "تم الرد"
+                                    : inq.status === "CLOSED"
+                                    ? lang === "en"
+                                      ? "Closed & Archived"
+                                      : "تمت الأرشفة والإغلاق"
                                     : inq.status === "IN_PROGRESS"
                                     ? lang === "en"
                                       ? "In Progress"
@@ -508,6 +524,31 @@ export function ClientChatWidget() {
                                     </span>
                                   )}
                                 </div>
+
+                                {inq.status === "CLOSED" && (
+                                  <div className="mt-2 pt-2 border-t border-emerald-500/10 flex items-center gap-1.5 text-[10px] text-zinc-400">
+                                    <Archive className="w-3 h-3 text-zinc-400" />
+                                    <span>
+                                      {lang === "en"
+                                        ? "Conversation subsequently closed and archived"
+                                        : "تم إغلاق وأرشفة هذه المحادثة بعد اكتمال الرد"}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            ) : inq.status === "CLOSED" ? (
+                              <div className="p-3 rounded-xl bg-zinc-800/50 border border-zinc-700/60 text-xs text-zinc-300 flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2">
+                                  <Archive className="w-4 h-4 text-[#C5A059] shrink-0" />
+                                  <span className="leading-relaxed">
+                                    {lang === "en"
+                                      ? "This conversation has been reviewed and closed by the administration."
+                                      : "تمت مراجعة هذه المحادثة وإغلاقها وأرشفتها رسمياً من قِبل الإدارة."}
+                                  </span>
+                                </div>
+                                <span className="text-[10px] text-zinc-400 font-mono px-2 py-0.5 rounded-md bg-black/40 shrink-0">
+                                  {lang === "en" ? "Archived" : "مؤرشف"}
+                                </span>
                               </div>
                             ) : (
                               <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300/90 flex items-center gap-2">
