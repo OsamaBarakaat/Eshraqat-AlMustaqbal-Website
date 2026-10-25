@@ -1,7 +1,6 @@
 import { Resend } from "resend";
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-const VERIFIED_RECEIVER = process.env.RESEND_VERIFIED_RECEIVER || "osaamabarakaat@gmail.com";
 
 let resendInstance: Resend | null = null;
 
@@ -17,7 +16,6 @@ function getResendClient(): Resend | null {
 export async function sendOtpEmail(email: string, otp: string) {
   const resend = getResendClient();
 
-  // If no API key configured on Vercel/server, report it clearly
   if (!resend) {
     console.error("[Resend Error] RESEND_API_KEY is not defined in environment variables.");
     return {
@@ -26,23 +24,7 @@ export async function sendOtpEmail(email: string, otp: string) {
     };
   }
 
-  // Free Tier Rule (onboarding@resend.dev):
-  // Resend strictly blocks sending to any address other than the verified account owner (osaamabarakaat@gmail.com).
-  // If using onboarding@resend.dev or if the target is different, route it to the verified receiver to ensure delivery.
-  const isTestingDomain = FROM_EMAIL.includes("resend.dev");
-  const normalizedTarget = email.trim().toLowerCase();
-  const normalizedVerified = VERIFIED_RECEIVER.trim().toLowerCase();
-
-  const recipientEmail =
-    isTestingDomain && normalizedTarget !== normalizedVerified
-      ? normalizedVerified
-      : email.trim();
-
-  const isRerouted = recipientEmail !== email.trim();
-
-  const subject = isRerouted
-    ? `[تحويل تجريبي لـ ${email}] رمز التحقق: ${otp} | إشراقة المستقبل`
-    : `رمز التحقق الخاص بك: ${otp} | إشراقة المستقبل`;
+  const targetEmail = email.trim().toLowerCase();
 
   const html = `
     <!DOCTYPE html>
@@ -97,13 +79,8 @@ export async function sendOtpEmail(email: string, otp: string) {
         <tr>
           <td style="background-color: #0E0E12; padding: 20px 24px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05);">
             <p style="color: #71717A; font-size: 12px; margin: 0 0 4px;">
-              البريد المطلوب: <span dir="ltr" style="font-family: monospace; color: #A1A1AA;">${email}</span>
+              المرسل إليه: <span dir="ltr" style="font-family: monospace; color: #A1A1AA;">${targetEmail}</span>
             </p>
-            ${
-              isRerouted
-                ? `<p style="color: #EAB308; font-size: 11px; margin: 0 0 4px;">(تم التوجيه لحساب Resend المسجل: ${recipientEmail})</p>`
-                : ""
-            }
             <p style="color: #52525B; font-size: 11px; margin: 0;">
               جميع الحقوق محفوظة © ${new Date().getFullYear()} شركة إشراقة المستقبل للعقارات
             </p>
@@ -117,13 +94,24 @@ export async function sendOtpEmail(email: string, otp: string) {
   try {
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
-      to: recipientEmail,
-      subject,
+      to: targetEmail,
+      subject: `رمز التحقق الخاص بك: ${otp} | إشراقة المستقبل`,
       html,
     });
 
     if (error) {
       console.error("[Resend Error]:", error);
+      // Helpful error message if on Resend free tier attempting to send to arbitrary email
+      if (
+        FROM_EMAIL.includes("resend.dev") &&
+        (error.message?.includes("testing emails") || (error as any).statusCode === 403)
+      ) {
+        return {
+          success: false,
+          error:
+            "تنبيه Resend: النطاق المجاني المؤقت (onboarding@resend.dev) مخصص للتجربة فقط ويسمح فقط بالإرسال للبريد المسجل في حساب Resend. لكي يرسل النظام لأي بريد عميل مختلف في العالم، يجب ربط دومينك الخاص في resend.com/domains.",
+        };
+      }
       return {
         success: false,
         error: error.message || "فشل إرسال البريد عبر Resend",
@@ -133,11 +121,13 @@ export async function sendOtpEmail(email: string, otp: string) {
     return {
       success: true,
       data,
-      recipient: recipientEmail,
-      fallbackSent: isRerouted,
+      recipient: targetEmail,
     };
   } catch (err: any) {
     console.error("[Resend Send Exception]:", err);
-    return { success: false, error: err?.message || "حدث خطأ غير متوقع أثناء إرسال البريد" };
+    return {
+      success: false,
+      error: err?.message || "حدث خطأ غير متوقع أثناء إرسال البريد",
+    };
   }
 }

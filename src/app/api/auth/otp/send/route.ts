@@ -34,7 +34,6 @@ export async function POST(req: Request) {
       debugOtp: process.env.NODE_ENV !== "production" ? code : undefined,
       token,
       expiresAt,
-      fallbackSent: emailResult.fallbackSent,
       sentTo: emailResult.recipient,
     });
   } catch (err: any) {

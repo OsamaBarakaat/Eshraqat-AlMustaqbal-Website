@@ -19,12 +19,10 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpToken, setOtpToken] = useState<string>("");
-  const [countdown, setCountdown] = useState(0); // 180s = 3 minutes
-  const [fallbackNotice, setFallbackNotice] = useState<{ sentTo?: string } | null>(null);
+  const [countdown, setCountdown] = useState(0); // 120s = 2 minutes
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [debugCode, setDebugCode] = useState<string | null>(null);
 
   // Countdown timer (decrements every second)
   useEffect(() => {
@@ -59,17 +57,9 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
       if (res.token) {
         setOtpToken(res.token);
       }
-      if (res.fallbackSent) {
-        setFallbackNotice({ sentTo: res.sentTo });
-      } else {
-        setFallbackNotice(null);
-      }
-      if (res.debugOtp) {
-        setDebugCode(res.debugOtp);
-        setOtp(res.debugOtp);
-      }
+      setOtp(""); // Clear previous input
       setStep("OTP");
-      setCountdown(180); // 3 minutes countdown
+      setCountdown(120); // 2 minutes countdown (120 seconds)
     } else {
       setErrorMessage(res.message);
     }
@@ -91,7 +81,8 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
       onSuccess?.();
       onClose();
     } else {
-      setErrorMessage(res.message);
+      // Keep on OTP step and allow repeated attempts
+      setErrorMessage(res.message || "رمز التحقق غير صحيح، يرجى المحاولة مرة أخرى.");
     }
   };
 
@@ -122,24 +113,8 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
         </div>
 
         {errorMessage && (
-          <div className="p-3 mb-4 rounded-xl text-xs bg-rose-500/10 border border-rose-500/20 text-rose-300 text-center animate-in fade-in">
+          <div className="p-3 mb-4 rounded-xl text-xs bg-rose-500/10 border border-rose-500/20 text-rose-300 text-center animate-in fade-in leading-relaxed">
             {errorMessage}
-          </div>
-        )}
-
-        {debugCode && step === "OTP" && (
-          <div className="p-3 mb-4 rounded-2xl text-xs bg-[#C5A059]/15 border border-[#C5A059]/40 text-[#C5A059] text-center font-mono space-y-1.5 shadow-sm">
-            <span className="text-[11px] font-medium text-zinc-300 block">
-              {dir === "rtl" ? "🔑 رمز التحقق السريع لتسجيل الدخول:" : "🔑 Instant Verification Code:"}
-            </span>
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-2xl font-black text-[#F3E5AB] tracking-widest bg-black/40 px-3 py-1 rounded-lg border border-[#C5A059]/30">
-                {debugCode}
-              </span>
-            </div>
-            <p className="text-[10px] text-zinc-400">
-              {dir === "rtl" ? "تم تعبئة الرمز تلقائياً لراحتك. اضغط تأكيد الدخول أدناه." : "The code was automatically filled for you. Click Confirm below."}
-            </p>
           </div>
         )}
 
@@ -203,7 +178,10 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
                 </label>
                 <button
                   type="button"
-                  onClick={() => setStep("EMAIL")}
+                  onClick={() => {
+                    setStep("EMAIL");
+                    setErrorMessage("");
+                  }}
                   className="text-xs text-[#C5A059] hover:underline cursor-pointer"
                 >
                   تغيير البريد ({email})
@@ -224,14 +202,8 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
                 <KeyRound className="absolute top-3.5 left-3.5 w-4 h-4 text-[#C5A059]" />
               </div>
 
-              {fallbackNotice && (
-                <p className="text-[11px] text-amber-300/90 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 mt-2 text-center">
-                  ملاحظة الحساب التجريبي لـ Resend: تم إرسال الرمز للبريد المسجل ({fallbackNotice.sentTo}).
-                </p>
-              )}
-
               <p className="text-[11px] text-zinc-500 mt-1.5 text-center">
-                {t("auth.otp_desc")}
+                تم إرسال رمز مكون من 6 أرقام إلى بريدك الإلكتروني.
               </p>
             </div>
 
@@ -255,10 +227,10 @@ export function ClientAuthModal({ isOpen, onClose, onSuccess }: ClientAuthModalP
 
             <div className="text-center pt-2">
               {countdown > 0 ? (
-                <span className="text-xs text-zinc-400">
-                  إعادة الإرسال بعد:{" "}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-zinc-400">
+                  <span>إعادة الإرسال بعد:</span>
                   <strong className="text-[#C5A059] font-mono font-bold">{formatTime(countdown)}</strong>
-                </span>
+                </div>
               ) : (
                 <button
                   type="button"
