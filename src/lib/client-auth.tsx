@@ -4,32 +4,45 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { ApiService } from "./api-service";
 
 export interface ClientUser {
+  id?: string;
+  name: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
-  name?: string;
-  phone?: string;
+  phone: string;
+  region?: string;
   token?: string;
+}
+
+export interface RegisterCustomerData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  region: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
 }
 
 interface ClientAuthContextType {
   user: ClientUser | null;
   isLoggedIn: boolean;
   isLoading: boolean;
-  sendOtp: (email: string) => Promise<{
-    success: boolean;
-    message: string;
-    debugOtp?: string;
-    token?: string;
-    expiresAt?: number;
-    fallbackSent?: boolean;
-    sentTo?: string;
-  }>;
-  verifyOtp: (
-    email: string,
-    otp: string,
-    rememberMe: boolean,
-    token?: string
+  login: (
+    identifier: string,
+    password: string,
+    rememberMe?: boolean,
+  ) => Promise<{ success: boolean; message?: string }>;
+  register: (
+    data: RegisterCustomerData,
+    rememberMe?: boolean,
+  ) => Promise<{ success: boolean; message?: string }>;
+  requestPasswordRecovery: (identifier: string) => Promise<{ success: boolean; message: string }>;
+  resetPassword: (
+    token: string,
+    password: string,
+    confirmPassword: string,
   ) => Promise<{ success: boolean; message: string }>;
-  updateProfile: (data: Partial<ClientUser>) => void;
   logout: () => void;
 }
 
@@ -37,13 +50,14 @@ const ClientAuthContext = createContext<ClientAuthContextType>({
   user: null,
   isLoggedIn: false,
   isLoading: true,
-  sendOtp: async () => ({ success: false, message: "" }),
-  verifyOtp: async () => ({ success: false, message: "" }),
-  updateProfile: () => {},
+  login: async () => ({ success: false, message: "" }),
+  register: async () => ({ success: false, message: "" }),
+  requestPasswordRecovery: async () => ({ success: false, message: "" }),
+  resetPassword: async () => ({ success: false, message: "" }),
   logout: () => {},
 });
 
-const STORAGE_KEY = "eshraqat_client_auth_user_v1";
+const STORAGE_KEY = "eshraqat_client_auth_user_v2";
 
 export function ClientAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<ClientUser | null>(null);
@@ -51,49 +65,37 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved =
+        localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY);
       if (saved) {
         setUser(JSON.parse(saved));
       }
     } catch {
-      // ignore
+      // ignore parse errors
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const sendOtp = async (email: string) => {
-    try {
-      const res = await fetch("/api/auth/otp/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
-      return data;
-    } catch {
-      return { success: false, message: "تعذر الاتصال بخادم إرسال الرمز." };
-    }
-  };
-
-  const verifyOtp = async (
-    email: string,
-    otp: string,
-    rememberMe: boolean,
-    token?: string
+  const login = async (
+    identifier: string,
+    password: string,
+    rememberMe: boolean = true,
   ) => {
     try {
-      const res = await fetch("/api/auth/otp/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp, rememberMe, token }),
-      });
-      const data = await res.json();
-      if (data.success && data.user) {
+      const res = await ApiService.loginCustomer(identifier, password);
+      if (res && res.user) {
         const clientUser: ClientUser = {
-          email: data.user.email,
-          token: data.user.token,
+          id: res.user.id,
+          name: res.user.name || `${res.user.firstName || ""} ${res.user.lastName || ""}`.trim(),
+          firstName: res.user.firstName,
+          lastName: res.user.lastName,
+          email: res.user.email,
+          phone: res.user.phone,
+          region: res.user.region,
+          token: res.token,
         };
+
         setUser(clientUser);
         if (rememberMe) {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(clientUser));
@@ -101,47 +103,96 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
           sessionStorage.setItem(STORAGE_KEY, JSON.stringify(clientUser));
         }
 
-        // Direct client sync backup
-        ApiService.syncClientProfile({
-          email: clientUser.email,
-          notes: "تسجيل دخول وتوثيق البريد الإلكتروني عبر OTP في الموقع الرسمي",
-        }).catch(() => {});
+        return { success: true, message: res.message || "تم تسجيل الدخول بنجاح" };
       }
-      return data;
-    } catch {
-      return { success: false, message: "تعذر تأكيد الرمز مع الخادم." };
+      return { success: false, message: "فشل تسجيل الدخول، يرجى المحاولة مرة أخرى" };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || "البريد الإلكتروني/رقم الجوال أو كلمة المرور غير صحيحة",
+      };
     }
   };
 
-  const updateProfile = (data: Partial<ClientUser>) => {
-    if (!user) return;
-    const updated = { ...user, ...data };
-    setUser(updated);
+  const register = async (
+    data: RegisterCustomerData,
+    rememberMe: boolean = true,
+  ) => {
     try {
-      if (localStorage.getItem(STORAGE_KEY)) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } else {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      }
+      const res = await ApiService.registerCustomer(data);
+      if (res && res.user) {
+        const clientUser: ClientUser = {
+          id: res.user.id,
+          name: res.user.name || `${res.user.firstName} ${res.user.lastName}`,
+          firstName: res.user.firstName,
+          lastName: res.user.lastName,
+          email: res.user.email,
+          phone: res.user.phone,
+          region: res.user.region,
+          token: res.token,
+        };
 
-      ApiService.syncClientProfile({
-        email: updated.email,
-        name: updated.name,
-        phone: updated.phone,
-      }).catch(() => {});
-    } catch {
-      // ignore
+        setUser(clientUser);
+        if (rememberMe) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(clientUser));
+        } else {
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(clientUser));
+        }
+
+        return { success: true, message: res.message || "تم إنشاء الحساب بنجاح" };
+      }
+      return { success: false, message: "فشل إنشاء الحساب" };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || "حدث خطأ أثناء إنشاء الحساب",
+      };
+    }
+  };
+
+  const requestPasswordRecovery = async (identifier: string) => {
+    try {
+      const res = await ApiService.requestPasswordRecovery(identifier);
+      return {
+        success: true,
+        message:
+          res?.message ||
+          "تم إرسال طلب استعادة كلمة المرور لمراجعة الإدارة بنجاح.",
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || "حدث خطأ أثناء تقديم طلب استعادة كلمة المرور",
+      };
+    }
+  };
+
+  const resetPassword = async (
+    token: string,
+    password: string,
+    confirmPassword: string,
+  ) => {
+    try {
+      const res = await ApiService.resetPassword(token, password, confirmPassword);
+      return {
+        success: true,
+        message: res?.message || "تم تعيين كلمة المرور الجديدة بنجاح.",
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.message || "فشل تعيين كلمة المرور الجديدة",
+      };
     }
   };
 
   const logout = () => {
     setUser(null);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-      sessionStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // ignore
-    }
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
+    // Remove cookie if set
+    document.cookie =
+      "eshraqat_client_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
   };
 
   return (
@@ -150,9 +201,10 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
         user,
         isLoggedIn: !!user,
         isLoading,
-        sendOtp,
-        verifyOtp,
-        updateProfile,
+        login,
+        register,
+        requestPasswordRecovery,
+        resetPassword,
         logout,
       }}
     >
@@ -162,5 +214,9 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
 }
 
 export function useClientAuth() {
-  return useContext(ClientAuthContext);
+  const context = useContext(ClientAuthContext);
+  if (!context) {
+    throw new Error("useClientAuth must be used within a ClientAuthProvider");
+  }
+  return context;
 }

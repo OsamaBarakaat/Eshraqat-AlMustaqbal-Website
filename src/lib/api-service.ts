@@ -508,6 +508,100 @@ export const ApiService = {
     }
     return null;
   },
+
+  // ==========================================
+  // CUSTOMER AUTHENTICATION (WEBSITE CLIENTS)
+  // ==========================================
+
+  async registerCustomer(data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    region: string;
+    phone: string;
+    password: string;
+    confirmPassword: string;
+  }) {
+    const res = await fetch(`${API_BASE_URL}/clients/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      throw new Error(
+        json?.message ||
+          (Array.isArray(json?.message) ? json.message.join(", ") : "فشل إنشاء الحساب"),
+      );
+    }
+    return json;
+  },
+
+  async loginCustomer(identifier: string, password: string) {
+    const res = await fetch(`${API_BASE_URL}/clients/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier, password }),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      throw new Error(
+        json?.message ||
+          (Array.isArray(json?.message) ? json.message.join(", ") : "فشل تسجيل الدخول"),
+      );
+    }
+    return json;
+  },
+
+  async requestPasswordRecovery(identifier: string) {
+    const res = await fetch(`${API_BASE_URL}/clients/auth/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier }),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      throw new Error(
+        json?.message ||
+          (Array.isArray(json?.message)
+            ? json.message.join(", ")
+            : "فشل تقديم طلب استعادة كلمة المرور"),
+      );
+    }
+    return json;
+  },
+
+  async verifyResetToken(token: string) {
+    const res = await fetch(
+      `${API_BASE_URL}/clients/auth/verify-reset-token?token=${encodeURIComponent(token)}`,
+      {
+        cache: "no-store",
+      },
+    );
+    const json = await res.json();
+    if (!res.ok) {
+      throw new Error(json?.message || "رابط استعادة كلمة المرور غير صالح أو منتهي");
+    }
+    return json;
+  },
+
+  async resetPassword(token: string, password: string, confirmPassword: string) {
+    const res = await fetch(`${API_BASE_URL}/clients/auth/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, password, confirmPassword }),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      throw new Error(
+        json?.message ||
+          (Array.isArray(json?.message)
+            ? json.message.join(", ")
+            : "فشل تعيين كلمة المرور الجديدة"),
+      );
+    }
+    return json;
+  },
 };
 
 export const apiService = ApiService;
