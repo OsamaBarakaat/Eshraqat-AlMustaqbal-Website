@@ -53,10 +53,11 @@ function ResetPasswordContent() {
     ApiService.verifyResetToken(token)
       .then((data) => {
         if (!isMounted) return;
+        const payload = data?.data !== undefined ? data.data : data;
         setTokenValid(true);
         setClientInfo({
-          clientName: data.clientName,
-          clientEmail: data.clientEmail,
+          clientName: payload?.clientName || "",
+          clientEmail: payload?.clientEmail,
         });
       })
       .catch((err: any) => {

@@ -534,7 +534,7 @@ export const ApiService = {
           (Array.isArray(json?.message) ? json.message.join(", ") : "فشل إنشاء الحساب"),
       );
     }
-    return json;
+    return json?.data !== undefined ? json.data : json;
   },
 
   async loginCustomer(identifier: string, password: string) {
@@ -550,7 +550,7 @@ export const ApiService = {
           (Array.isArray(json?.message) ? json.message.join(", ") : "فشل تسجيل الدخول"),
       );
     }
-    return json;
+    return json?.data !== undefined ? json.data : json;
   },
 
   async requestPasswordRecovery(identifier: string) {
@@ -568,7 +568,7 @@ export const ApiService = {
             : "فشل تقديم طلب استعادة كلمة المرور"),
       );
     }
-    return json;
+    return json?.data !== undefined ? json.data : json;
   },
 
   async verifyResetToken(token: string) {
@@ -582,7 +582,7 @@ export const ApiService = {
     if (!res.ok) {
       throw new Error(json?.message || "رابط استعادة كلمة المرور غير صالح أو منتهي");
     }
-    return json;
+    return json?.data !== undefined ? json.data : json;
   },
 
   async resetPassword(token: string, password: string, confirmPassword: string) {
@@ -600,7 +600,7 @@ export const ApiService = {
             : "فشل تعيين كلمة المرور الجديدة"),
       );
     }
-    return json;
+    return json?.data !== undefined ? json.data : json;
   },
 };
 

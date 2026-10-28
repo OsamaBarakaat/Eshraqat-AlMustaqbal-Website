@@ -84,16 +84,17 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
   ) => {
     try {
       const res = await ApiService.loginCustomer(identifier, password);
-      if (res && res.user) {
+      const payload = res?.data !== undefined ? res.data : res;
+      if (payload && payload.user) {
         const clientUser: ClientUser = {
-          id: res.user.id,
-          name: res.user.name || `${res.user.firstName || ""} ${res.user.lastName || ""}`.trim(),
-          firstName: res.user.firstName,
-          lastName: res.user.lastName,
-          email: res.user.email,
-          phone: res.user.phone,
-          region: res.user.region,
-          token: res.token,
+          id: payload.user.id,
+          name: payload.user.name || `${payload.user.firstName || ""} ${payload.user.lastName || ""}`.trim(),
+          firstName: payload.user.firstName,
+          lastName: payload.user.lastName,
+          email: payload.user.email,
+          phone: payload.user.phone,
+          region: payload.user.region,
+          token: payload.token,
         };
 
         setUser(clientUser);
@@ -103,7 +104,7 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
           sessionStorage.setItem(STORAGE_KEY, JSON.stringify(clientUser));
         }
 
-        return { success: true, message: res.message || "تم تسجيل الدخول بنجاح" };
+        return { success: true, message: payload.message || "تم تسجيل الدخول بنجاح" };
       }
       return { success: false, message: "فشل تسجيل الدخول، يرجى المحاولة مرة أخرى" };
     } catch (err: any) {
@@ -120,16 +121,17 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
   ) => {
     try {
       const res = await ApiService.registerCustomer(data);
-      if (res && res.user) {
+      const payload = res?.data !== undefined ? res.data : res;
+      if (payload && payload.user) {
         const clientUser: ClientUser = {
-          id: res.user.id,
-          name: res.user.name || `${res.user.firstName} ${res.user.lastName}`,
-          firstName: res.user.firstName,
-          lastName: res.user.lastName,
-          email: res.user.email,
-          phone: res.user.phone,
-          region: res.user.region,
-          token: res.token,
+          id: payload.user.id,
+          name: payload.user.name || `${payload.user.firstName} ${payload.user.lastName}`,
+          firstName: payload.user.firstName,
+          lastName: payload.user.lastName,
+          email: payload.user.email,
+          phone: payload.user.phone,
+          region: payload.user.region,
+          token: payload.token,
         };
 
         setUser(clientUser);
@@ -139,7 +141,7 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
           sessionStorage.setItem(STORAGE_KEY, JSON.stringify(clientUser));
         }
 
-        return { success: true, message: res.message || "تم إنشاء الحساب بنجاح" };
+        return { success: true, message: payload.message || "تم إنشاء الحساب بنجاح" };
       }
       return { success: false, message: "فشل إنشاء الحساب" };
     } catch (err: any) {

@@ -470,8 +470,51 @@ export function ClientAuthModal({
                 </div>
                 <input
                   type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={9}
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onKeyDown={(e) => {
+                    // Allow control keys (Backspace, Tab, Delete, Arrows, Enter, Select All, Copy, Paste)
+                    if (
+                      [
+                        "Backspace",
+                        "Delete",
+                        "Tab",
+                        "Escape",
+                        "Enter",
+                        "ArrowLeft",
+                        "ArrowRight",
+                        "Home",
+                        "End",
+                      ].includes(e.key) ||
+                      (e.ctrlKey && ["a", "c", "v", "x"].includes(e.key.toLowerCase())) ||
+                      (e.metaKey && ["a", "c", "v", "x"].includes(e.key.toLowerCase()))
+                    ) {
+                      return;
+                    }
+                    // Prevent any character that is not a numeric digit (0-9)
+                    if (!/^\d$/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onChange={(e) => {
+                    // Extract digits only (in case of paste or virtual keyboard)
+                    let val = e.target.value.replace(/\D/g, "");
+                    // Automatically strip 966 prefix if user pastes international format
+                    if (val.startsWith("9665")) {
+                      val = val.slice(3);
+                    }
+                    // Automatically strip leading zero if user enters 05...
+                    if (val.startsWith("05")) {
+                      val = val.slice(1);
+                    }
+                    // Limit strictly to 9 digits
+                    if (val.length > 9) {
+                      val = val.slice(0, 9);
+                    }
+                    setPhone(val);
+                  }}
                   placeholder="565642556"
                   required
                   className="w-full pr-16 pl-3 py-2.5 bg-[#1C1C22] border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#C5A059] text-xs sm:text-sm font-mono dir-ltr"
