@@ -19,12 +19,19 @@ export interface Property {
   titleEn?: string;
   description: string;
   descriptionEn?: string;
+  fullDescription?: string;
+  shortDescription?: string;
   price: number;
   category?: PropertyCategory | string;
   type: PropertyType;
   purpose: PropertyPurpose;
+  country?: string;
   city: string;
   district: string;
+  streetAddress?: string;
+  locationDescription?: string;
+  latitude?: number;
+  longitude?: number;
   area: number; // in sq meters
   bedrooms: number;
   bathrooms: number;

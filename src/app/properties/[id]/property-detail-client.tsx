@@ -23,6 +23,9 @@ import {
   ChevronRight,
   Phone,
   MessageCircle,
+  Navigation,
+  Compass,
+  ExternalLink,
 } from "lucide-react";
 import { Property } from "@/types/property";
 import { formatPrice } from "@/lib/utils";
@@ -133,6 +136,18 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
       ? (principal * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths))) /
         (Math.pow(1 + monthlyRate, totalMonths) - 1)
       : principal / totalMonths;
+
+  // Direct Google Maps Search / Coordinates URL
+  const googleMapsUrl =
+    property.latitude && property.longitude
+      ? `https://www.google.com/maps?q=${property.latitude},${property.longitude}`
+      : property.streetAddress
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+          `${property.city} ${property.district} ${property.streetAddress} المملكة العربية السعودية`
+        )}`
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+          `${property.city} ${property.district} المملكة العربية السعودية`
+        )}`;
 
   return (
     <div className={`relative min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground overflow-hidden ${dir === "rtl" ? "text-right" : "text-left"}`}>
@@ -275,9 +290,15 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
           <div className="lg:col-span-8 space-y-8">
             {/* Title & Code */}
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs text-[#C5A059] font-medium">
-                <MapPin className="w-4 h-4" />
+              <div className="flex flex-wrap items-center gap-2 text-xs text-[#C5A059] font-medium">
+                <MapPin className="w-4 h-4 shrink-0" />
                 <span>{property.city} - {property.district}</span>
+                {property.streetAddress && (
+                  <>
+                    <span className="text-zinc-600">•</span>
+                    <span className="text-zinc-300 font-normal">{property.streetAddress}</span>
+                  </>
+                )}
                 <span className="text-zinc-600">•</span>
                 <span className="font-mono text-zinc-400">
                   {lang === "en" ? `Code: ${property.code}` : `كود: ${property.code}`}
@@ -320,6 +341,79 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-light whitespace-pre-line">
                 {property.description}
               </p>
+            </div>
+
+            {/* Location & Detailed Address */}
+            <div className="p-6 rounded-3xl bg-[#141418] border border-white/5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/5">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2.5 rounded-2xl bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 shrink-0">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-bold text-white">
+                      {lang === "en" ? "Location & Detailed Address" : "الموقع الجغرافي وتفاصيل العنوان"}
+                    </h3>
+                    <p className="text-xs text-zinc-400">
+                      {lang === "en"
+                        ? "Exact site location and street landmarks"
+                        : "بيانات الموقع الجغرافي الدقيق وأبرز المعالم المحيطة بالعقار"}
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#C5A059]/10 hover:bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/30 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  <Navigation className="w-4 h-4" />
+                  <span>{lang === "en" ? "Directions on Google Maps" : "الاتجاهات على خرائط Google"}</span>
+                  <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                </a>
+              </div>
+
+              {/* Full Detailed Description of Location */}
+              {property.streetAddress && (
+                <div className="p-4 rounded-2xl bg-[#1C1C22] border border-[#C5A059]/30 space-y-1.5 shadow-sm">
+                  <span className="text-xs font-semibold text-[#C5A059] flex items-center gap-1.5">
+                    <Compass className="w-3.5 h-3.5" />
+                    {lang === "en" ? "Full Location Description & Street Address:" : "الوصف التفصيلي الكامل للموقع واسم الشارع:"}
+                  </span>
+                  <p className="text-sm text-zinc-100 leading-relaxed font-medium whitespace-pre-line">
+                    {property.streetAddress}
+                  </p>
+                </div>
+              )}
+
+              {/* Geographic Data Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-2xl bg-[#1C1C22] border border-white/5">
+                  <span className="text-[11px] text-zinc-400 block mb-1">
+                    {lang === "en" ? "City" : "المدينة"}
+                  </span>
+                  <span className="text-sm font-bold text-white block">
+                    {property.city}
+                  </span>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[#1C1C22] border border-white/5">
+                  <span className="text-[11px] text-zinc-400 block mb-1">
+                    {lang === "en" ? "District / Area" : "الحي / المنطقة"}
+                  </span>
+                  <span className="text-sm font-bold text-white block">
+                    {property.district}
+                  </span>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[#1C1C22] border border-white/5">
+                  <span className="text-[11px] text-zinc-400 block mb-1">
+                    {lang === "en" ? "Country" : "الدولة"}
+                  </span>
+                  <span className="text-sm font-bold text-white block">
+                    {property.country || (lang === "en" ? "Saudi Arabia" : "المملكة العربية السعودية")}
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Amenities & Features */}
@@ -449,6 +543,33 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                 <MessageCircle className="w-4 h-4" />
                 <span>{lang === "en" ? "Share via WhatsApp" : "مشاركة العرض عبر الواتساب"}</span>
               </button>
+
+              {/* Location Snapshot */}
+              <div className="p-4 rounded-2xl bg-[#1C1C22] border border-white/5 space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-[#C5A059] font-bold">
+                    <MapPin className="w-3.5 h-3.5 shrink-0" />
+                    <span>{lang === "en" ? "Property Location" : "موقع العقار"}</span>
+                  </div>
+                  <a
+                    href={googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-[#C5A059] hover:underline flex items-center gap-1"
+                  >
+                    <span>{lang === "en" ? "Map" : "الخريطة"}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+                <p className="text-white font-medium">
+                  {property.city} - {property.district}
+                </p>
+                {property.streetAddress && (
+                  <p className="text-zinc-300 text-[11px] leading-relaxed pt-1.5 border-t border-white/5 font-normal">
+                    {property.streetAddress}
+                  </p>
+                )}
+              </div>
 
               {/* Guarantee items */}
               <div className="pt-3 border-t border-white/5 space-y-2.5 text-xs text-zinc-400">

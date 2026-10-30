@@ -127,6 +127,10 @@ function mapBackendProperty(item: any): Property {
   // Location text
   const city = item.cityRel?.nameArabic || item.city || "مدينة الرياض";
   const district = item.districtRel?.nameArabic || item.areaName || "حي النرجس";
+  const country = item.country || "المملكة العربية السعودية";
+  const streetAddress = item.streetAddress || item.locationDescription || item.location?.streetAddress || "";
+  const latitude = item.latitude !== undefined && item.latitude !== null ? Number(item.latitude) : item.location?.latitude;
+  const longitude = item.longitude !== undefined && item.longitude !== null ? Number(item.longitude) : item.location?.longitude;
 
   // Category from DB (RESIDENTIAL, COMMERCIAL, AGRICULTURAL)
   const rawCategory = (item.category || "").toUpperCase();
@@ -152,19 +156,30 @@ function mapBackendProperty(item: any): Property {
 
   const purpose: PropertyPurpose = (item.purpose || "SALE").toUpperCase() === "RENT" ? "RENT" : "SALE";
 
+  const fullDescription = item.fullDescription || item.description || "";
+  const shortDescription = item.shortDescription || "";
+  const description = item.fullDescription || item.shortDescription || item.description || "عقار فاخر تم تطويره بأرقى المعايير الإنشائية.";
+
   return {
     id: item.id || `prop-${Date.now()}`,
     code: item.code || `ESH-${(item.id || "0000").slice(0, 4).toUpperCase()}`,
     title: item.title || "عقار فاخر مميز",
     titleEn: item.nameEnglish || item.titleEn,
-    description: item.shortDescription || item.fullDescription || item.description || "عقار فاخر تم تطويره بأرقى المعايير الإنشائية.",
+    description,
     descriptionEn: item.descriptionEn,
+    fullDescription,
+    shortDescription,
     price: Number(item.price) || 2500000,
     category,
     type,
     purpose,
+    country,
     city,
     district,
+    streetAddress,
+    locationDescription: streetAddress,
+    latitude,
+    longitude,
     area: Number(item.area) || 350,
     bedrooms: Number(item.residentialBedrooms) || Number(item.bedrooms) || 4,
     bathrooms: Number(item.residentialBathrooms) || Number(item.bathrooms) || 5,

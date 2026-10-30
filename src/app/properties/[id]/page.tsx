@@ -20,7 +20,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const shareTitle = `${property.title} | إشراقة المستقبل`;
-  const shareDescription = `للبيع في ${property.city} - ${property.district} • المساحة: ${property.area}م² • ${property.bedrooms} غرف نوم • السعر: ${property.price.toLocaleString("ar-SA")} ر.س. تفاصيل العرض والمعاينة المباشرة.`;
+  const locationText = property.streetAddress
+    ? `${property.city} - ${property.district} (${property.streetAddress})`
+    : `${property.city} - ${property.district}`;
+  const shareDescription = `للبيع في ${locationText} • المساحة: ${property.area}م² • ${property.bedrooms} غرف نوم • السعر: ${property.price.toLocaleString("ar-SA")} ر.س. تفاصيل العرض والمعاينة المباشرة.`;
   const mainImage = property.images[0] || "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80";
 
   return {
