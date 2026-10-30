@@ -171,6 +171,14 @@ function mapBackendProperty(item: any): Property {
     fullDescription,
     descriptionEn: item.descriptionEn,
     price: Number(item.price) || 2500000,
+    originalPrice: item.originalPrice ? Number(item.originalPrice) : undefined,
+    discountPercentage:
+      item.discountPercentage !== undefined && item.discountPercentage !== null
+        ? Number(item.discountPercentage)
+        : item.originalPrice && Number(item.originalPrice) > Number(item.price)
+        ? Math.round(((Number(item.originalPrice) - Number(item.price)) / Number(item.originalPrice)) * 100)
+        : undefined,
+    currency: item.currency || "ر.س",
     category,
     type,
     purpose,
@@ -181,10 +189,31 @@ function mapBackendProperty(item: any): Property {
     locationDescription: streetAddress,
     latitude,
     longitude,
-    area: Number(item.area) || 350,
-    bedrooms: Number(item.residentialBedrooms) || Number(item.bedrooms) || 4,
-    bathrooms: Number(item.residentialBathrooms) || Number(item.bathrooms) || 5,
-    livingRooms: Number(item.residentialLivingRooms) || Number(item.livingRooms) || 2,
+    googleMapsUrl: (item.googleMapsUrl || item.locationMapUrl || "").trim(),
+    area: Number(item.area) || 0,
+    areaUnit: item.areaUnit || "م²",
+    bedrooms:
+      item.residentialBedrooms !== undefined && item.residentialBedrooms !== null
+        ? Number(item.residentialBedrooms)
+        : item.bedrooms !== undefined && item.bedrooms !== null
+        ? Number(item.bedrooms)
+        : category === "RESIDENTIAL"
+        ? 3
+        : undefined,
+    bathrooms:
+      item.residentialBathrooms !== undefined && item.residentialBathrooms !== null
+        ? Number(item.residentialBathrooms)
+        : item.bathrooms !== undefined && item.bathrooms !== null
+        ? Number(item.bathrooms)
+        : category === "RESIDENTIAL"
+        ? 2
+        : undefined,
+    livingRooms:
+      item.residentialLivingRooms !== undefined && item.residentialLivingRooms !== null
+        ? Number(item.residentialLivingRooms)
+        : item.livingRooms !== undefined && item.livingRooms !== null
+        ? Number(item.livingRooms)
+        : undefined,
     yearBuilt: item.yearBuilt || 2025,
     featured: Boolean(item.featured),
     status: item.status || "PUBLISHED",
@@ -195,7 +224,17 @@ function mapBackendProperty(item: any): Property {
     mortgageEligible: item.mortgageEligible !== false,
     hasElectronicDeed: item.hasElectronicDeed !== false,
     finishingType: item.finishingType || "تشطيب فاخر ديلوكس",
-    parkingSpaces: Number(item.parkingSpaces) || 2,
+    parkingSpaces:
+      item.parkingSpaces !== undefined && item.parkingSpaces !== null
+        ? Number(item.parkingSpaces)
+        : undefined,
+    landClassification: item.landClassification || undefined,
+    waterAvailability:
+      item.waterAvailability !== undefined && item.waterAvailability !== null
+        ? Boolean(item.waterAvailability)
+        : undefined,
+    commercialCategory: item.commercialCategory || undefined,
+    commercialSuitableActivity: item.commercialSuitableActivity || undefined,
     virtualTourUrl: item.virtualTourUrl,
   };
 }
@@ -393,6 +432,25 @@ export const ApiService = {
       console.warn("Failed to fetch website config from CMS API:", err);
     }
     return null;
+  },
+
+  /**
+   * Fetch live published FAQs from backend CMS
+   */
+  async getFaqs(): Promise<any[]> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/cms/public/faqs`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const json = await res.json();
+        const data = json?.data || json;
+        if (Array.isArray(data)) return data;
+      }
+    } catch (err) {
+      console.warn("Failed to fetch FAQs from CMS API:", err);
+    }
+    return [];
   },
 
   /**

@@ -22,6 +22,9 @@ export interface Property {
   fullDescription?: string;
   shortDescription?: string;
   price: number;
+  originalPrice?: number;
+  discountPercentage?: number;
+  currency?: string;
   category?: PropertyCategory | string;
   type: PropertyType;
   purpose: PropertyPurpose;
@@ -32,9 +35,11 @@ export interface Property {
   locationDescription?: string;
   latitude?: number;
   longitude?: number;
-  area: number; // in sq meters
-  bedrooms: number;
-  bathrooms: number;
+  googleMapsUrl?: string;
+  area: number;
+  areaUnit?: string;
+  bedrooms?: number;
+  bathrooms?: number;
   livingRooms?: number;
   yearBuilt?: number;
   featured?: boolean;
@@ -46,4 +51,8 @@ export interface Property {
   hasElectronicDeed?: boolean;
   finishingType?: string;
   parkingSpaces?: number;
+  landClassification?: string;
+  waterAvailability?: boolean;
+  commercialCategory?: string;
+  commercialSuitableActivity?: string;
 }

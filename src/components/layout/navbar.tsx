@@ -52,6 +52,17 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileMenuOpen]);
+
   const navLinks = [
     { href: "/", label: t("nav.home") },
     { href: "/properties", label: t("nav.properties") },
@@ -230,39 +241,94 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Dropdown / Drawer Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden mt-3 px-3 sm:px-4 pb-4 animate-in slide-in-from-top-3 duration-200">
-            <div className={`p-4 rounded-3xl bg-[#141418]/98 backdrop-blur-2xl border border-[#C5A059]/30 shadow-2xl shadow-black space-y-4 ${dir === "rtl" ? "text-right" : "text-left"} max-h-[calc(100vh-90px)] overflow-y-auto`}>
+        {/* Mobile / Tablet Slide-over Sidebar Drawer */}
+        <div
+          className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${
+            mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+          aria-hidden={!mobileMenuOpen}
+        >
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-xs transition-opacity duration-300 cursor-pointer"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Drawer container from right in RTL, left in LTR */}
+          <div
+            className={`fixed inset-y-0 ${
+              dir === "rtl" ? "right-0" : "left-0"
+            } w-[85vw] max-w-[340px] bg-[#0E0E12] border-white/10 ${
+              dir === "rtl" ? "border-l" : "border-r"
+            } shadow-2xl flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${
+              mobileMenuOpen
+                ? "translate-x-0"
+                : dir === "rtl"
+                ? "translate-x-full"
+                : "-translate-x-full"
+            }`}
+          >
+            {/* Drawer Header */}
+            <div className="h-16 px-4 flex items-center justify-between border-b border-white/10 shrink-0">
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 group cursor-pointer"
+              >
+                <div className="w-8 h-8 rounded-xl bg-black border border-[#C5A059]/40 p-1 flex items-center justify-center">
+                  <img src="/logo.png" alt="إشراقة المستقبل" className="w-full h-full object-contain" />
+                </div>
+                <span className="text-sm font-bold text-white group-hover:text-[#C5A059] transition-colors">
+                  {lang === "en" ? "Eshraqat Al-Mustaqbal" : "إشراقة المستقبل"}
+                </span>
+              </Link>
+
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                aria-label="إغلاق القائمة"
+              >
+                <X className="w-5 h-5 text-[#C5A059]" />
+              </button>
+            </div>
+
+            {/* Drawer Body */}
+            <div className={`flex-1 overflow-y-auto p-4 space-y-5 ${dir === "rtl" ? "text-right" : "text-left"}`}>
               {/* Navigation Links */}
-              <div className="grid grid-cols-1 divide-y divide-white/5">
-                {navLinks.map((item) => {
-                  const isActive = pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-                        isActive
-                          ? "bg-[#C5A059]/15 text-[#C5A059]"
-                          : "text-zinc-200 hover:bg-white/5 hover:text-[#C5A059]"
-                      }`}
-                    >
-                      <span>{item.label}</span>
-                      {dir === "rtl" ? (
-                        <ChevronLeft className="w-4 h-4 text-zinc-500" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-zinc-500" />
-                      )}
-                    </Link>
-                  );
-                })}
+              <div className="space-y-1">
+                <span className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider px-2 mb-2">
+                  {lang === "en" ? "Main Navigation" : "القائمة الرئيسية"}
+                </span>
+                <div className="grid grid-cols-1 divide-y divide-white/5">
+                  {navLinks.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-colors ${
+                          isActive
+                            ? "bg-[#C5A059]/15 text-[#C5A059]"
+                            : "text-zinc-200 hover:bg-white/5 hover:text-[#C5A059]"
+                        }`}
+                      >
+                        <span>{item.label}</span>
+                        {dir === "rtl" ? (
+                          <ChevronLeft className="w-4 h-4 text-zinc-500" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 text-zinc-500" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Property Category Quick Filters */}
-              <div className="pt-2 border-t border-white/10">
-                <span className="block text-[11px] font-bold text-zinc-400 mb-2 px-1">
+              <div className="pt-3 border-t border-white/10">
+                <span className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider px-2 mb-2">
                   {lang === "en" ? "Property Categories" : "تصفح فئات العقارات"}
                 </span>
                 <div className="grid grid-cols-2 gap-2 text-xs font-medium">
@@ -297,21 +363,50 @@ export function Navbar() {
                 </div>
               </div>
 
-              {/* Auth / My Bookings */}
-              <div className="pt-2 border-t border-white/10 space-y-2">
+              {/* Language & Compare Quick Buttons */}
+              <div className="pt-3 border-t border-white/10 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={toggleLang}
+                  className="flex-1 py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-zinc-300 flex items-center justify-center gap-2 border border-white/5 cursor-pointer"
+                >
+                  <Globe className="w-3.5 h-3.5 text-[#C5A059]" />
+                  <span>{lang === "en" ? "العربية" : "English"}</span>
+                </button>
+                <Link
+                  href="/compare"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-zinc-300 flex items-center justify-center gap-2 border border-white/5 cursor-pointer"
+                >
+                  <Scale className="w-3.5 h-3.5 text-[#C5A059]" />
+                  <span>{t("nav.compare")}</span>
+                  {compareList.length > 0 && (
+                    <span className="w-4 h-4 rounded-full bg-[#C5A059] text-black text-[10px] font-bold flex items-center justify-center">
+                      {compareList.length}
+                    </span>
+                  )}
+                </Link>
+              </div>
+
+              {/* Auth / Account */}
+              <div className="pt-3 border-t border-white/10 space-y-2">
                 {!mounted || !isLoggedIn ? (
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);
                       setAuthModalOpen(true);
                     }}
-                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-[#C5A059] text-black hover:brightness-110 flex items-center justify-center gap-2 shadow-lg cursor-pointer transition-all"
+                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-[#C5A059] to-[#D4AF37] text-black hover:brightness-110 flex items-center justify-center gap-2 shadow-lg cursor-pointer transition-all"
                   >
                     <User className="w-4 h-4" />
                     <span>{t("nav.login")} / {lang === "en" ? "Register" : "إنشاء حساب"}</span>
                   </button>
                 ) : (
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+                      <span className="text-[11px] text-zinc-400 block">{lang === "en" ? "Signed in as" : "مسجل الدخول باسم"}</span>
+                      <span className="text-xs font-bold text-white block mt-0.5">{user?.name || user?.phone}</span>
+                    </div>
                     <Link
                       href="/my-bookings"
                       onClick={() => setMobileMenuOpen(false)}
@@ -352,7 +447,7 @@ export function Navbar() {
               </div>
             </div>
           </div>
-        )}
+        </div>
       </header>
 
       {/* Auth Modal */}

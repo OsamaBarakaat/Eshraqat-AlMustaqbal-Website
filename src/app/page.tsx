@@ -4,6 +4,7 @@ import { HomePropertiesSection } from "@/components/home/home-properties-section
 import { NeighborhoodsSection } from "@/components/home/neighborhoods-section";
 import { VisionPillars } from "@/components/home/vision-pillars";
 import { TestimonialsSection } from "@/components/home/testimonials-section";
+import { FaqSection } from "@/components/home/faq-section";
 import { ApiService } from "@/lib/api-service";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +38,9 @@ export default async function HomePage() {
 
       {/* 5. Testimonials & Client Trust */}
       <TestimonialsSection homepageContent={cmsConfig?.homepage} />
+
+      {/* 6. Frequently Asked Questions (FAQ) Section linked to Dashboard CMS */}
+      <FaqSection initialFaqs={cmsConfig?.faqs} />
     </main>
   );
 }

@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Sparkles,
   Eye,
+  Tag,
 } from "lucide-react";
 import { Property } from "@/types/property";
 import { useLanguage } from "@/lib/i18n";
@@ -36,6 +37,16 @@ export function PropertyCard({ property }: PropertyCardProps) {
   const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const isCompared = isInCompare(property.id);
+
+  const hasDiscount = Boolean(
+    (property.originalPrice && Number(property.originalPrice) > Number(property.price)) ||
+    (property.discountPercentage && Number(property.discountPercentage) > 0)
+  );
+  const discountPercent = property.discountPercentage || (
+    property.originalPrice && Number(property.originalPrice) > Number(property.price)
+      ? Math.round(((Number(property.originalPrice) - Number(property.price)) / Number(property.originalPrice)) * 100)
+      : 0
+  );
 
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -96,6 +107,12 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
           {/* Badges */}
           <div className="absolute top-3 right-3 flex flex-wrap gap-1.5 z-10">
+            {hasDiscount && (
+              <span className="px-3 py-1 rounded-full text-[11px] font-extrabold bg-gradient-to-r from-rose-600 to-amber-500 text-white shadow-lg flex items-center gap-1">
+                <Tag className="w-3 h-3 fill-current" />
+                <span>{lang === "en" ? `Offer -${discountPercent}%` : `عرض خاص -${discountPercent}%`}</span>
+              </span>
+            )}
             {property.featured && (
               <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#C5A059] text-black shadow-md flex items-center gap-1">
                 <Sparkles className="w-3 h-3 fill-current" />
@@ -138,13 +155,20 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
           {/* Price Tag Overlay */}
           <div className="absolute bottom-3 right-3 z-10">
-            <div className="px-3.5 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-[#C5A059]/40 text-white">
-              <span className="text-xs text-zinc-400 block font-light leading-none">
+            <div className="px-3.5 py-1.5 rounded-xl bg-black/85 backdrop-blur-md border border-[#C5A059]/40 text-white">
+              <span className="text-[10px] text-zinc-400 block font-light leading-none">
                 {lang === "en" ? "Price" : "السعر"}
               </span>
-              <span className="text-base sm:text-lg font-bold font-mono text-[#F3E5AB]">
-                {formatPrice(property.price, undefined, lang)}
-              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-base sm:text-lg font-bold font-mono text-[#F3E5AB]">
+                  {formatPrice(property.price, undefined, lang)}
+                </span>
+                {hasDiscount && property.originalPrice && (
+                  <span className="text-xs font-mono text-zinc-400 line-through">
+                    {formatPrice(property.originalPrice, undefined, lang)}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -174,20 +198,43 @@ export function PropertyCard({ property }: PropertyCardProps) {
             </p>
           </div>
 
-          {/* Specs Bar */}
-          <div className="pt-3 border-t border-white/5 grid grid-cols-3 gap-2 text-center text-xs">
+          {/* Dynamic Specs Bar */}
+          <div className={`pt-3 border-t border-white/5 grid gap-2 text-center text-xs ${
+            (property.bedrooms && property.bedrooms > 0) && (property.bathrooms && property.bathrooms > 0)
+              ? "grid-cols-3"
+              : (property.bedrooms && property.bedrooms > 0) || (property.bathrooms && property.bathrooms > 0) || property.parkingSpaces
+              ? "grid-cols-2"
+              : "grid-cols-1"
+          }`}>
             <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
               <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_area")}</span>
-              <span className="font-bold text-white font-mono">{property.area} {lang === "en" ? "sqm" : "م²"}</span>
+              <span className="font-bold text-white font-mono">{property.area} {property.areaUnit || (lang === "en" ? "sqm" : "م²")}</span>
             </div>
-            <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
-              <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_rooms")}</span>
-              <span className="font-bold text-white font-mono">{property.bedrooms} {lang === "en" ? "Beds" : "غرف"}</span>
-            </div>
-            <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
-              <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_baths")}</span>
-              <span className="font-bold text-white font-mono">{property.bathrooms} {lang === "en" ? "Baths" : "حمام"}</span>
-            </div>
+            {property.bedrooms !== undefined && property.bedrooms > 0 && (
+              <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
+                <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_rooms")}</span>
+                <span className="font-bold text-white font-mono">{property.bedrooms} {lang === "en" ? "Beds" : "غرف"}</span>
+              </div>
+            )}
+            {property.bathrooms !== undefined && property.bathrooms > 0 && (
+              <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
+                <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_baths")}</span>
+                <span className="font-bold text-white font-mono">{property.bathrooms} {lang === "en" ? "Baths" : "حمام"}</span>
+              </div>
+            )}
+            {/* If neither bedrooms nor bathrooms (e.g. land), show category */}
+            {(!property.bedrooms || property.bedrooms <= 0) && (!property.bathrooms || property.bathrooms <= 0) && (
+              <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
+                <span className="text-[10px] text-zinc-400 block mb-0.5">{lang === "en" ? "Category" : "التصنيف"}</span>
+                <span className="font-bold text-[#C5A059] truncate block">
+                  {property.category === "AGRICULTURAL"
+                    ? (lang === "en" ? "Agricultural" : "أرض زراعية")
+                    : property.category === "COMMERCIAL"
+                    ? (lang === "en" ? "Commercial" : "تجاري")
+                    : (lang === "en" ? "Residential" : "سكني")}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Buttons: Book Viewing & View Details */}

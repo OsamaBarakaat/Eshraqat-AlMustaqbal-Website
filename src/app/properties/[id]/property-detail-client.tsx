@@ -26,6 +26,7 @@ import {
   Navigation,
   Compass,
   ExternalLink,
+  Tag,
 } from "lucide-react";
 import { Property } from "@/types/property";
 import { formatPrice } from "@/lib/utils";
@@ -119,35 +120,24 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
     setTouchEndX(null);
   };
 
-  // Mortgage Calculator State
-  const [downPaymentPercent, setDownPaymentPercent] = useState(20);
-  const [loanYears, setLoanYears] = useState(25);
-  const [interestRate, setInterestRate] = useState(4.5);
-
   const isCompared = isInCompare(property.id);
 
-  // Calculate monthly mortgage payment
-  const downPayment = (property.price * downPaymentPercent) / 100;
-  const principal = property.price - downPayment;
-  const monthlyRate = interestRate / 100 / 12;
-  const totalMonths = loanYears * 12;
-  const monthlyPayment =
-    monthlyRate > 0
-      ? (principal * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths))) /
-        (Math.pow(1 + monthlyRate, totalMonths) - 1)
-      : principal / totalMonths;
+  // Discount & Offers
+  const hasDiscount = Boolean(
+    (property.originalPrice && Number(property.originalPrice) > Number(property.price)) ||
+    (property.discountPercentage && Number(property.discountPercentage) > 0)
+  );
+  const discountPercent = property.discountPercentage || (
+    property.originalPrice && Number(property.originalPrice) > Number(property.price)
+      ? Math.round(((Number(property.originalPrice) - Number(property.price)) / Number(property.originalPrice)) * 100)
+      : 0
+  );
+  const savingsAmount = property.originalPrice && Number(property.originalPrice) > Number(property.price)
+    ? Number(property.originalPrice) - Number(property.price)
+    : 0;
 
-  // Direct Google Maps Search / Coordinates URL
-  const googleMapsUrl =
-    property.latitude && property.longitude
-      ? `https://www.google.com/maps?q=${property.latitude},${property.longitude}`
-      : property.streetAddress
-      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-          `${property.city} ${property.district} ${property.streetAddress} المملكة العربية السعودية`
-        )}`
-      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-          `${property.city} ${property.district} المملكة العربية السعودية`
-        )}`;
+  // Google Maps Direction URL (Strictly optional from admin dashboard)
+  const googleMapsUrl = property.googleMapsUrl?.trim() || "";
 
   return (
     <div className={`relative min-h-screen pt-32 pb-24 bg-[#09090B] text-foreground overflow-hidden ${dir === "rtl" ? "text-right" : "text-left"}`}>
@@ -256,12 +246,30 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
 
             {/* Price Floating Pill */}
             <div className={`absolute bottom-4 ${dir === "rtl" ? "right-4 text-right" : "left-4 text-left"} p-4 rounded-2xl bg-black/85 backdrop-blur-md border border-[#C5A059]/40 text-white z-10 pointer-events-none`}>
-              <span className="text-xs text-zinc-400 block font-light">
+              <span className="text-[11px] text-zinc-400 block font-light">
                 {lang === "en" ? "Total Price" : "السعر الإجمالي"}
               </span>
-              <span className="text-xl sm:text-2xl font-bold font-mono text-[#F3E5AB]">
-                {formatPrice(property.price, undefined, lang)}
-              </span>
+              <div className="flex flex-wrap items-baseline gap-2">
+                <span className="text-xl sm:text-2xl font-bold font-mono text-[#F3E5AB]">
+                  {formatPrice(property.price, undefined, lang)}
+                </span>
+                {hasDiscount && property.originalPrice && (
+                  <span className="text-sm font-mono text-zinc-400 line-through">
+                    {formatPrice(property.originalPrice, undefined, lang)}
+                  </span>
+                )}
+              </div>
+              {hasDiscount && (
+                <div className="mt-1 flex items-center gap-1.5 text-xs text-rose-400 font-bold">
+                  <Tag className="w-3.5 h-3.5" />
+                  <span>{lang === "en" ? `Special Offer (-${discountPercent}%)` : `عرض خاص (خصم ${discountPercent}%)`}</span>
+                  {savingsAmount > 0 && (
+                    <span className="text-emerald-400 text-[11px] font-normal mr-1">
+                      {lang === "en" ? `• Saved ${formatPrice(savingsAmount, undefined, lang)}` : `• وفرت ${formatPrice(savingsAmount, undefined, lang)}`}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -291,6 +299,12 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
             {/* Title & Code */}
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2 text-xs text-[#C5A059] font-medium">
+                {hasDiscount && (
+                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-gradient-to-r from-rose-600 to-amber-500 text-white shadow-md flex items-center gap-1">
+                    <Tag className="w-3.5 h-3.5 fill-current" />
+                    <span>{lang === "en" ? `Special Offer (-${discountPercent}%)` : `عرض خاص (خصم ${discountPercent}%)`}</span>
+                  </span>
+                )}
                 <MapPin className="w-4 h-4 shrink-0" />
                 <span>{property.city} - {property.district}</span>
                 {property.streetAddress && (
@@ -309,29 +323,84 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
               </h1>
             </div>
 
-            {/* Quick Specs Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-[#141418] border border-white/5 text-center">
-              <div className="p-3 rounded-xl bg-[#1C1C22]">
-                <Maximize2 className="w-4 h-4 text-[#C5A059] mx-auto mb-1" />
-                <span className="text-[11px] text-zinc-400 block">{lang === "en" ? "Area" : "المساحة"}</span>
-                <span className="text-sm font-bold text-white font-mono">{property.area} {lang === "en" ? "m²" : "م²"}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-[#1C1C22]">
-                <Bed className="w-4 h-4 text-[#C5A059] mx-auto mb-1" />
-                <span className="text-[11px] text-zinc-400 block">{lang === "en" ? "Bedrooms" : "غرف النوم"}</span>
-                <span className="text-sm font-bold text-white font-mono">{property.bedrooms} {lang === "en" ? "Rooms" : "غرف"}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-[#1C1C22]">
-                <Bath className="w-4 h-4 text-[#C5A059] mx-auto mb-1" />
-                <span className="text-[11px] text-zinc-400 block">{lang === "en" ? "Bathrooms" : "دورات المياه"}</span>
-                <span className="text-sm font-bold text-white font-mono">{property.bathrooms} {lang === "en" ? "Baths" : "حمامات"}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-[#1C1C22]">
-                <Car className="w-4 h-4 text-[#C5A059] mx-auto mb-1" />
-                <span className="text-[11px] text-zinc-400 block">{lang === "en" ? "Parking" : "المواقف"}</span>
-                <span className="text-sm font-bold text-white font-mono">{property.parkingSpaces || 2} {lang === "en" ? "Spots" : "مواقف"}</span>
-              </div>
-            </div>
+            {/* Quick Specs Grid - Dynamically rendered based on backend data */}
+            {(() => {
+              const specs = [
+                {
+                  id: "area",
+                  icon: Maximize2,
+                  label: lang === "en" ? "Area" : "المساحة",
+                  value: `${property.area} ${property.areaUnit || (lang === "en" ? "m²" : "م²")}`,
+                  show: Boolean(property.area && property.area > 0),
+                },
+                {
+                  id: "bedrooms",
+                  icon: Bed,
+                  label: lang === "en" ? "Bedrooms" : "غرف النوم",
+                  value: `${property.bedrooms} ${lang === "en" ? "Rooms" : "غرف"}`,
+                  show: Boolean(property.bedrooms && property.bedrooms > 0),
+                },
+                {
+                  id: "bathrooms",
+                  icon: Bath,
+                  label: lang === "en" ? "Bathrooms" : "دورات المياه",
+                  value: `${property.bathrooms} ${lang === "en" ? "Baths" : "حمامات"}`,
+                  show: Boolean(property.bathrooms && property.bathrooms > 0),
+                },
+                {
+                  id: "livingRooms",
+                  icon: Home,
+                  label: lang === "en" ? "Living Rooms" : "صالات المعيشة",
+                  value: `${property.livingRooms} ${lang === "en" ? "Salons" : "صالات"}`,
+                  show: Boolean(property.livingRooms && property.livingRooms > 0),
+                },
+                {
+                  id: "parking",
+                  icon: Car,
+                  label: lang === "en" ? "Parking" : "المواقف",
+                  value: `${property.parkingSpaces} ${lang === "en" ? "Spots" : "مواقف"}`,
+                  show: Boolean(property.parkingSpaces && property.parkingSpaces > 0),
+                },
+                {
+                  id: "classification",
+                  icon: Compass,
+                  label: lang === "en" ? "Land Classification" : "تصنيف الأرض",
+                  value: property.landClassification,
+                  show: Boolean(property.landClassification),
+                },
+                {
+                  id: "water",
+                  icon: Award,
+                  label: lang === "en" ? "Water Availability" : "توفر المياه",
+                  value: property.waterAvailability ? (lang === "en" ? "Available" : "متوفرة") : (lang === "en" ? "Not available" : "غير متوفرة"),
+                  show: property.waterAvailability !== undefined,
+                },
+                {
+                  id: "activity",
+                  icon: Award,
+                  label: lang === "en" ? "Suitable Activity" : "النشاط المناسب",
+                  value: property.commercialSuitableActivity || property.commercialCategory,
+                  show: Boolean(property.commercialSuitableActivity || property.commercialCategory),
+                },
+              ].filter((s) => s.show);
+
+              if (specs.length === 0) return null;
+
+              return (
+                <div className={`grid grid-cols-2 sm:grid-cols-${Math.min(specs.length, 4)} gap-3 p-4 rounded-2xl bg-[#141418] border border-white/5 text-center`}>
+                  {specs.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={item.id} className="p-3 rounded-xl bg-[#1C1C22]">
+                        <Icon className="w-4 h-4 text-[#C5A059] mx-auto mb-1" />
+                        <span className="text-[11px] text-zinc-400 block">{item.label}</span>
+                        <span className="text-sm font-bold text-white font-mono">{item.value}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
 
             {/* Full Detailed Description */}
             <div className="p-6 rounded-3xl bg-[#141418] border border-white/5 space-y-3">
@@ -362,16 +431,18 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                   </div>
                 </div>
 
-                <a
-                  href={googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#C5A059]/10 hover:bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/30 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                >
-                  <Navigation className="w-4 h-4" />
-                  <span>{lang === "en" ? "Directions on Google Maps" : "الاتجاهات على خرائط Google"}</span>
-                  <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-                </a>
+                {googleMapsUrl ? (
+                  <a
+                    href={googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#C5A059]/10 hover:bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/30 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                  >
+                    <Navigation className="w-4 h-4" />
+                    <span>{lang === "en" ? "Directions on Google Maps" : "الاتجاهات على خرائط Google"}</span>
+                    <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                  </a>
+                ) : null}
               </div>
 
               {/* Full Detailed Description of Location */}
@@ -431,7 +502,7 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
               </div>
             </div>
 
-            {/* Mortgage Calculator */}
+            {/* Mortgage Calculator - Feature commented out temporarily as requested
             <div className="p-6 rounded-3xl bg-[#141418] border border-white/5 space-y-5">
               <div className="flex items-center gap-2 text-white">
                 <Calculator className="w-5 h-5 text-[#C5A059]" />
@@ -443,75 +514,15 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs text-zinc-400 mb-1">
-                    {lang === "en" ? `Down Payment (${downPaymentPercent}%):` : `الدفعة الأولى (${downPaymentPercent}%):`}
+                    {lang === "en" ? `Down Payment (20%):` : `الدفعة الأولى (20%):`}
                   </label>
                   <span className="font-mono text-sm font-bold text-[#C5A059] block mb-2">
-                    {formatPrice(downPayment, undefined, lang)}
-                  </span>
-                  <input
-                    type="range"
-                    min={10}
-                    max={50}
-                    step={5}
-                    value={downPaymentPercent}
-                    onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
-                    className="w-full accent-[#C5A059]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs text-zinc-400 mb-1">
-                    {lang === "en" ? `Loan Term (${loanYears} Years):` : `مدة التمويل (${loanYears} سنة):`}
-                  </label>
-                  <span className="font-mono text-sm font-bold text-white block mb-2">
-                    {lang === "en" ? `${loanYears * 12} Monthly installments` : `${loanYears * 12} قسط شهري`}
-                  </span>
-                  <input
-                    type="range"
-                    min={5}
-                    max={30}
-                    step={5}
-                    value={loanYears}
-                    onChange={(e) => setLoanYears(Number(e.target.value))}
-                    className="w-full accent-[#C5A059]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs text-zinc-400 mb-1">
-                    {lang === "en" ? "Estimated Interest Rate:" : "نسبة المرابحة التقديرية:"}
-                  </label>
-                  <span className="font-mono text-sm font-bold text-white block mb-2">
-                    {lang === "en" ? `${interestRate}% / Year` : `${interestRate}% سنوياً`}
-                  </span>
-                  <input
-                    type="range"
-                    min={3}
-                    max={8}
-                    step={0.5}
-                    value={interestRate}
-                    onChange={(e) => setInterestRate(Number(e.target.value))}
-                    className="w-full accent-[#C5A059]"
-                  />
-                </div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#1C1C22] border border-[#C5A059]/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-right">
-                <div>
-                  <span className="text-xs text-zinc-400 block">
-                    {lang === "en" ? "Estimated Monthly Installment" : "القسط الشهري التقديري"}
-                  </span>
-                  <span className="text-xl sm:text-2xl font-extrabold text-[#F3E5AB] font-mono">
-                    {formatPrice(Math.round(monthlyPayment), undefined, lang)} {lang === "en" ? "/ month" : "/ شهرياً"}
+                    {formatPrice((property.price * 20) / 100, undefined, lang)}
                   </span>
                 </div>
-                <span className="text-[11px] text-zinc-500 max-w-xs">
-                  {lang === "en"
-                    ? "* This calculation is illustrative and subject to bank terms and applicant credit profile."
-                    : "* الحسبة استرشادية وتخضع لشروط البنك الممول وتاريخ المستفيد الائتماني."}
-                </span>
               </div>
             </div>
+            */}
           </div>
 
           {/* Sticky Sidebar (4 Cols) */}
@@ -521,9 +532,22 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                 <span className="text-xs text-zinc-400">
                   {lang === "en" ? "Property Price" : "سعر العقار"}
                 </span>
-                <div className="text-2xl sm:text-3xl font-extrabold text-[#F3E5AB] font-mono">
-                  {formatPrice(property.price, undefined, lang)}
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-2xl sm:text-3xl font-extrabold text-[#F3E5AB] font-mono">
+                    {formatPrice(property.price, undefined, lang)}
+                  </span>
+                  {hasDiscount && property.originalPrice && (
+                    <span className="text-sm font-mono text-zinc-400 line-through">
+                      {formatPrice(property.originalPrice, undefined, lang)}
+                    </span>
+                  )}
                 </div>
+                {hasDiscount && (
+                  <div className="pt-1 flex items-center gap-1.5 text-xs text-rose-400 font-bold">
+                    <Tag className="w-3.5 h-3.5" />
+                    <span>{lang === "en" ? `Special Offer (-${discountPercent}%)` : `عرض خاص (خصم ${discountPercent}%)`}</span>
+                  </div>
+                )}
               </div>
 
               {/* Direct Booking CTA */}
@@ -551,15 +575,17 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                     <MapPin className="w-3.5 h-3.5 shrink-0" />
                     <span>{lang === "en" ? "Property Location" : "موقع العقار"}</span>
                   </div>
-                  <a
-                    href={googleMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[11px] text-[#C5A059] hover:underline flex items-center gap-1"
-                  >
-                    <span>{lang === "en" ? "Map" : "الخريطة"}</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                  {googleMapsUrl && (
+                    <a
+                      href={googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-[#C5A059] hover:underline flex items-center gap-1"
+                    >
+                      <span>{lang === "en" ? "Map" : "الخريطة"}</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
                 </div>
                 <p className="text-white font-medium">
                   {property.city} - {property.district}

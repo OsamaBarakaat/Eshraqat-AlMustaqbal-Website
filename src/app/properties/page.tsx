@@ -62,6 +62,12 @@ function PropertiesCatalogContent() {
     const loc = searchParams.get("location") || searchParams.get("city");
     if (loc && loc !== "ALL") setSearchTerm(loc);
 
+    const dist = searchParams.get("district");
+    if (dist && dist !== "ALL") setSearchTerm(dist);
+
+    const distId = searchParams.get("districtId");
+    if (distId && distId !== "ALL") setSelectedDistrictId(distId);
+
     const q = searchParams.get("search") || searchParams.get("q");
     if (q) setSearchTerm(q);
 
