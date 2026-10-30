@@ -333,13 +333,13 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
               </div>
             </div>
 
-            {/* Description */}
+            {/* Full Detailed Description */}
             <div className="p-6 rounded-3xl bg-[#141418] border border-white/5 space-y-3">
               <h3 className="text-base sm:text-lg font-bold text-white">
                 {lang === "en" ? "Property Description & Building Specs" : "وصف العقار ومواصفات البناء"}
               </h3>
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-light whitespace-pre-line">
-                {property.description}
+                {property.fullDescription || property.description}
               </p>
             </div>
 

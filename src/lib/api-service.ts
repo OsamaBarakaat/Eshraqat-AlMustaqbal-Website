@@ -156,9 +156,10 @@ function mapBackendProperty(item: any): Property {
 
   const purpose: PropertyPurpose = (item.purpose || "SALE").toUpperCase() === "RENT" ? "RENT" : "SALE";
 
-  const fullDescription = item.fullDescription || item.description || "";
-  const shortDescription = item.shortDescription || "";
-  const description = item.fullDescription || item.shortDescription || item.description || "عقار فاخر تم تطويره بأرقى المعايير الإنشائية.";
+  const shortDescription = item.shortDescription || item.description || "";
+  const fullDescription = item.fullDescription || item.description || item.shortDescription || "";
+  // Short description as default description for preview cards
+  const description = shortDescription || fullDescription || "عقار فاخر تم تطويره بأرقى المعايير الإنشائية.";
 
   return {
     id: item.id || `prop-${Date.now()}`,
@@ -166,9 +167,9 @@ function mapBackendProperty(item: any): Property {
     title: item.title || "عقار فاخر مميز",
     titleEn: item.nameEnglish || item.titleEn,
     description,
-    descriptionEn: item.descriptionEn,
-    fullDescription,
     shortDescription,
+    fullDescription,
+    descriptionEn: item.descriptionEn,
     price: Number(item.price) || 2500000,
     category,
     type,

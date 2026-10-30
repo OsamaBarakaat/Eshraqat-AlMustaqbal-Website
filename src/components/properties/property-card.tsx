@@ -168,8 +168,9 @@ export function PropertyCard({ property }: PropertyCardProps) {
               </h3>
             </Link>
 
+            {/* Short Description */}
             <p className="text-xs text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
-              {property.description}
+              {property.shortDescription || property.description}
             </p>
           </div>
 
