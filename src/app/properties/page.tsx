@@ -14,6 +14,7 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
+  Tag,
 } from "lucide-react";
 import {
   ApiService,
@@ -44,6 +45,7 @@ function PropertiesCatalogContent() {
   const [selectedCityId, setSelectedCityId] = useState<string>("ALL");
   const [selectedDistrictId, setSelectedDistrictId] = useState<string>("ALL");
   const [maxPrice, setMaxPrice] = useState<number>(15000000);
+  const [onlyDiscounts, setOnlyDiscounts] = useState<boolean>(false);
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -62,6 +64,9 @@ function PropertiesCatalogContent() {
 
     const q = searchParams.get("search") || searchParams.get("q");
     if (q) setSearchTerm(q);
+
+    const disc = searchParams.get("discount") || searchParams.get("hasDiscount");
+    if (disc === "true") setOnlyDiscounts(true);
   }, [searchParams]);
 
   // 1. Fetch Dynamic Location Hierarchy from Backend API
@@ -91,6 +96,7 @@ function PropertiesCatalogContent() {
         cityId: selectedCityId !== "ALL" ? selectedCityId : undefined,
         districtId: selectedDistrictId !== "ALL" ? selectedDistrictId : undefined,
         maxPrice,
+        hasDiscount: onlyDiscounts ? true : undefined,
       })
         .then((data) => {
           if (isMounted) {
@@ -107,7 +113,7 @@ function PropertiesCatalogContent() {
       isMounted = false;
       clearTimeout(debounceTimer);
     };
-  }, [searchTerm, selectedType, selectedPurpose, selectedCityId, selectedDistrictId, maxPrice]);
+  }, [searchTerm, selectedType, selectedPurpose, selectedCityId, selectedDistrictId, maxPrice, onlyDiscounts]);
 
   // Flattened list of all cities across provinces
   const availableCities = useMemo(() => {
@@ -148,6 +154,7 @@ function PropertiesCatalogContent() {
     setSelectedCityId("ALL");
     setSelectedDistrictId("ALL");
     setMaxPrice(15000000);
+    setOnlyDiscounts(false);
     setCurrentPage(1);
   };
 
@@ -214,6 +221,19 @@ function PropertiesCatalogContent() {
                 <span>{lang === "en" ? "properties" : "عقار"}</span>
                 {isLoading && <Loader2 className="w-3.5 h-3.5 text-[#C5A059] animate-spin" />}
               </span>
+
+              <button
+                type="button"
+                onClick={() => setOnlyDiscounts((prev) => !prev)}
+                className={`text-xs px-3 py-1.5 rounded-xl border flex items-center gap-1.5 transition-all cursor-pointer font-semibold ${
+                  onlyDiscounts
+                    ? "bg-rose-500/20 text-rose-400 border-rose-500/50 shadow-md shadow-rose-500/20"
+                    : "bg-white/5 text-zinc-300 hover:text-white hover:bg-white/10 border-white/10"
+                }`}
+              >
+                <Tag className="w-3.5 h-3.5 text-rose-400" />
+                <span>{lang === "en" ? "Offers & Discounts" : "عروض وخصومات"}</span>
+              </button>
 
               <button
                 onClick={resetFilters}

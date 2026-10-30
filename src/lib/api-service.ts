@@ -232,6 +232,7 @@ export const ApiService = {
     districtId?: string;
     minPrice?: number;
     maxPrice?: number;
+    hasDiscount?: boolean;
   }): Promise<Property[]> {
     try {
       const params = new URLSearchParams();
@@ -243,6 +244,7 @@ export const ApiService = {
       if (query?.districtId && query.districtId !== "ALL") params.append("districtId", query.districtId);
       if (query?.minPrice !== undefined) params.append("minPrice", String(query.minPrice));
       if (query?.maxPrice !== undefined) params.append("maxPrice", String(query.maxPrice));
+      if (query?.hasDiscount) params.append("hasDiscount", "true");
 
       const res = await fetch(`${API_BASE_URL}/properties/public?${params.toString()}`, {
         cache: "no-store",
