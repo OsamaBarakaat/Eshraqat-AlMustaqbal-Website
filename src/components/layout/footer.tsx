@@ -140,22 +140,22 @@ export function Footer() {
                   {lang === "en" ? "Eshraqat Al-Mustaqbal" : "إشراقة المستقبل"}
                 </span>
                 <span className="block text-[10px] text-[#C5A059] tracking-widest font-medium">
-                  {lang === "en" ? "Real Estate Development & Investment" : "للتطوير والاستثمار العقاري"}
+                  {lang === "en" ? "nahu ghad mushriq" : "نحو غدٍ مشرق"}
                 </span>
               </div>
             </Link>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-light max-w-sm">
               {lang === "en"
-                ? "A leading Saudi real estate development company, building integrated residential communities and commercial headquarters that elevate the quality of life aligned with Saudi Vision 2030."
-                : "شركة تطوير عقاري سعودية رائدة، نبني مجتمعات سكنية ومقرات تجارية متكاملة ترتقي بجودة الحياة وتواكب مستهدفات رؤية المملكة 2030 في صناعة مستقبل عمراني مستدام."}
+                ? "Real Estate Marketing – Selling, Buying, Property Management, Residential, Commercial, Industrial, and Agricultural Leasing – General Services."
+                : "تسويق عقاري - بيع  - شراء - ادارة أملأك - تأجير سكني وتجاري صناعي- زراعي- خدمات عامة"}
             </p>
 
             {/* Saudi Real Estate Authority Badges */}
             <div className="pt-2 flex flex-wrap gap-2 text-[11px]">
               <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#C5A059]" />
-                <span>{lang === "en" ? "Fal License: 1200000000" : "رخصة فال: 1200000000"}</span>
+                <span>{lang === "en" ? "Fal License: 1100033671" : "رخصة فال: 1100033671"}</span>
               </div>
               <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 flex items-center gap-1.5">
                 <Award className="w-3.5 h-3.5 text-emerald-400" />
