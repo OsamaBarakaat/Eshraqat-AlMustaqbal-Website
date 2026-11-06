@@ -236,6 +236,12 @@ function mapBackendProperty(item: any): Property {
     commercialCategory: item.commercialCategory || undefined,
     commercialSuitableActivity: item.commercialSuitableActivity || undefined,
     virtualTourUrl: item.virtualTourUrl,
+    // SEO & Meta
+    seoTitle: item.seoTitle || undefined,
+    metaDescription: item.metaDescription || undefined,
+    slug: item.slug || undefined,
+    createdAt: item.createdAt || undefined,
+    updatedAt: item.updatedAt || undefined,
   };
 }
 

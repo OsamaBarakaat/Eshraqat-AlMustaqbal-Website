@@ -180,7 +180,11 @@ export function PropertyCard({ property }: PropertyCardProps) {
             <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
               <div className="flex items-center gap-1 text-[#C5A059] font-medium">
                 <MapPin className="w-3.5 h-3.5" />
-                <span>{property.city} - {property.district}</span>
+                <span>
+                  {property.district && property.district !== property.city
+                    ? `${property.city} - ${property.district}`
+                    : property.city}
+                </span>
               </div>
               <span className="font-mono text-zinc-500">{property.code}</span>
             </div>

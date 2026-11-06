@@ -306,7 +306,11 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                   </span>
                 )}
                 <MapPin className="w-4 h-4 shrink-0" />
-                <span>{property.city} - {property.district}</span>
+                <span>
+                  {property.district && property.district !== property.city
+                    ? `${property.city} - ${property.district}`
+                    : property.city}
+                </span>
                 {property.streetAddress && (
                   <>
                     <span className="text-zinc-600">•</span>

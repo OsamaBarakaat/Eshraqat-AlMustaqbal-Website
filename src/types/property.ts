@@ -55,4 +55,10 @@ export interface Property {
   waterAvailability?: boolean;
   commercialCategory?: string;
   commercialSuitableActivity?: string;
+  // SEO & Metadata
+  seoTitle?: string;
+  metaDescription?: string;
+  slug?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

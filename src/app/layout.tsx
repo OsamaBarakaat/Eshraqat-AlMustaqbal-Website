@@ -25,6 +25,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://eshraqat-almustaqbal.com";
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -33,15 +35,80 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "إشراقة المستقبل للتطوير العقاري | وجهة جديدة لحياة أرقى",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "إشراقة المستقبل | عقارات للبيع بالسعودية والرياض • فلل وقصور فاخرة",
+    template: "%s | إشراقة المستقبل للتطوير العقاري",
+  },
   description:
-    "مشاريع سكنية وتجارية متكاملة في أرقى أحياء الرياض (النرجس، حطين، الملقا، العقيق). احجز معاينتك الميدانية واكتشف الفلل والقصور المعتمدة.",
+    "بوابتك الأولى لامتلاك أرقى عقارات للبيع بالسعودية والرياض. فلل مودرن، قصور فاخرة، شقق تمليك ومشاريع سكنية وتجارية متكاملة بأرقى أحياء الرياض (النرجس، حطين، الملقا، العقيق).",
+  keywords: [
+    "عقارات للبيع بالسعودية",
+    "عقارات للبيع في الرياض",
+    "عقارات الرياض",
+    "فلل للبيع بالرياض",
+    "فلل فاخرة للبيع بالسعودية",
+    "قصور للبيع شمال الرياض",
+    "شقق تمليك بالرياض",
+    "شقق للبيع بالرياض",
+    "أراضي للبيع في الرياض",
+    "مشاريع سكنية الرياض",
+    "إشراقة المستقبل للتطوير العقاري",
+    "تطوير عقاري السعودية",
+    "استثمار عقاري الرياض",
+  ],
+  authors: [{ name: "إشراقة المستقبل للتطوير العقاري", url: siteUrl }],
+  creator: "إشراقة المستقبل للتطوير العقاري",
+  publisher: "إشراقة المستقبل للتطوير العقاري",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
+  openGraph: {
+    title: "إشراقة المستقبل | عقارات للبيع بالسعودية والرياض • فلل وقصور فاخرة",
+    description:
+      "تصفح أفضل الفلل والشقق والقصور المعتمدة للبيع في أرقى أحياء الرياض. معاينة ميدانية واستشارات عقارية متخصصة.",
+    url: siteUrl,
+    siteName: "إشراقة المستقبل للتطوير العقاري",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+        width: 1200,
+        height: 630,
+        alt: "إشراقة المستقبل للتطوير العقاري بالسعودية",
+      },
+    ],
+    locale: "ar_SA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "إشراقة المستقبل | عقارات للبيع بالسعودية والرياض",
+    description:
+      "مشاريع سكنية وتجارية متكاملة في أرقى أحياء الرياض. اكتشف الفلل والقصور المعتمدة.",
+    images: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"],
+  },
   icons: {
     icon: [
       { url: "/logo.png" },
       { url: "/favicon.ico" },
     ],
     apple: "/logo.png",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -50,6 +117,46 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const companyJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "إشراقة المستقبل للتطوير العقاري",
+    "alternateName": "Eshraqat Al-Mustaqbal Real Estate Development",
+    "url": siteUrl,
+    "logo": `${siteUrl}/logo.png`,
+    "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    "description": "شركة متخصصة في تطوير وتسويق العقارات والفلل والقصور الفاخرة في مدينة الرياض والمملكة العربية السعودية.",
+    "telephone": "+966500000000",
+    "priceRange": "$$$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "طريق الملك فهد",
+      "addressLocality": "الرياض",
+      "addressRegion": "منطقة الرياض",
+      "addressCountry": "SA",
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 24.7136,
+      "longitude": 46.6753,
+    },
+    "areaServed": [
+      {
+        "@type": "Country",
+        "name": "المملكة العربية السعودية",
+      },
+      {
+        "@type": "City",
+        "name": "الرياض",
+      },
+    ],
+    "sameAs": [
+      "https://twitter.com",
+      "https://instagram.com",
+      "https://linkedin.com",
+    ],
+  };
+
   return (
     <html
       lang="ar"
@@ -57,6 +164,12 @@ export default function RootLayout({
       className={`${cairo.variable} ${plusJakartaSans.variable} dark scroll-smooth overflow-x-hidden max-w-[100vw]`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(companyJsonLd) }}
+        />
+      </head>
       <body className="min-h-screen bg-[#09090B] text-[#EDEDED] font-arabic antialiased selection:bg-[#C5A059] selection:text-black overflow-x-hidden max-w-[100vw] w-full">
         <LanguageProvider>
           <ClientAuthProvider>

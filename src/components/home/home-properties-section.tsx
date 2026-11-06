@@ -225,7 +225,8 @@ export function HomePropertiesSection({ initialProperties }: HomePropertiesSecti
                   <option value="0-2000000">أقل من 2 مليون ر.س</option>
                   <option value="2000000-5000000">2 مليون - 5 مليون ر.س</option>
                   <option value="5000000-10000000">5 مليون - 10 مليون ر.س</option>
-                  <option value="10000000-99999999">أكثر من 10 مليون ر.س (VIP)</option>
+                  <option value="10000000-30000000">10 مليون - 30 مليون ر.س</option>
+                  <option value="30000000-999999999">أكثر من 30 مليون ر.س (قصور ومشاريع فاخرة)</option>
                 </select>
                 <Banknote className="absolute top-3.5 left-3.5 w-4 h-4 text-zinc-500 pointer-events-none" />
               </div>
