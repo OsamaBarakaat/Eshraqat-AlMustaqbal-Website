@@ -35,7 +35,8 @@ function PropertiesCatalogContent() {
   const searchParams = useSearchParams();
 
   const [properties, setProperties] = useState<Property[]>([]);
-  const [locations, setLocations] = useState<ProvinceItem[]>(FALLBACK_LOCATIONS);
+  const [locations, setLocations] =
+    useState<ProvinceItem[]>(FALLBACK_LOCATIONS);
   const [isLoading, setIsLoading] = useState(true);
 
   // Filter States
@@ -91,7 +92,8 @@ function PropertiesCatalogContent() {
       }
     }
 
-    const disc = searchParams.get("discount") || searchParams.get("hasDiscount");
+    const disc =
+      searchParams.get("discount") || searchParams.get("hasDiscount");
     if (disc === "true") setOnlyDiscounts(true);
   }, [searchParams]);
 
@@ -120,7 +122,8 @@ function PropertiesCatalogContent() {
         category: selectedType !== "ALL" ? selectedType : undefined,
         purpose: selectedPurpose !== "ALL" ? selectedPurpose : undefined,
         cityId: selectedCityId !== "ALL" ? selectedCityId : undefined,
-        districtId: selectedDistrictId !== "ALL" ? selectedDistrictId : undefined,
+        districtId:
+          selectedDistrictId !== "ALL" ? selectedDistrictId : undefined,
         maxPrice,
         hasDiscount: onlyDiscounts ? true : undefined,
       })
@@ -139,7 +142,15 @@ function PropertiesCatalogContent() {
       isMounted = false;
       clearTimeout(debounceTimer);
     };
-  }, [searchTerm, selectedType, selectedPurpose, selectedCityId, selectedDistrictId, maxPrice, onlyDiscounts]);
+  }, [
+    searchTerm,
+    selectedType,
+    selectedPurpose,
+    selectedCityId,
+    selectedDistrictId,
+    maxPrice,
+    onlyDiscounts,
+  ]);
 
   // Flattened list of all cities across provinces
   const availableCities = useMemo(() => {
@@ -231,7 +242,11 @@ function PropertiesCatalogContent() {
   const endItemIndex = Math.min(currentPage * PAGE_SIZE, properties.length);
 
   return (
-    <div className={`relative min-h-screen pt-32 pb-28 bg-[#09090B] text-foreground overflow-hidden ${dir === "rtl" ? "text-right" : "text-left"}`}>
+    <div
+      className={`relative min-h-screen pt-32 pb-28 bg-[#09090B] text-foreground overflow-hidden ${
+        dir === "rtl" ? "text-right" : "text-left"
+      }`}
+    >
       {/* 1. Floating Golden Ambient Bubbles */}
       <FloatingGoldenBubbles />
 
@@ -241,10 +256,16 @@ function PropertiesCatalogContent() {
         <div className="border-b border-white/10 pb-8 space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C5A059]/15 text-[#C5A059] border border-[#C5A059]/30 text-xs font-semibold shadow-sm">
             <Building2 className="w-3.5 h-3.5" />
-            <span>{lang === "en" ? "Approved Projects & Properties Catalog" : "كتالوج العقارات والمشاريع المعتمدة"}</span>
+            <span>
+              {lang === "en"
+                ? "Approved Projects & Properties Catalog"
+                : "كتالوج العقارات والمشاريع المعتمدة"}
+            </span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            {lang === "en" ? "Explore Latest Available Properties" : "استكشف أحدث العقارات المتاحة"}
+            {lang === "en"
+              ? "Explore Latest Available Properties"
+              : "استكشف أحدث العقارات المتاحة"}
           </h1>
           <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed font-light">
             {lang === "en"
@@ -262,18 +283,30 @@ function PropertiesCatalogContent() {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={lang === "en" ? "Search by title, city, district, or code..." : "ابحث بالاسم، المدينة، الحي، أو الكود..."}
+                placeholder={
+                  lang === "en"
+                    ? "Search by title, city, district, or code..."
+                    : "ابحث بالاسم، المدينة، الحي، أو الكود..."
+                }
                 className="w-full pl-10 pr-4 py-2.5 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs sm:text-sm placeholder-zinc-500 focus:outline-none focus:border-[#C5A059] transition-colors"
               />
-              <Search className={`absolute top-3 ${dir === "rtl" ? "left-3" : "right-3"} w-4 h-4 text-zinc-400`} />
+              <Search
+                className={`absolute top-3 ${
+                  dir === "rtl" ? "left-3" : "right-3"
+                } w-4 h-4 text-zinc-400`}
+              />
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
               <span className="text-xs text-zinc-400 flex items-center gap-2">
                 <span>{lang === "en" ? "Found:" : "المطابق:"}</span>
-                <strong className="text-[#C5A059] font-mono text-sm">{properties.length}</strong>
+                <strong className="text-[#C5A059] font-mono text-sm">
+                  {properties.length}
+                </strong>
                 <span>{lang === "en" ? "properties" : "عقار"}</span>
-                {isLoading && <Loader2 className="w-3.5 h-3.5 text-[#C5A059] animate-spin" />}
+                {isLoading && (
+                  <Loader2 className="w-3.5 h-3.5 text-[#C5A059] animate-spin" />
+                )}
               </span>
 
               <button
@@ -286,7 +319,9 @@ function PropertiesCatalogContent() {
                 }`}
               >
                 <Tag className="w-3.5 h-3.5 text-rose-400" />
-                <span>{lang === "en" ? "Offers & Discounts" : "عروض وخصومات"}</span>
+                <span>
+                  {lang === "en" ? "Offers & Discounts" : "عروض وخصومات"}
+                </span>
               </button>
 
               <button
@@ -311,10 +346,18 @@ function PropertiesCatalogContent() {
                 onChange={(e) => setSelectedType(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">{lang === "en" ? "All Categories" : "كل التصنيفات"}</option>
-                <option value="RESIDENTIAL">{lang === "en" ? "Residential" : "سكني"}</option>
-                <option value="COMMERCIAL">{lang === "en" ? "Commercial & Office" : "تجاري وإداري"}</option>
-                <option value="AGRICULTURAL">{lang === "en" ? "Land & Agricultural" : "أراضي وزراعي"}</option>
+                <option value="ALL">
+                  {lang === "en" ? "All Categories" : "كل التصنيفات"}
+                </option>
+                <option value="RESIDENTIAL">
+                  {lang === "en" ? "Residential" : "سكني"}
+                </option>
+                <option value="COMMERCIAL">
+                  {lang === "en" ? "Commercial & Office" : "تجاري وإداري"}
+                </option>
+                <option value="AGRICULTURAL">
+                  {lang === "en" ? "Land & Agricultural" : "أراضي وزراعي"}
+                </option>
               </select>
             </div>
 
@@ -328,9 +371,15 @@ function PropertiesCatalogContent() {
                 onChange={(e) => setSelectedPurpose(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">{lang === "en" ? "All (Sale & Rent)" : "الكل (بيع وإيجار)"}</option>
-                <option value="SALE">{lang === "en" ? "For Sale" : "للبيع"}</option>
-                <option value="RENT">{lang === "en" ? "For Rent" : "للإيجار"}</option>
+                <option value="ALL">
+                  {lang === "en" ? "All (Sale & Rent)" : "الكل (بيع وإيجار)"}
+                </option>
+                <option value="SALE">
+                  {lang === "en" ? "For Sale" : "للبيع"}
+                </option>
+                <option value="RENT">
+                  {lang === "en" ? "For Rent" : "للإيجار"}
+                </option>
               </select>
             </div>
 
@@ -344,7 +393,11 @@ function PropertiesCatalogContent() {
                 onChange={(e) => handleCityChange(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">{lang === "en" ? "All Cities & Regions" : "كافة المدن والمناطق"}</option>
+                <option value="ALL">
+                  {lang === "en"
+                    ? "All Cities & Regions"
+                    : "كافة المدن والمناطق"}
+                </option>
                 {availableCities.map((city) => (
                   <option key={city.id} value={city.id}>
                     {lang === "ar" ? city.nameArabic : city.nameEnglish}
@@ -365,7 +418,9 @@ function PropertiesCatalogContent() {
                 onChange={(e) => setSelectedDistrictId(e.target.value)}
                 className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
               >
-                <option value="ALL">{lang === "en" ? "All Districts" : "كافة الأحياء"}</option>
+                <option value="ALL">
+                  {lang === "en" ? "All Districts" : "كافة الأحياء"}
+                </option>
                 {availableDistricts.map((dist) => (
                   <option key={dist.id} value={dist.id}>
                     {lang === "ar" ? dist.nameArabic : dist.nameEnglish}
@@ -380,11 +435,6 @@ function PropertiesCatalogContent() {
                 <label className="block text-[11px] font-semibold text-zinc-300">
                   {lang === "en" ? "Max Price:" : "الحد الأقصى للسعر:"}
                 </label>
-                <span className="font-mono text-[11px] text-[#C5A059] font-bold">
-                  {maxPrice !== undefined
-                    ? `${(maxPrice / 1000000) >= 1 ? `${(maxPrice / 1000000).toFixed(1)}M` : `${(maxPrice / 1000).toFixed(0)}K`} ${lang === "en" ? "SAR" : "ر.س"}`
-                    : (lang === "en" ? "No limit" : "الكل (بدون سقف)")}
-                </span>
               </div>
 
               {/* Manual input by hand */}
@@ -392,36 +442,48 @@ function PropertiesCatalogContent() {
                 <input
                   type="text"
                   inputMode="numeric"
-                  placeholder={lang === "en" ? "Enter max price (e.g. 30000000)..." : "اكتب السعر باليد (مثال: 30000000)..."}
+                  placeholder={
+                    lang === "en"
+                      ? "Enter max price (e.g. 30000000)..."
+                      : "اكتب السعر باليد (مثال: 30000000)..."
+                  }
                   value={priceInput}
                   onChange={(e) => handlePriceInputChange(e.target.value)}
                   className="w-full px-3 py-1.5 bg-[#1C1C22] border border-white/10 rounded-xl text-white font-mono text-xs focus:outline-none focus:border-[#C5A059] placeholder:text-zinc-600 transition-colors"
                 />
-                {priceInput ? (
+                {/* {priceInput ? (
                   <button
                     type="button"
                     onClick={() => handleQuickPricePreset(undefined)}
-                    className={`absolute top-1/2 -translate-y-1/2 ${dir === "rtl" ? "left-2" : "right-2"} text-[10px] text-zinc-400 hover:text-white px-1.5 py-0.5 rounded bg-white/10 cursor-pointer`}
-                    title={lang === "en" ? "Clear price limit" : "إلغاء الحد الأقصى"}
+                    className={`absolute top-1/2 -translate-y-1/2 ${
+                      dir === "rtl" ? "left-2" : "right-2"
+                    } text-[10px] text-zinc-400 hover:text-white px-1.5 py-0.5 rounded bg-white/10 cursor-pointer`}
+                    title={
+                      lang === "en" ? "Clear price limit" : "إلغاء الحد الأقصى"
+                    }
                   >
                     ×
                   </button>
-                ) : null}
+                ) : null} */}
               </div>
 
               {/* Range Slider up to 50M */}
-              <input
+              {/* <input
                 type="range"
                 min={1000000}
                 max={50000000}
                 step={1000000}
-                value={maxPrice !== undefined ? Math.min(maxPrice, 50000000) : 50000000}
+                value={
+                  maxPrice !== undefined
+                    ? Math.min(maxPrice, 50000000)
+                    : 50000000
+                }
                 onChange={(e) => handleSliderChange(Number(e.target.value))}
                 className="w-full accent-[#C5A059] cursor-pointer block"
-              />
+              /> */}
 
               {/* Quick Preset Buttons */}
-              <div className="flex items-center gap-1 pt-0.5 overflow-x-auto text-[10px]">
+              {/* <div className="flex items-center gap-1 pt-0.5 overflow-x-auto text-[10px]">
                 <button
                   type="button"
                   onClick={() => handleQuickPricePreset(undefined)}
@@ -447,7 +509,7 @@ function PropertiesCatalogContent() {
                     {preset / 1000000}M
                   </button>
                 ))}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -457,7 +519,9 @@ function PropertiesCatalogContent() {
           <div className="py-24 text-center rounded-3xl bg-[#141418]/60 border border-white/5 space-y-3">
             <Loader2 className="w-8 h-8 text-[#C5A059] animate-spin mx-auto" />
             <p className="text-sm font-semibold text-zinc-300">
-              {lang === "en" ? "Loading and updating properties from system..." : "جاري تحميل وتحديث العقارات من النظام..."}
+              {lang === "en"
+                ? "Loading and updating properties from system..."
+                : "جاري تحميل وتحديث العقارات من النظام..."}
             </p>
           </div>
         ) : properties.length === 0 ? (
@@ -467,7 +531,9 @@ function PropertiesCatalogContent() {
             </div>
             <div className="space-y-1">
               <p className="text-base font-bold text-white">
-                {lang === "en" ? "No properties match your current search criteria" : "لا توجد عقارات مطابقة لمعايير البحث الحالية"}
+                {lang === "en"
+                  ? "No properties match your current search criteria"
+                  : "لا توجد عقارات مطابقة لمعايير البحث الحالية"}
               </p>
               <p className="text-xs text-zinc-400">
                 {lang === "en"
@@ -498,13 +564,27 @@ function PropertiesCatalogContent() {
                 <div className="text-xs text-zinc-400">
                   {lang === "ar" ? (
                     <span>
-                      عرض <strong className="text-white font-mono">{startItemIndex} - {endItemIndex}</strong> من أصل{" "}
-                      <strong className="text-[#C5A059] font-mono">{properties.length}</strong> عقار
+                      عرض{" "}
+                      <strong className="text-white font-mono">
+                        {startItemIndex} - {endItemIndex}
+                      </strong>{" "}
+                      من أصل{" "}
+                      <strong className="text-[#C5A059] font-mono">
+                        {properties.length}
+                      </strong>{" "}
+                      عقار
                     </span>
                   ) : (
                     <span>
-                      Showing <strong className="text-white font-mono">{startItemIndex} - {endItemIndex}</strong> of{" "}
-                      <strong className="text-[#C5A059] font-mono">{properties.length}</strong> properties
+                      Showing{" "}
+                      <strong className="text-white font-mono">
+                        {startItemIndex} - {endItemIndex}
+                      </strong>{" "}
+                      of{" "}
+                      <strong className="text-[#C5A059] font-mono">
+                        {properties.length}
+                      </strong>{" "}
+                      properties
                     </span>
                   )}
                 </div>
@@ -519,28 +599,36 @@ function PropertiesCatalogContent() {
                     className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-semibold bg-[#141418] border border-white/5 text-zinc-300 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
                     title={lang === "ar" ? "الصفحة السابقة" : "Previous Page"}
                   >
-                    {dir === "rtl" ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-                    <span className="hidden sm:inline">{lang === "ar" ? "السابق" : "Prev"}</span>
+                    {dir === "rtl" ? (
+                      <ChevronRight className="w-4 h-4" />
+                    ) : (
+                      <ChevronLeft className="w-4 h-4" />
+                    )}
+                    <span className="hidden sm:inline">
+                      {lang === "ar" ? "السابق" : "Prev"}
+                    </span>
                   </button>
 
                   {/* Number Buttons */}
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
-                    const isActive = pageNum === currentPage;
-                    return (
-                      <button
-                        key={pageNum}
-                        type="button"
-                        onClick={() => handlePageChange(pageNum)}
-                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                          isActive
-                            ? "bg-gradient-to-r from-[#C5A059] to-[#D4AF37] text-black shadow-lg shadow-[#C5A059]/30 scale-105"
-                            : "bg-[#141418] border border-white/5 text-zinc-300 hover:text-white hover:bg-white/10"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (pageNum) => {
+                      const isActive = pageNum === currentPage;
+                      return (
+                        <button
+                          key={pageNum}
+                          type="button"
+                          onClick={() => handlePageChange(pageNum)}
+                          className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            isActive
+                              ? "bg-gradient-to-r from-[#C5A059] to-[#D4AF37] text-black shadow-lg shadow-[#C5A059]/30 scale-105"
+                              : "bg-[#141418] border border-white/5 text-zinc-300 hover:text-white hover:bg-white/10"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    }
+                  )}
 
                   {/* Next Button */}
                   <button
@@ -550,8 +638,14 @@ function PropertiesCatalogContent() {
                     className="p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-semibold bg-[#141418] border border-white/5 text-zinc-300 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
                     title={lang === "ar" ? "الصفحة التالية" : "Next Page"}
                   >
-                    <span className="hidden sm:inline">{lang === "ar" ? "التالي" : "Next"}</span>
-                    {dir === "rtl" ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                    <span className="hidden sm:inline">
+                      {lang === "ar" ? "التالي" : "Next"}
+                    </span>
+                    {dir === "rtl" ? (
+                      <ChevronLeft className="w-4 h-4" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
               </div>
