@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshraqat-website
+  namespace: eshraqat
+  labels:
+    app: eshraqat-website
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: http
+  selector:
+    app: eshraqat-website
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eshraqat-website
+  namespace: eshraqat
+  labels:
+    app: eshraqat-website
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eshraqat-website
+  template:
+    metadata:
+      labels:
+        app: eshraqat-website
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: website
+          image: ghcr.io/osamabarakaat/eshraqat-almustaqbal-website:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: website-config
+            - secretRef:
+                name: website-secrets
+                optional: true
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+

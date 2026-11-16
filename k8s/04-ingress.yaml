@@ -1,0 +1,30 @@
+# ==============================================================================
+# Traefik Ingress for Public Website
+# Replace example.com with your real domain when ready.
+# ==============================================================================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: website-ingress
+  namespace: eshraqat
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    traefik.ingress.kubernetes.io/router.entrypoints: "web,websecure"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - example.com
+      secretName: website-tls-secret
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: eshraqat-website
+                port:
+                  number: 3000
+
