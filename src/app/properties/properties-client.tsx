@@ -285,8 +285,8 @@ function PropertiesCatalogContent() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={
                   lang === "en"
-                    ? "Search by title, city, district, or code..."
-                    : "ابحث بالاسم، المدينة، الحي، أو الكود..."
+                    ? "Search by title, city, district, or National Address..."
+                    : "ابحث بالاسم، المدينة، الحي، أو العنوان الوطني..."
                 }
                 className="w-full pl-10 pr-4 py-2.5 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs sm:text-sm placeholder-zinc-500 focus:outline-none focus:border-[#C5A059] transition-colors"
               />

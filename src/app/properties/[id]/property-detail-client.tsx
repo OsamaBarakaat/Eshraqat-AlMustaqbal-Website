@@ -32,8 +32,11 @@ import { Property } from "@/types/property";
 import { formatPrice } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n";
 import { useCompare } from "@/lib/compare-context";
+import { useClientAuth } from "@/lib/client-auth";
+import { ApiService } from "@/lib/api-service";
 import { BookingModal } from "@/components/booking/booking-modal";
 import { ShareModal } from "@/components/share/share-modal";
+import { ClientAuthModal } from "@/components/auth/client-auth-modal";
 import { PropertyCard } from "@/components/properties/property-card";
 import { FloatingGoldenBubbles } from "@/components/shared/floating-golden-bubbles";
 
@@ -53,6 +56,47 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [pendingOpenMap, setPendingOpenMap] = useState(false);
+
+  const { user, isLoggedIn } = useClientAuth();
+
+  const handleOpenMap = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (!googleMapsUrl) return;
+
+    if (!isLoggedIn || !user) {
+      setPendingOpenMap(true);
+      setAuthModalOpen(true);
+      return;
+    }
+
+    // Authenticated: log interaction and open map
+    ApiService.recordMapInteraction(property.id, user.id, user.token);
+    window.open(googleMapsUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleAuthSuccess = () => {
+    if (pendingOpenMap && googleMapsUrl) {
+      setPendingOpenMap(false);
+      const saved =
+        localStorage.getItem("eshraqat_client_auth_user_v2") ||
+        sessionStorage.getItem("eshraqat_client_auth_user_v2");
+      let clientId = user?.id;
+      let token = user?.token;
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          clientId = parsed.id || clientId;
+          token = parsed.token || token;
+        } catch {
+          // ignore
+        }
+      }
+      ApiService.recordMapInteraction(property.id, clientId, token);
+      window.open(googleMapsUrl, "_blank", "noopener,noreferrer");
+    }
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -319,7 +363,7 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                 )}
                 <span className="text-zinc-600">•</span>
                 <span className="font-mono text-zinc-400">
-                  {lang === "en" ? `Code: ${property.code}` : `كود: ${property.code}`}
+                  {lang === "en" ? `National Address: ${property.code}` : `العنوان الوطني: ${property.code}`}
                 </span>
               </div>
               <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-snug">
@@ -436,16 +480,15 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                 </div>
 
                 {googleMapsUrl ? (
-                  <a
-                    href={googleMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={handleOpenMap}
                     className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#C5A059]/10 hover:bg-[#C5A059]/20 text-[#C5A059] border border-[#C5A059]/30 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                   >
                     <Navigation className="w-4 h-4" />
                     <span>{lang === "en" ? "Directions on Google Maps" : "الاتجاهات على خرائط Google"}</span>
                     <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-                  </a>
+                  </button>
                 ) : null}
               </div>
 
@@ -580,15 +623,14 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                     <span>{lang === "en" ? "Property Location" : "موقع العقار"}</span>
                   </div>
                   {googleMapsUrl && (
-                    <a
-                      href={googleMapsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[11px] text-[#C5A059] hover:underline flex items-center gap-1"
+                    <button
+                      type="button"
+                      onClick={handleOpenMap}
+                      className="text-[11px] text-[#C5A059] hover:underline flex items-center gap-1 cursor-pointer bg-transparent border-0 p-0"
                     >
                       <span>{lang === "en" ? "Map" : "الخريطة"}</span>
                       <ExternalLink className="w-3 h-3" />
-                    </a>
+                    </button>
                   )}
                 </div>
                 <p className="text-white font-medium">
@@ -753,6 +795,16 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
           onClose={() => setShareOpen(false)}
         />
       )}
+
+      {/* Auth Modal required before viewing map if not logged in */}
+      <ClientAuthModal
+        isOpen={authModalOpen}
+        onClose={() => {
+          setAuthModalOpen(false);
+          setPendingOpenMap(false);
+        }}
+        onSuccess={handleAuthSuccess}
+      />
     </div>
   );
 }

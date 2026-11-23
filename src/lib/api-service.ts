@@ -684,6 +684,24 @@ export const ApiService = {
     }
     return json?.data !== undefined ? json.data : json;
   },
+
+  async recordMapInteraction(propertyId: string, clientId?: string, token?: string) {
+    try {
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+      const res = await fetch(`${API_BASE_URL}/map-interactions`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ propertyId, clientId }),
+      });
+      return await res.json();
+    } catch (err) {
+      console.warn("Failed to record map interaction:", err);
+      return null;
+    }
+  },
 };
 
 export const apiService = ApiService;

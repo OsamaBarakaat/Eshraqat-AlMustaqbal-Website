@@ -125,7 +125,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Property Details
     "property.details": "تفاصيل العقار",
-    "property.code": "كود",
+    "property.code": "العنوان الوطني",
     "property.area": "المساحة",
     "property.bedrooms": "غرف النوم",
     "property.bathrooms": "دورات المياه",
@@ -358,7 +358,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Property Details
     "property.details": "Property Details",
-    "property.code": "Code",
+    "property.code": "National Address",
     "property.area": "Area",
     "property.bedrooms": "Bedrooms",
     "property.bathrooms": "Bathrooms",
