@@ -16,6 +16,7 @@ import {
   Sparkles,
   Eye,
   Tag,
+  ShieldCheck,
 } from "lucide-react";
 import { Property } from "@/types/property";
 import { useLanguage } from "@/lib/i18n";
@@ -202,32 +203,16 @@ export function PropertyCard({ property }: PropertyCardProps) {
             </p>
           </div>
 
-          {/* Dynamic Specs Bar */}
-          <div className={`pt-3 border-t border-white/5 grid gap-2 text-center text-xs ${
-            (property.bedrooms && property.bedrooms > 0) && (property.bathrooms && property.bathrooms > 0)
-              ? "grid-cols-3"
-              : (property.bedrooms && property.bedrooms > 0) || (property.bathrooms && property.bathrooms > 0) || property.parkingSpaces
-              ? "grid-cols-2"
-              : "grid-cols-1"
-          }`}>
-            <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
-              <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_area")}</span>
-              <span className="font-bold text-white font-mono">{property.area} {property.areaUnit || (lang === "en" ? "sqm" : "م²")}</span>
-            </div>
-            {property.bedrooms !== undefined && property.bedrooms > 0 && (
+          {/* 3 Core Info: المساحة - التصنيف - رقم الترخيص */}
+          <div className="pt-3 border-t border-white/5 space-y-2 text-center text-xs">
+            {/* Top Row: المساحة & التصنيف */}
+            <div className="grid grid-cols-2 gap-2">
               <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
-                <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_rooms")}</span>
-                <span className="font-bold text-white font-mono">{property.bedrooms} {lang === "en" ? "Beds" : "غرف"}</span>
+                <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_area")}</span>
+                <span className="font-bold text-white font-mono">
+                  {property.area} {property.areaUnit || (lang === "en" ? "sqm" : "م²")}
+                </span>
               </div>
-            )}
-            {property.bathrooms !== undefined && property.bathrooms > 0 && (
-              <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
-                <span className="text-[10px] text-zinc-400 block mb-0.5">{t("compare.spec_baths")}</span>
-                <span className="font-bold text-white font-mono">{property.bathrooms} {lang === "en" ? "Baths" : "حمام"}</span>
-              </div>
-            )}
-            {/* If neither bedrooms nor bathrooms (e.g. land), show category */}
-            {(!property.bedrooms || property.bedrooms <= 0) && (!property.bathrooms || property.bathrooms <= 0) && (
               <div className="p-2 rounded-xl bg-[#1C1C22] border border-white/5">
                 <span className="text-[10px] text-zinc-400 block mb-0.5">{lang === "en" ? "Category" : "التصنيف"}</span>
                 <span className="font-bold text-[#C5A059] truncate block">
@@ -238,7 +223,18 @@ export function PropertyCard({ property }: PropertyCardProps) {
                     : (lang === "en" ? "Residential" : "سكني")}
                 </span>
               </div>
-            )}
+            </div>
+
+            {/* Bottom Row: رقم الترخيص (تحت المساحة والتصنيف) */}
+            <div className="p-2 rounded-xl bg-[#1C1C22] border border-[#C5A059]/20 flex items-center justify-between px-3">
+              <span className="text-[10px] text-zinc-400 flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#C5A059]" />
+                <span>{lang === "en" ? "License No." : "رقم الترخيص"}</span>
+              </span>
+              <span className="font-bold text-[#C5A059] font-mono text-[11px] tracking-wider">
+                {property.licenseNumber || "معتمد برقم عقد"}
+              </span>
+            </div>
           </div>
 
           {/* Buttons: Book Viewing & View Details */}

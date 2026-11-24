@@ -67,7 +67,6 @@ export function Navbar() {
     { href: "/", label: t("nav.home") },
     { href: "/properties", label: t("nav.properties") },
     { href: "/#services", label: t("nav.services") },
-    { href: "/#investment", label: t("nav.investment") },
     { href: "/about", label: t("nav.about") },
     { href: "/contact", label: t("nav.contact") },
     { href: "/my-bookings", label: t("nav.my_bookings") },

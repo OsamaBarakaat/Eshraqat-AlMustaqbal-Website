@@ -188,47 +188,15 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Col 4: Top Districts in Riyadh (First 4 from live backend - Requirement 8) */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">
-              {lang === "en" ? "Top Riyadh Districts" : "أبرز أحياء الرياض"}
-            </h4>
-            <ul className="space-y-2 text-xs">
-              {(topRiyadhDistricts.length > 0
-                ? topRiyadhDistricts
-                : [
-                    { id: "dist-narjis", nameArabic: "حي النرجس", nameEnglish: "Al-Narjis" },
-                    { id: "dist-hittin", nameArabic: "حي حطين", nameEnglish: "Hittin" },
-                    { id: "dist-malqa", nameArabic: "حي الملقا", nameEnglish: "Al-Malqa" },
-                    { id: "dist-yasmin", nameArabic: "حي الياسمين", nameEnglish: "Al-Yasmin" },
-                  ]
-              ).map((d) => (
-                <li key={d.id}>
-                  <Link
-                    href={`/properties?district=${encodeURIComponent(d.nameArabic)}&districtId=${d.id}`}
-                    className="hover:text-[#C5A059] transition-colors block"
-                  >
-                    {lang === "en" ? `${d.nameEnglish || d.nameArabic} Properties` : `عقارات ${d.nameArabic}`}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+         
 
           {/* Col 5: Contact & Location (Live from Dashboard CMS - Requirement 9) */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">
-              {lang === "en" ? "Headquarters & Contact" : "المقر الرئيسي والتواصل"}
+              {lang === "en" ? "Contact" : "التواصل"}
             </h4>
             <div className="space-y-2.5 text-xs">
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-[#C5A059] shrink-0 mt-0.5" />
-                <span>
-                  {lang === "en"
-                    ? (contact?.addressEn || "Riyadh, King Fahd Road, Al-Malqa District, Future Tower, 9th Floor, Saudi Arabia")
-                    : (contact?.address || "الرياض، طريق الملك فهد، حي الملقا، برج المستقبل")}
-                </span>
-              </div>
+              
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#C5A059] shrink-0" />
                 <span className="font-mono dir-ltr">{contact?.contactPhone || "+966 11 000 0000"}</span>
@@ -293,8 +261,8 @@ export function Footer() {
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
           <p>
             {lang === "en"
-              ? "© 2026 Eshraqat Al-Mustaqbal Real Estate Development. All rights reserved."
-              : "© 2026 إشراقة المستقبل للتطوير العقاري. جميع الحقوق محفوظة."}
+              ? "© 2026 Eshraqat Al-Mustaqbal Real Estate Marketing. All rights reserved."
+              : "© 2026 منصة إشراقة المستقبل للتسويق العقاري. جميع الحقوق محفوظة."}
           </p>
 
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-start">

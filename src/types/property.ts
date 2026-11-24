@@ -15,6 +15,7 @@ export type PropertyStatus = "PUBLISHED" | "DRAFT" | "ARCHIVED";
 export interface Property {
   id: string;
   code: string;
+  licenseNumber?: string;
   title: string;
   titleEn?: string;
   description: string;

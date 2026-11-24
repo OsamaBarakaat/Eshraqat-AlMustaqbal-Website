@@ -365,6 +365,14 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
                 <span className="font-mono text-zinc-400">
                   {lang === "en" ? `National Address: ${property.code}` : `العنوان الوطني: ${property.code}`}
                 </span>
+                {property.licenseNumber && (
+                  <>
+                    <span className="text-zinc-600">•</span>
+                    <span className="text-[#C5A059] font-medium font-mono">
+                      {lang === "en" ? `License: ${property.licenseNumber}` : `رقم الترخيص: ${property.licenseNumber}`}
+                    </span>
+                  </>
+                )}
               </div>
               <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-snug">
                 {property.title}
@@ -451,14 +459,16 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
             })()}
 
             {/* Full Detailed Description */}
-            <div className="p-6 rounded-3xl bg-[#141418] border border-white/5 space-y-3">
-              <h3 className="text-base sm:text-lg font-bold text-white">
-                {lang === "en" ? "Property Description & Building Specs" : "وصف العقار ومواصفات البناء"}
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-light whitespace-pre-line">
-                {property.fullDescription || property.description}
-              </p>
-            </div>
+            {(property.fullDescription || property.description || property.shortDescription) && (
+              <div className="p-6 rounded-3xl bg-[#141418] border border-white/5 space-y-3">
+                <h3 className="text-base sm:text-lg font-bold text-white">
+                  {lang === "en" ? "Property Description & Building Specs" : "وصف العقار ومواصفات البناء"}
+                </h3>
+                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-light whitespace-pre-line">
+                  {property.fullDescription || property.description || property.shortDescription}
+                </p>
+              </div>
+            )}
 
             {/* Location & Detailed Address */}
             <div className="p-6 rounded-3xl bg-[#141418] border border-white/5 space-y-4">
