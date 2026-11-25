@@ -49,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const properties = await ApiService.getProperties();
 
     const propertyUrls: MetadataRoute.Sitemap = (properties || [])
-      .filter((prop) => prop.status === "PUBLISHED")
+      .filter((prop) => ["PUBLISHED", "SOLD", "RENTED"].includes(prop.status))
       .map((prop) => {
         const identifier = prop.slug || prop.id;
         const lastMod = prop.updatedAt ? new Date(prop.updatedAt) : new Date();

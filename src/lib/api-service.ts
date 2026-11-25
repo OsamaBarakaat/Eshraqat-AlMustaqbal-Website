@@ -274,6 +274,7 @@ export const ApiService = {
     search?: string;
     category?: string;
     purpose?: string;
+    status?: string;
     cityId?: string;
     districtId?: string;
     minPrice?: number;
@@ -282,10 +283,11 @@ export const ApiService = {
   }): Promise<Property[]> {
     try {
       const params = new URLSearchParams();
-      params.append("limit", "50");
+      params.append("limit", "100");
       if (query?.search?.trim()) params.append("search", query.search.trim());
       if (query?.category && query.category !== "ALL") params.append("category", query.category);
       if (query?.purpose && query.purpose !== "ALL") params.append("purpose", query.purpose);
+      if (query?.status && query.status !== "ALL") params.append("status", query.status);
       if (query?.cityId && query.cityId !== "ALL") params.append("cityId", query.cityId);
       if (query?.districtId && query.districtId !== "ALL") params.append("districtId", query.districtId);
       if (query?.minPrice !== undefined) params.append("minPrice", String(query.minPrice));

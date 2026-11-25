@@ -180,6 +180,10 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
     ? Number(property.originalPrice) - Number(property.price)
     : 0;
 
+  const isSold = property.status === "SOLD";
+  const isRented = property.status === "RENTED";
+  const isUnavailable = isSold || isRented;
+
   // Google Maps Direction URL (Strictly optional from admin dashboard)
   const googleMapsUrl = property.googleMapsUrl?.trim() || "";
 
@@ -233,6 +237,46 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
             </button>
           </div>
         </div>
+
+        {/* Distinctive Status Notice Banner if Sold or Rented */}
+        {isUnavailable && (
+          <div
+            className={`p-4 sm:p-5 rounded-2xl border flex items-center justify-between gap-4 shadow-xl ${
+              isSold
+                ? "bg-rose-950/40 border-rose-500/40 text-rose-200"
+                : "bg-amber-950/40 border-amber-500/40 text-amber-200"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <span
+                className={`px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider ${
+                  isSold
+                    ? "bg-rose-600 text-white shadow-md shadow-rose-950"
+                    : "bg-amber-600 text-white shadow-md shadow-amber-950"
+                }`}
+              >
+                {isSold ? (lang === "en" ? "SOLD" : "تم البيع") : (lang === "en" ? "RENTED" : "تم التأجير")}
+              </span>
+              <div>
+                <h4 className="font-bold text-sm sm:text-base text-white">
+                  {isSold
+                    ? (lang === "en" ? "This Property Has Been Sold" : "تم بيع هذا العقار بنجاح")
+                    : (lang === "en" ? "This Property Has Been Rented" : "تم تأجير هذا العقار بنجاح")}
+                </h4>
+                <p className="text-xs text-zinc-300 mt-0.5">
+                  {isSold
+                    ? (lang === "en"
+                        ? "This property was marketed and successfully sold via Eshraqat Al-Mustaqbal Platform."
+                        : "تم تسويق وإتمام صفقة بيع هذا العقار بنجاح عبر منصة إشراقة المستقبل للتسويق العقاري.")
+                    : (lang === "en"
+                        ? "This property was marketed and successfully rented via Eshraqat Al-Mustaqbal Platform."
+                        : "تم تأجير هذا العقار بنجاح وإشغاله عبر منصة إشراقة المستقبل للتسويق العقاري.")}
+                </p>
+              </div>
+            </div>
+            <CheckCircle2 className={`w-6 h-6 shrink-0 hidden sm:block ${isSold ? "text-rose-400" : "text-amber-400"}`} />
+          </div>
+        )}
 
         {/* Gallery Section */}
         <div className="space-y-3">
@@ -608,13 +652,30 @@ export function PropertyDetailClient({ property, similarProperties }: PropertyDe
               </div>
 
               {/* Direct Booking CTA */}
-              <button
-                onClick={() => setBookingOpen(true)}
-                className="w-full py-4 px-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:brightness-110 text-black shadow-lg shadow-[#C5A059]/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Calendar className="w-4 h-4" />
-                <span>{lang === "en" ? "Book a Site Viewing" : "احجز موعد معاينة ميدانية"}</span>
-              </button>
+              {isUnavailable ? (
+                <div
+                  className={`w-full py-4 px-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 border select-none ${
+                    isSold
+                      ? "bg-rose-950/50 text-rose-300 border-rose-800/60 shadow-lg shadow-rose-950/40"
+                      : "bg-amber-950/50 text-amber-300 border-amber-800/60 shadow-lg shadow-amber-950/40"
+                  }`}
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>
+                    {isSold
+                      ? (lang === "en" ? "Property Sold Out" : "تم بيع هذا العقار بنجاح")
+                      : (lang === "en" ? "Property Rented" : "تم تأجير هذا العقار بنجاح")}
+                  </span>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setBookingOpen(true)}
+                  className="w-full py-4 px-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:brightness-110 text-black shadow-lg shadow-[#C5A059]/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>{lang === "en" ? "Book a Site Viewing" : "احجز موعد معاينة ميدانية"}</span>
+                </button>
+              )}
 
               {/* WhatsApp Quick Connect */}
               <button

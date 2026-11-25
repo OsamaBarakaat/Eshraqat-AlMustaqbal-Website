@@ -43,6 +43,7 @@ function PropertiesCatalogContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState<string>("ALL");
   const [selectedPurpose, setSelectedPurpose] = useState<string>("ALL");
+  const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
   const [selectedCityId, setSelectedCityId] = useState<string>("ALL");
   const [selectedDistrictId, setSelectedDistrictId] = useState<string>("ALL");
   const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
@@ -60,6 +61,9 @@ function PropertiesCatalogContent() {
 
     const type = searchParams.get("type");
     if (type) setSelectedType(type.toUpperCase());
+
+    const statusParam = searchParams.get("status");
+    if (statusParam) setSelectedStatus(statusParam.toUpperCase());
 
     const loc = searchParams.get("location") || searchParams.get("city");
     if (loc && loc !== "ALL") setSearchTerm(loc);
@@ -121,6 +125,7 @@ function PropertiesCatalogContent() {
         search: searchTerm,
         category: selectedType !== "ALL" ? selectedType : undefined,
         purpose: selectedPurpose !== "ALL" ? selectedPurpose : undefined,
+        status: selectedStatus !== "ALL" ? selectedStatus : undefined,
         cityId: selectedCityId !== "ALL" ? selectedCityId : undefined,
         districtId:
           selectedDistrictId !== "ALL" ? selectedDistrictId : undefined,
@@ -146,6 +151,7 @@ function PropertiesCatalogContent() {
     searchTerm,
     selectedType,
     selectedPurpose,
+    selectedStatus,
     selectedCityId,
     selectedDistrictId,
     maxPrice,
@@ -215,6 +221,7 @@ function PropertiesCatalogContent() {
     setSearchTerm("");
     setSelectedType("ALL");
     setSelectedPurpose("ALL");
+    setSelectedStatus("ALL");
     setSelectedCityId("ALL");
     setSelectedDistrictId("ALL");
     setMaxPrice(undefined);
@@ -334,8 +341,8 @@ function PropertiesCatalogContent() {
             </div>
           </div>
 
-          {/* Bottom row: Dynamic 5 Filters Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-4 border-t border-white/5">
+          {/* Bottom row: Dynamic Filters Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 pt-4 border-t border-white/5">
             {/* 1. Category */}
             <div>
               <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">
@@ -379,6 +386,31 @@ function PropertiesCatalogContent() {
                 </option>
                 <option value="RENT">
                   {lang === "en" ? "For Rent" : "للإيجار"}
+                </option>
+              </select>
+            </div>
+
+            {/* 3. Availability Status (حالة العقار) */}
+            <div>
+              <label className="block text-[11px] font-semibold text-zinc-300 mb-1.5">
+                {lang === "en" ? "Status" : "حالة العقار"}
+              </label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-3 py-2 bg-[#1C1C22] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#C5A059] cursor-pointer"
+              >
+                <option value="ALL">
+                  {lang === "en" ? "All (Available & Sold)" : "الكل (شامل المتاح والمباع)"}
+                </option>
+                <option value="PUBLISHED">
+                  {lang === "en" ? "Available Only" : "متاح فقط"}
+                </option>
+                <option value="SOLD">
+                  {lang === "en" ? "Sold Properties" : "تم البيع"}
+                </option>
+                <option value="RENTED">
+                  {lang === "en" ? "Rented Properties" : "تم التأجير"}
                 </option>
               </select>
             </div>

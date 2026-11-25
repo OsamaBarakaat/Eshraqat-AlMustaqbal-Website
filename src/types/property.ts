@@ -10,7 +10,7 @@ export type PropertyType =
 
 export type PropertyPurpose = "SALE" | "RENT" | "INVESTMENT";
 
-export type PropertyStatus = "PUBLISHED" | "DRAFT" | "ARCHIVED";
+export type PropertyStatus = "PUBLISHED" | "DRAFT" | "ARCHIVED" | "SOLD" | "RENTED";
 
 export interface Property {
   id: string;

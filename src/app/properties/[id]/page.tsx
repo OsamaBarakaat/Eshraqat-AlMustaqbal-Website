@@ -189,7 +189,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           "url": canonicalUrl,
           "seller": {
             "@type": "RealEstateAgent",
-            "name": "إشراقة المستقبل للتطوير العقاري",
+            "name": "منصة إشراقة المستقبل للتسويق العقاري",
             "url": siteUrl,
           },
         },
