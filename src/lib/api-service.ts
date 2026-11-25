@@ -236,6 +236,7 @@ function mapBackendProperty(item: any): Property {
     commercialCategory: item.commercialCategory || undefined,
     commercialSuitableActivity: item.commercialSuitableActivity || undefined,
     virtualTourUrl: item.virtualTourUrl,
+    licenseNumber: item.licenseNumber || undefined,
     // SEO & Meta
     seoTitle: item.seoTitle || undefined,
     metaDescription: item.metaDescription || undefined,

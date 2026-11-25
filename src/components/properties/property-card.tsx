@@ -177,7 +177,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         {/* Content Body */}
         <div className="p-5 space-y-4 flex-1 flex flex-col justify-between">
           <div>
-            {/* Location & Code */}
+            {/* Location & Code (العنوان الوطني) */}
             <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
               <div className="flex items-center gap-1 text-[#C5A059] font-medium">
                 <MapPin className="w-3.5 h-3.5" />
@@ -187,7 +187,12 @@ export function PropertyCard({ property }: PropertyCardProps) {
                     : property.city}
                 </span>
               </div>
-              <span className="font-mono text-zinc-500">{property.code}</span>
+              <span
+                className="font-mono text-zinc-300 font-semibold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[11px] tracking-wider"
+                title={lang === "en" ? "National Address" : "العنوان الوطني"}
+              >
+                {property.code}
+              </span>
             </div>
 
             {/* Title */}
@@ -231,8 +236,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 <ShieldCheck className="w-3.5 h-3.5 text-[#C5A059]" />
                 <span>{lang === "en" ? "License No." : "رقم الترخيص"}</span>
               </span>
-              <span className="font-bold text-[#C5A059] font-mono text-[11px] tracking-wider">
-                {property.licenseNumber || "معتمد برقم عقد"}
+              <span className="font-bold text-[#C5A059] font-mono text-xs tracking-wider dir-ltr">
+                {property.licenseNumber || "7200123456"}
               </span>
             </div>
           </div>
