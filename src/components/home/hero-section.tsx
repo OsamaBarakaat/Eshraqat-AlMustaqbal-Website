@@ -408,7 +408,7 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
         {/* Bottom Section: Showcase Cards */}
         <div className="relative z-10 max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 w-full mt-6 sm:mt-12 space-y-4 sm:space-y-6">
           {/* 2. Floating Showcase Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4">
             {categories.map((cat, idx) => (
               <Link
                 key={idx}
@@ -447,40 +447,6 @@ export function HeroSection({ homepageContent }: HeroSectionProps = {}) {
                 </div>
               </Link>
             ))}
-
-            {/* 4th Card: Strategic Riyadh Map Explorer */}
-            <Link
-              href="/properties"
-              className={`group relative h-20 sm:h-32 rounded-xl sm:rounded-2xl overflow-hidden border border-[#C5A059]/40 hover:border-[#C5A059] transition-all p-2.5 sm:p-4 flex flex-col justify-end bg-gradient-to-br from-[#1C1C22] to-[#0D0D0F] cursor-pointer ${
-                dir === "rtl" ? "text-right" : "text-left"
-              }`}
-            >
-              <div
-                className={`relative z-10 flex items-end justify-between gap-1.5 sm:gap-2 ${
-                  dir === "rtl" ? "flex-row" : "flex-row-reverse"
-                }`}
-              >
-                <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-[#C5A059] text-black flex items-center justify-center shrink-0">
-                  <Play className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 fill-current ml-0.5" />
-                </div>
-                <div className="min-w-0">
-                  <div
-                    className={`flex items-center gap-1 text-[#C5A059] text-[8px] sm:text-xs font-bold mb-0.5 ${
-                      dir === "rtl" ? "justify-end" : "justify-start"
-                    }`}
-                  >
-                    <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                    <span>{lang === "ar" ? "الرياض" : "Riyadh"}</span>
-                  </div>
-                  <h3 className="text-[11px] sm:text-sm font-bold text-white truncate leading-tight">
-                    {t("showcase.lands")}
-                  </h3>
-                  <p className="text-[8px] sm:text-[10px] text-zinc-400 truncate hidden xs:block sm:block">
-                    {t("showcase.map_link")}
-                  </p>
-                </div>
-              </div>
-            </Link>
           </div>
         </div>
       </section>
