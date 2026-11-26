@@ -1,6 +1,6 @@
 # ==============================================================================
-# Traefik Ingress for Public Website
-# Replace example.com with your real domain when ready.
+# Traefik Ingress for Public Website (/)
+# Domain: eshraqatalmustaqbal.com
 # ==============================================================================
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -14,10 +14,11 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - example.com
-      secretName: website-tls-secret
+        - eshraqatalmustaqbal.com
+        - www.eshraqatalmustaqbal.com
+      secretName: eshraqat-tls-secret
   rules:
-    - host: example.com
+    - host: eshraqatalmustaqbal.com
       http:
         paths:
           - path: /
@@ -27,4 +28,13 @@ spec:
                 name: eshraqat-website
                 port:
                   number: 3000
-
+    - host: www.eshraqatalmustaqbal.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: eshraqat-website
+                port:
+                  number: 3000
