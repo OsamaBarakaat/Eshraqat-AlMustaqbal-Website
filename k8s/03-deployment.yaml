@@ -37,7 +37,7 @@ spec:
       containers:
         - name: website
           image: ghcr.io/osamabarakaat/eshraqat-almustaqbal-website:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
               name: http
